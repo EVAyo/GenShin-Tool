@@ -6,15 +6,9 @@
   const FileSaverUrl =
     "https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js";
   // mihoyo api
-  const ItemDataUrl = `https://webstatic.mihoyo.com/hk4e/gacha_info/cn_gf01/items/zh-cn.json`;
   const GachaTypesUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList${location.search}`;
   const GachaLogBaseUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog${location.search}`;
-  // rare rank background color
-  const rankColor = {
-    3: "7F1E90FF",
-    4: "7F9370DB",
-    5: "7FFF8C00",
-  };
+
 
   // function
   function loadScript(src) {
@@ -77,8 +71,8 @@
   console.log("load exceljs success");
   await loadScript(FileSaverUrl);
   console.log("load filesaver success");
-  const data = await fetch(ItemDataUrl).then((res) => res.json());
-  console.log("获取物品列表成功");
+  // const data = await fetch(ItemDataUrl).then((res) => res.json());
+  // console.log("获取物品列表成功");
   const gachaTypes = await fetch(GachaTypesUrl)
     .then((res) => res.json())
     .then((data) => data.data.gacha_type_list);
@@ -89,26 +83,62 @@
   for (const type of gachaTypes) {
     const sheet = workbook.addWorksheet(type.name);
     sheet.columns = [
-      { header: "时间", key: "time", width: 25 },
-      { header: "名称", key: "name", width: 20 },
-      { header: "类型", key: "type", width: 15 },
-      { header: "星级", key: "rank", width: 15 },
+      { header: "时间", key: "time", width: 24 },
+      { header: "名称", key: "name", width: 18 },
+      { header: "类型", key: "type", width: 6 },
+      { header: "星级", key: "rank", width: 6 },
     ];
     // get gacha logs
     const logs = (await getGachaLogs(type.name, type.key)).map((item) => {
-      const match = data.find((v) => v.item_id === item.item_id);
-      return [item.time, match.name, match.item_type, match.rank_type];
+      // const match = data.find((v) => v.item_id === item.item_id);
+      return [item.time, item.name, item.item_type, item.rank_type];
     });
     sheet.addRows(logs);
+    // set xlsx hearer style
+    ["A", "B", "C", "D"].forEach((v) => {
+      sheet.getCell(`${v}1`).border = {
+        top: {style:'thin', color: {argb:'ffc4c2bf'}},
+        left: {style:'thin', color: {argb:'ffc4c2bf'}},
+        bottom: {style:'thin', color: {argb:'ffc4c2bf'}},
+        right: {style:'thin', color: {argb:'ffc4c2bf'}}
+      };
+      sheet.getCell(`${v}1`).fill = {
+        type: 'pattern',
+        pattern:'solid',
+        fgColor:{argb:'ffdbd7d3'},
+      };
+      sheet.getCell(`${v}1`).font ={
+        name: '微软雅黑',
+        color: { argb: "ff757575" },
+        bold : true
+      }
+      
+    });
     // set xlsx cell style
     logs.forEach((v, i) => {
-      const style = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: rankColor[v[3]] },
-      };
-      ["A", "B", "C", "D"].forEach((v) => {
-        sheet.getCell(`${v}${i + 2}`).fill = style;
+      ["A", "B", "C", "D"].forEach((c) => {
+        sheet.getCell(`${c}${i + 2}`).border = {
+          top: {style:'thin', color: {argb:'ffc4c2bf'}},
+          left: {style:'thin', color: {argb:'ffc4c2bf'}},
+          bottom: {style:'thin', color: {argb:'ffc4c2bf'}},
+          right: {style:'thin', color: {argb:'ffc4c2bf'}}
+        };
+        sheet.getCell(`${c}${i + 2}`).fill = {
+          type: 'pattern',
+          pattern:'solid',
+          fgColor:{argb:'ffebebeb'},
+        };
+        // rare rank background color
+        const rankColor = {
+          3: "ff8e8e8e",
+          4: "ffa256e1",
+          5: "ffbd6932",
+        };
+        sheet.getCell(`${c}${i + 2}`).font = {
+          name: '微软雅黑',
+          color: { argb: rankColor[v[3]] },
+          bold : v[3]!="3"
+        };
       });
     });
   }
