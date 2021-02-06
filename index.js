@@ -43,7 +43,7 @@
     do {
       console.log(`正在获取${name}第${page}页`);
       res = await getGachaLog(key, page);
-      await sleep(0.2);
+      // await sleep(0.2);
       data.push(...res);
       page += 1;
     } while (res.length > 0);
