@@ -102,7 +102,7 @@
       idx += 1;
       pdx += 1;
       log.push(idx,pdx);
-      if (log[3] === "5") {
+      if (log[3] === 5) {
         pdx = 0;
       }
     }
