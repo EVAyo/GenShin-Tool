@@ -2,7 +2,7 @@
 // @name         原神抽卡记录导出工具
 // @version      0.1
 // @author       sunfkny
-// @match        https://webstatic.mihoyo.com/hk4e/event/e20190909gacha/index.html*
+// @match        https://webstatic.mihoyo.com/hk4e/event/*gacha/index.html*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.0/exceljs.min.js
 // @grant        none
