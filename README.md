@@ -1,5 +1,12 @@
 # 原神导出抽卡记录 JS 版
 
+NGA原帖：https://bbs.nga.cn/read.php?tid=25441042
+
+抽卡记录分析工具 from [@笑沐泽](https://bbs.nga.cn/read.php?tid=25004616&page=16#pid491033187Anchor)  
+https://voderl.github.io/genshin-gacha-analyzer/
+
+抽卡记录导出工具python版：https://github.com/sunfkny/genshin-gacha-export
+
 ## 使用方法
 0. 确保最近在游戏内打开过抽卡记录页面
 1. 把 geturl.ps1 的内容复制到 PowerShell 里回车执行
