@@ -5,8 +5,8 @@
 
 ## 使用方法
 ### 获取链接
-方法1. 抓包获取到含getGachaLog的链接  
-方法2. 确保最近在游戏内打开过抽卡记录页面，把`geturl.ps1`的内容复制到 PowerShell 里执行
+方法1. 确保最近在游戏内打开过抽卡记录页面，把`geturl.ps1`的内容复制到 PowerShell 里执行  
+方法2. 抓包获取到含getGachaLog的链接  
 
 ### 导出
 方法1. 安装[油猴脚本](https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js@main/index.user.js)之后右上角就有导出按钮  
