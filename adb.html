@@ -184,7 +184,7 @@
 				}
 				catch (error) {
 					console.log(error);
-					this.connect_message(error.message + " Ensure that the USB port is not in use (i.e. adb server is running).");
+					this.connect_message(error.message + " 确保未使用USB端口（即adb服务器正在运行）。");
 					this.state("ready");
 					fastboot = null;
 					webusb = null;
