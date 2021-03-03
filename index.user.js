@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         原神抽卡记录导出工具
-// @version      0.1
+// @version      0.2
 // @author       sunfkny
 // @match        https://webstatic.mihoyo.com/hk4e/event/*gacha/index.html*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js
@@ -12,6 +12,49 @@
     'use strict';
 
     function run() {
+
+        //替换指定传入参数的值
+        //win为某窗体,paramName为参数,paramValue为新值,forceAdding为不存在该参数时是否也指定
+        function replaceParamVal(win,paramName,paramValue,forceAdding){
+            var search = win.location.search+'';
+            if(!search) {//没有任何查询参数,则直接附加
+                return ( forceAdding ? (win.location+'?'+paramName+'='+paramValue) : (win.location+'') );
+            }else{
+                var q = (win.location+'').split('?')[0];
+                var list = search.replace('?','').split('&');
+                var hasIn = false;
+                for(var i=0; i<list.length; i++) {
+                    var listI = list[i];
+                    if(listI.split('=')[0].toLowerCase() == paramName.toLowerCase()) {//指定参数
+                        q = q + (i==0 ? '?' : '&');
+                        hasIn = true;
+
+                        if(listI.indexOf('=') == -1) {//形式:"参数"
+                            q = q + listI + '=' + paramValue;
+                        }
+                        else if (! listI.split('=')[1].length) {    //形式："参数="
+                            q = q + listI + paramValue;
+                        }
+                        else {//形式:"参数=值"
+                            q = q + paramName + '=' + paramValue;
+                        }
+                    }else {//其它参数
+                        q = q + (i==0 ? '?' : '&');
+                        q = q + listI;
+                    }
+                }
+
+                if (!hasIn && forceAdding) {//不存在,但必须要添加时
+                    q = q + '&' + paramName + '=' + paramValue;
+                }
+
+                return q;
+            }
+
+        }
+        // 强制使用zh-cn
+        window.history.pushState('Object', 'Title', replaceParamVal(window.parent,'lang','zh-cn',true)+"#/log");
+
         (async function() {
             var rawtips = document.querySelector("div.tips").textContent
             // constant
@@ -43,7 +86,7 @@
 
             function getGachaLog(key, page) {
                 return fetch(
-                        GachaLogBaseUrl + `&gacha_type=${key}&page=${page}&size=${20}`
+                    GachaLogBaseUrl + `&gacha_type=${key}&page=${page}&size=${20}`
                     )
                     .then((res) => res.json())
                     .then((data) => data.data.list);
@@ -86,8 +129,8 @@
             // await loadScript(FileSaverUrl);
             // console.log("load filesaver success");
             const gachaTypes = await fetch(GachaTypesUrl)
-                .then((res) => res.json())
-                .then((data) => data.data.gacha_type_list);
+            .then((res) => res.json())
+            .then((data) => data.data.gacha_type_list);
             console.log("获取抽卡活动类型成功");
             document.querySelector("div.tips").textContent = "获取抽卡活动类型成功"
 
@@ -102,7 +145,7 @@
                         ySplit: 1
                     }]
                 });
-                sheet.columns=[{header:"时间",key:"time",width:24},{header:"名称",key:"name",width:14},{header:"类别",key:"type",width:8},{header:"星级",key:"rank",width:8},{header:"总次数",key:"idx",width:8},{header:"保底内",key:"pdx",width:8}];
+                sheet.columns=[{header:"祈愿时间",key:"time",width:24},{header:"名称",key:"name",width:14},{header:"类型",key:"type",width:8},{header:"星级",key:"rank",width:8},{header:"总次数",key:"idx",width:8},{header:"保底内",key:"pdx",width:8}];
                 // get gacha logs
                 const logs = (await getGachaLogs(type.name, type.key)).map((item) => {
                     // const match = data.find((v) => v.item_id === item.item_id);
