@@ -16,6 +16,7 @@
  - 无root  
 > 打开ADB调试，连接电脑  
 > 使用在线adb提取 https://sunfkny.github.io/genshin-gacha-export-js/adb.html  
+> [视频教程](https://www.bilibili.com/video/BV1tr4y1K7Ea?p=3)  
 ### 导出
 方法1. 安卓端可以下载 [index.user.js](https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js@main/) ，使用 kiwi浏览器右上角-扩展程序-Load-选择下载的`index.user.js` 安装用户脚本，打开上面获取的链接，右上角就有导出按钮  
 方法2. PC浏览器安装[油猴脚本](https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js@main/index.user.js)，打开上面获取的链接，右上角就有导出按钮  
