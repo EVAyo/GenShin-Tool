@@ -5,14 +5,14 @@
 
 ## 使用方法
 ### PC获取链接
-确保最近在游戏内打开过抽卡记录页面，把`geturl.ps1`的内容复制到 PowerShell 里执行  
+确保最近在游戏内打开过抽卡历史记录页面，把`geturl.ps1`的内容复制到 PowerShell 里执行  
 ### 安卓获取链接
  -  有root  
 > 在终端中执行
 > ```
 > sudo logcat -e "https.*#/log" -m 1 | grep -o "https.*#/log"
 > ```
-> 然后打开历史记录
+> 然后打开抽卡历史记录
  - 无root  
 > 打开ADB调试，连接电脑  
 > 使用在线adb提取 https://sunfkny.github.io/genshin-gacha-export-js/adb.html  
