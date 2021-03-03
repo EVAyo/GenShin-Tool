@@ -4,9 +4,16 @@
  - [抽卡记录导出工具python版](https://github.com/sunfkny/genshin-gacha-export)，导出后含有抽卡报告
 
 ## 使用方法
-### 获取链接
+### PC获取链接
 确保最近在游戏内打开过抽卡记录页面，把`geturl.ps1`的内容复制到 PowerShell 里执行  
-
+### 安卓有root获取链接
+在终端中执行
+```
+sudo logcat -e "https.*#/log" -m 1 | grep -o "https.*#/log"
+```
+### 安卓无root获取链接
+打开ADB调试，连接电脑  
+使用在线adb提取 https://sunfkny.github.io/genshin-gacha-export-js/adb.html  
 ### 导出
 方法1. 安装[油猴脚本](https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js@main/index.user.js)之后右上角就有导出按钮  
 方法2. 按 F12 打开控制台，把`index.js`的内容复制到控制台回车执行，等待执行完成  
