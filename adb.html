@@ -184,7 +184,7 @@
 				}
 				catch (error) {
 					console.log(error);
-					this.connect_message(error.message + " 确保未使用USB端口（即adb服务器正在运行）。");
+					this.connect_message(error.message + " 确保未使用USB端口（可以重新连接数据线或者任务管理器结束adb.exe）。");
 					this.state("ready");
 					fastboot = null;
 					webusb = null;
@@ -210,7 +210,7 @@
 				}
 				catch (error) {
 					console.log(error);
-					this.connect_message(error.message + " 确保未使用USB端口（即adb服务器正在运行）。");
+					this.connect_message(error.message + " 确保未使用USB端口（可以重新连接数据线或者任务管理器结束adb.exe）。");
 					this.state("ready");
 					adb = null;
 					webusb = null;
