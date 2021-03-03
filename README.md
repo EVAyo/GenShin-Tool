@@ -7,7 +7,7 @@
 ### PC获取链接
 确保最近在游戏内打开过抽卡记录页面，把`geturl.ps1`的内容复制到 PowerShell 里执行  
 ### 安卓获取链接
- -  安卓有root获取链接
+ -  安卓有root获取链接  
 在终端中执行
 ```
 sudo logcat -e "https.*#/log" -m 1 | grep -o "https.*#/log"
