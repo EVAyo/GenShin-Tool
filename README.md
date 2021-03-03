@@ -12,6 +12,7 @@
 > ```
 > sudo logcat -e "https.*#/log" -m 1 | grep -o "https.*#/log"
 > ```
+> 然后打开历史记录
  - 无root  
 > 打开ADB调试，连接电脑  
 > 使用在线adb提取 https://sunfkny.github.io/genshin-gacha-export-js/adb.html  
