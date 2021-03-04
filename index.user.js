@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         原神抽卡记录导出工具
-// @version      0.2
+// @version      0.2.1
 // @author       sunfkny
 // @match        https://webstatic.mihoyo.com/hk4e/event/*gacha/index.html*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js
@@ -11,7 +11,7 @@
 (function() {
     'use strict';
 
-    function run() {
+    function gachaExport() {
 
         //替换指定传入参数的值
         //win为某窗体,paramName为参数,paramValue为新值,forceAdding为不存在该参数时是否也指定
@@ -53,7 +53,8 @@
 
         }
         // 强制使用zh-cn
-        window.history.pushState('Object', 'Title', replaceParamVal(window.parent,'lang','zh-cn',true)+"#/log");
+        //window.history.pushState('Object', 'Title', replaceParamVal(window.parent,'lang','zh-cn',true)+"#/log");
+        const zhsearch=replaceParamVal(window.parent,'lang','zh-cn',true);
 
         (async function() {
             var rawtips = document.querySelector("div.tips").textContent
@@ -62,8 +63,10 @@
             // const ExcelJSUrl = "https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.0/exceljs.min.js";
             // const FileSaverUrl = "https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js";
             // mihoyo api
-            const GachaTypesUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList${location.search}`;
-            const GachaLogBaseUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog${location.search}`;
+            //const GachaTypesUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList${location.search}`;
+            //const GachaLogBaseUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog${location.search}`;
+            const GachaTypesUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${zhsearch.split("?")[1]}`;
+            const GachaLogBaseUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?${zhsearch.split("?")[1]}`;
 
 
             // function
@@ -276,13 +279,13 @@
         })();
     }
 
-    window.run = run;
+    window.gachaExport = gachaExport;
 
     var t = document.createTextNode("导出");
     var eButton = document.createElement("button");
     eButton.appendChild(t);
     eButton.style = "position: absolute;right: 0px;padding: .1rem;";
-    eButton.setAttribute("onclick", "window.run()");
+    eButton.setAttribute("onclick", "window.gachaExport()");
     eButton.classList = "title";
     document.querySelector("div.type-select-container").appendChild(eButton)
 
