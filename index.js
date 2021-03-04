@@ -47,20 +47,21 @@
         }
     }
     // 强制使用zh-cn
-    window.history.pushState(
-        "Object",
-        "Title",
-        replaceParamVal(window.parent, "lang", "zh-cn", true) + "#/log"
-    );
+    //window.history.pushState('Object', 'Title', replaceParamVal(window.parent,'lang','zh-cn',true)+"#/log");
+    const zhsearch = replaceParamVal(window.parent, "lang", "zh-cn", true);
     // constant
     // library from cdn
-    const ExcelJSUrl =
-        "https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.0/exceljs.min.js";
-    const FileSaverUrl =
-        "https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js";
+    const ExcelJSUrl = "https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.0/exceljs.min.js";
+    const FileSaverUrl = "https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js";
     // mihoyo api
-    const GachaTypesUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList${location.search}`;
-    const GachaLogBaseUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog${location.search}`;
+    //const GachaTypesUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList${location.search}`;
+    //const GachaLogBaseUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog${location.search}`;
+    const GachaTypesUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${
+        zhsearch.split("?")[1]
+    }`;
+    const GachaLogBaseUrl = `//hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?${
+        zhsearch.split("?")[1]
+    }`;
 
     // function
     function loadScript(src) {
