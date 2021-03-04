@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         原神抽卡记录导出工具
-// @version      0.2.1
+// @version      0.2.2
 // @author       sunfkny
 // @match        https://webstatic.mihoyo.com/hk4e/event/*gacha/index.html*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js
@@ -96,11 +96,11 @@
             }
 
             async function getGachaLogs(name, key) {
-                document.querySelector("div.tips").textContent = `正在获取${name}`
                 let page = 1,
                     data = [],
                     res = [];
                 do {
+                    document.querySelector("div.tips").textContent = `正在获取${name}第${page}页`;
                     console.log(`正在获取${name}第${page}页`);
                     res = await getGachaLog(key, page);
                     // await sleep(0.2);
