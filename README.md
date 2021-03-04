@@ -18,6 +18,6 @@
 > 使用在线adb提取 https://sunfkny.github.io/genshin-gacha-export-js/adb.html  
 > [视频教程](https://www.bilibili.com/video/BV1tr4y1K7Ea?p=3)  
 ### 导出
-方法1. 安卓端可以下载 使用 kiwi浏览器安装tampermonkey，安装[index.user.js](https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js/index.user.js)，打开上面获取的链接，右上角就有导出按钮  
+方法1. 安卓端可以使用kiwi浏览器安装tampermonkey，安装[index.user.js](https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js/index.user.js)，打开上面获取的链接，右上角就有导出按钮  
 方法2. PC浏览器安装[index.user.js](https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js/index.user.js)，打开上面获取的链接，右上角就有导出按钮  
 方法3. 打开上面获取的链接，按 F12 打开控制台，把`index.js`的内容复制到控制台回车执行，等待执行完成  
