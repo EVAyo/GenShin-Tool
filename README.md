@@ -21,3 +21,7 @@
 方法1. 安卓端可以使用kiwi浏览器安装tampermonkey，安装[index.user.js](https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js/index.user.js)，打开上面获取的链接，右上角就有导出按钮  
 方法2. PC浏览器安装[index.user.js](https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js/index.user.js)，打开上面获取的链接，右上角就有导出按钮  
 方法3. 打开上面获取的链接，按 F12 打开控制台，把`index.js`的内容复制到控制台回车执行，等待执行完成  
+
+### 安卓端kiwi浏览器及Tampermonkey插件
+https://sunfkny.lanzous.com/b074ju1ob
+密码:fgta
