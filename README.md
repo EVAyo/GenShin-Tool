@@ -1,6 +1,6 @@
-# 原神导出抽卡记录 JS 版
+# 原神抽卡记录导出 JS 版
 
- - [抽卡记录分析工具](https://voderl.github.io/genshin-gacha-analyzer/) from [@笑沐泽](https://bbs.nga.cn/read.php?tid=25004616&page=16#pid491033187Anchor)  
+ - [抽卡记录分析工具](https://github.com/voderl/genshin-gacha-analyzer) from [@voderl](https://github.com/voderl)  
  - [抽卡记录导出工具python版](https://github.com/sunfkny/genshin-gacha-export)，导出后含有抽卡报告
 
 ## 获取链接
