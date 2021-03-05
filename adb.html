@@ -89,6 +89,10 @@
         <span id="bottom"></span>
     </form>
     <script>
+        ismobile = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
+        if (ismobile) {
+            alert("推荐使用电脑，不建议移动端使用，除非你能用OTG连接被导出的手机并使用Chrome浏览器")
+        }
         var params = location.search.substring(1).split("&");
         var is_webapp = false;
         var webusb = null;
