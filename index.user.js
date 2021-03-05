@@ -154,7 +154,7 @@
                         ySplit: 1
                     }]
                 });
-                sheet.columns=[{header:"时间",key:"time",width:24},{header:"名称",key:"name",width:14},{header:"类型",key:"type",width:8},{header:"星级",key:"rank",width:8},{header:"总次数",key:"idx",width:8},{header:"保底内",key:"pdx",width:8}];
+                sheet.columns=[{header:"时间",key:"time",width:24},{header:"名称",key:"name",width:14},{header:"类别",key:"type",width:8},{header:"星级",key:"rank",width:8},{header:"总次数",key:"idx",width:8},{header:"保底内",key:"pdx",width:8}];
                 // get gacha logs
                 const logs = (await getGachaLogs(type.name, type.key)).map((item) => {
                     // const match = data.find((v) => v.item_id === item.item_id);
