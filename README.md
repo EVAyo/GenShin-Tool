@@ -15,7 +15,7 @@
 > 然后打开抽卡历史记录
  - 无root  
 > 打开ADB调试，连接电脑  
-> 使用在线adb提取 https://sunfkny.github.io/genshin-gacha-export-js/adb.html  
+> 使用在线adb提取 [https://sunfkny.github.io/genshin-gacha-export-js/adb.html](https://sunfkny.github.io/genshin-gacha-export-js/adb.html)  
 > [视频教程](https://www.bilibili.com/video/BV1tr4y1K7Ea?p=3)  
 ### 导出
 #### 安卓端
