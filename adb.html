@@ -33,7 +33,7 @@
         <div id="nowebusb" class="w3-container w3-block w3-sand w3-border w3-border-red w3-left-align w3-round"
             style="display: none">
             <p>
-                你的浏览器不支持<a href="https://wicg.github.io/webusb">WebUSB API</a><br>建议使用电脑 Chrome 浏览器
+                你的浏览器不支持<a href="https://wicg.github.io/webusb">WebUSB API</a><br>，建议使用电脑Chrome浏览器
             </p>
         </div>
         <div id="disclaimer" data-bind="visible: true"
@@ -42,7 +42,7 @@
             <p>
                 此页面基于 <a href="https://wicg.github.io/webusb">WebUSB</a> ，通过 <a
                     href="https://developer.android.com/studio/command-line/adb.html">ADB</a>
-                抓取原神日志，所有操作均在本地完成，<a href="https://www.bilibili.com/video/BV1tr4y1K7Ea?p=3">视频教程</a><br>
+                抓取原神日志，所有操作均在本地完成，建议使用电脑Chrome浏览器。<a href="https://www.bilibili.com/video/BV1tr4y1K7Ea?p=3">视频教程</a><br>
             </p>
         </div>
         <div data-bind="visible: 'usb' in navigator"
@@ -90,7 +90,7 @@
     <script>
         ismobile = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
         if (ismobile) {
-            alert("不建议移动端使用，除非你能用OTG连接被导出的手机")
+            alert("不建议移动端使用，可以尝试使用Chrome并OTG连接被导出的手机")
         }
         var params = location.search.substring(1).split("&");
         var is_webapp = false;
