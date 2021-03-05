@@ -9,7 +9,7 @@
 // @supportURL   https://github.com/sunfkny/genshin-gacha-export-js/issues
 // @homepage     https://github.com/sunfkny/genshin-gacha-export-js
 // @namespace    https://github.com/sunfkny/genshin-gacha-export-js
-// @updateURL    https://raw.sevencdn.com/sunfkny/genshin-gacha-export-js/main/index.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js@main/index.user.js
 // @grant        none
 
 // ==/UserScript==
