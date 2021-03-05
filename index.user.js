@@ -5,6 +5,10 @@
 // @match        https://webstatic.mihoyo.com/hk4e/event/*gacha/index.html*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.0/exceljs.min.js
+// @updateURL    https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js/index.user.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/sunfkny/genshin-gacha-export-js/index.user.js
+// @supportURL   https://github.com/sunfkny/genshin-gacha-export-js/issues
+// @homepage     https://github.com/sunfkny/genshin-gacha-export-js
 // @grant        none
 // ==/UserScript==
 
