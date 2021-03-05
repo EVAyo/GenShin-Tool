@@ -1,5 +1,6 @@
 // ==UserScript==
 // @name         原神抽卡记录导出工具
+// @description  在线导出原神抽卡记录
 // @version      0.2.2
 // @author       sunfkny
 // @match        https://webstatic.mihoyo.com/hk4e/event/*gacha/index.html*
@@ -8,6 +9,7 @@
 // @supportURL   https://github.com/sunfkny/genshin-gacha-export-js/issues
 // @homepage     https://github.com/sunfkny/genshin-gacha-export-js
 // @grant        none
+// @namespace    https://github.com/sunfkny/genshin-gacha-export-js
 // ==/UserScript==
 
 (function() {
