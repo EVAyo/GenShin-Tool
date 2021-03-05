@@ -286,7 +286,7 @@
     }
 
     window.gachaExport = gachaExport;
-
+    document.querySelector("#mihoyo_landscape").remove()
     var t = document.createTextNode("导出");
     var eButton = document.createElement("button");
     eButton.appendChild(t);
