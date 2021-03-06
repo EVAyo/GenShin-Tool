@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         原神抽卡记录导出工具
 // @description  在线导出原神抽卡记录
-// @version      0.2.5
+// @version      0.2.6
 // @author       sunfkny
 // @match        https://webstatic.mihoyo.com/hk4e/event/*gacha/index.html*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js
@@ -286,7 +286,11 @@
     }
 
     window.gachaExport = gachaExport;
-    document.querySelector("#mihoyo_landscape").remove()
+    try{
+        document.querySelector("#mihoyo_landscape").remove()
+    }catch{
+        
+    }
     var t = document.createTextNode("导出");
     var eButton = document.createElement("button");
     eButton.appendChild(t);
