@@ -3,7 +3,7 @@
 NGA原帖：[https://bbs.nga.cn/read.php?tid=25441042](https://bbs.nga.cn/read.php?tid=25441042)  
 强烈建议使用本项目导出的xlsx配合[抽卡记录分析工具](https://github.com/voderl/genshin-gacha-analyzer)使用，可查看分析饼图、成就表  
 
-### 安卓导出工具apk版-需要root
+### 安卓获取导出二合一工具-需要root
 
 https://sunfkny.lanzous.com/b074k600d  密码: `5fin`  
 
