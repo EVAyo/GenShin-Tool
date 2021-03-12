@@ -144,7 +144,7 @@
             }
             catch (error) {
                 console.log(error);
-                this.connect_message(error.message=="No device selected."?"没有选择设备":error.message);
+                this.connect_message("连接失败："+error.message);
                 this.state("ready");
                 webusb = null;
                 return;
@@ -254,7 +254,7 @@
             }
             catch (error) {
                 console.log(error);
-                this.connect_message(error.message=="No device selected."?"没有选择设备":error.message);
+                this.connect_message("连接失败："+error.message);
                 this.state("ready");
                 webusb = null;
             }
@@ -280,7 +280,7 @@
             }
             catch (error) {
                 console.log(error);
-                this.connect_message(error.message=="No device selected."?"没有选择设备":error.message);
+                this.connect_message("连接失败："+error.message);
                 this.state("ready");
                 webusb = null;
             }
@@ -310,7 +310,7 @@
             }
             catch (error) {
                 console.log(error);
-                output(error.message=="No device selected."?"没有选择设备":error.message);
+                output("连接失败："+error.message);
                 this.state("connected");
             }
         }
@@ -363,7 +363,7 @@
             }
             catch (error) {
                 console.log(error);
-                output(error.message=="No device selected."?"没有选择设备":error.message);
+                output("连接失败："+error.message);
                 this.state("connected");
             }
         }
