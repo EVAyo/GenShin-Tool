@@ -23,7 +23,7 @@ sudo logcat -e "https.*#/log" -m 1 | grep -o "https.*#/log"
 
 ### 安卓导出
 
-https://sunfkny.lanzous.com/b074ju1ob 密码:fgta  下载安装kiwi浏览器及Tampermonkey插件  
+https://sunfkny.lanzous.com/b074ju1ob 密码: `fgta`  下载安装kiwi浏览器及Tampermonkey插件  
 打开kiwi浏览器，右上角菜单，扩展程序，开发者模式，Load，找到下载的 Tampermonkey_4_11_0_0.crx ，右下角打开，确定，[从Github安装脚本](https://sunfkny.github.io/genshin-gacha-export-js/index.user.js) / [从fastgit安装脚本](https://hub.fastgit.org/sunfkny/genshin-gacha-export-js/raw/main/index.user.js)，打开上面获取的链接，右上角就有导出按钮  
 
 ### PC获取链接
