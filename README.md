@@ -9,17 +9,17 @@ https://sunfkny.lanzous.com/b074k600d  密码: `5fin`
 
 ### 安卓有root终端中获取链接
 
-> 在终端中执行
-> ```
-> sudo logcat -e "https.*#/log" -m 1 | grep -o "https.*#/log"
-> ```
-> 然后打开抽卡历史记录
+在终端中执行
+```
+sudo logcat -e "https.*#/log" -m 1 | grep -o "https.*#/log"
+```
+然后打开抽卡历史记录
 
 ### 安卓无root在线adb获取链接
 
-> 打开ADB调试，连接电脑  
-> 使用在线adb提取 [https://sunfkny.github.io/genshin-gacha-export-js/adb.html](https://sunfkny.github.io/genshin-gacha-export-js/adb.html)  
-> [视频教程](https://www.bilibili.com/video/BV1tr4y1K7Ea?p=3)  
+打开ADB调试，连接电脑  
+使用在线adb提取 [https://sunfkny.github.io/genshin-gacha-export-js/adb.html](https://sunfkny.github.io/genshin-gacha-export-js/adb.html)  
+[视频教程](https://www.bilibili.com/video/BV1tr4y1K7Ea?p=3)  
 
 ### 安卓导出
 
