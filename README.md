@@ -5,7 +5,7 @@ NGA原帖：[https://bbs.nga.cn/read.php?tid=25441042](https://bbs.nga.cn/read.p
 
 ### 安卓导出工具apk版
 
-https://sunfkny.lanzous.com/b074k600d  密码:5fin  
+https://sunfkny.lanzous.com/b074k600d  密码: `5fin`  
 
 ### 安卓有root获取链接
 
