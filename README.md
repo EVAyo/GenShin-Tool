@@ -3,20 +3,19 @@
 NGA原帖：[https://bbs.nga.cn/read.php?tid=25441042](https://bbs.nga.cn/read.php?tid=25441042)  
 强烈建议使用本项目导出的xlsx配合[抽卡记录分析工具](https://github.com/voderl/genshin-gacha-analyzer)使用，可查看分析饼图、成就表  
 
-### 安卓导出工具apk版
+### 安卓导出工具apk版-需要root
 
 https://sunfkny.lanzous.com/b074k600d  密码: `5fin`  
 
-### 安卓有root获取链接
+### 安卓有root终端中获取链接
 
- 
 > 在终端中执行
 > ```
 > sudo logcat -e "https.*#/log" -m 1 | grep -o "https.*#/log"
 > ```
 > 然后打开抽卡历史记录
 
-### 安卓无root获取链接
+### 安卓无root在线adb获取链接
 
 > 打开ADB调试，连接电脑  
 > 使用在线adb提取 [https://sunfkny.github.io/genshin-gacha-export-js/adb.html](https://sunfkny.github.io/genshin-gacha-export-js/adb.html)  
