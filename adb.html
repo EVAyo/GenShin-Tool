@@ -162,7 +162,7 @@
                 }
                 catch (error) {
                     console.log(error);
-                    this.connect_message(error.message + " 确保未使用USB端口（可以重新连接数据线或者任务管理器结束adb.exe）。");
+                    this.connect_message("adb端口被占用，请重新连接数据线 / 任务管理器结束adb.exe / cmd 执行 adb kill-server");
                     this.state("ready");
                     fastboot = null;
                     webusb = null;
