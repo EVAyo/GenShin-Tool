@@ -16,7 +16,7 @@ https://sunfkny.lanzous.com/b074k600d  密码:5fin
 > ```
 > 然后打开抽卡历史记录
 
-# 安卓无root获取链接
+### 安卓无root获取链接
 
 > 打开ADB调试，连接电脑  
 > 使用在线adb提取 [https://sunfkny.github.io/genshin-gacha-export-js/adb.html](https://sunfkny.github.io/genshin-gacha-export-js/adb.html)  
