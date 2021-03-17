@@ -93,26 +93,34 @@
                 return new Promise((r) => setTimeout(() => r(), second * 1000));
             }
 
-            function getGachaLog(key, page) {
+            function getGachaLog(key, page, end_id) {
                 return fetch(
-                    GachaLogBaseUrl + `&gacha_type=${key}&page=${page}&size=${20}`
-                    )
+                    GachaLogBaseUrl +
+                        `&gacha_type=${key}` +
+                        `&page=${page}` +
+                        `&size=${20}` +
+                        `&end_id=${end_id}`
+                )
                     .then((res) => res.json())
-                    .then((data) => data.data.list);
+                    .then((data) => data);
             }
-
+            
             async function getGachaLogs(name, key) {
                 let page = 1,
-                    data = [],
-                    res = [];
+                data = [],
+                res = [];
+                let end_id = "0";
+                let list = [];
                 do {
                     document.querySelector("div.tips").textContent = `正在获取${name}第${page}页`;
                     console.log(`正在获取${name}第${page}页`);
-                    res = await getGachaLog(key, page);
+                    res = await getGachaLog(key, page, end_id);
                     // await sleep(0.2);
-                    data.push(...res);
+                    end_id = res.data.list.length > 0 ? res.data.list[res.data.list.length - 1].id : 0;
+                    list = res.data.list;
+                    data.push(...list);
                     page += 1;
-                } while (res.length > 0);
+                } while (list.length > 0);
                 return data;
             }
 
