@@ -5,7 +5,7 @@ NGA原帖：[https://bbs.nga.cn/read.php?tid=25441042](https://bbs.nga.cn/read.p
 
 ### 安卓导出工具
 
-https://sunfkny.lanzous.com/b074k600d  密码: `5fin`  
+https://sunfkny.lanzous.com/b074k600d  密码: `5fin`，[视频教程](https://www.bilibili.com/video/BV1nf4y1x7y7/)  
 
 <details>
 <summary>安卓手动导出</summary>
