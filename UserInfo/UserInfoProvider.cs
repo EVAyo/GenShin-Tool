@@ -1,6 +1,6 @@
-﻿using DGP.Genshin.MiHoYoAPI.Request;
-using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
-using DGP.Genshin.MiHoYoAPI.Response;
+﻿using DGP.Genshin.Common.Request;
+using DGP.Genshin.Common.Request.DynamicSecret;
+using DGP.Genshin.Common.Response;
 
 namespace DGP.Genshin.MiHoYoAPI.UserInfo
 {

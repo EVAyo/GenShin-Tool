@@ -7,6 +7,9 @@
     {
         public string? Type { get; set; }
         public int Page { get; set; }
-        public override string ToString() => $"{Type} 第 {Page} 页";
+        public override string ToString()
+        {
+            return $"{Type} 第 {Page} 页";
+        }
     }
 }

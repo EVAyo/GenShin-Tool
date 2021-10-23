@@ -1,5 +1,5 @@
-﻿using DGP.Genshin.MiHoYoAPI.Request;
-using DGP.Genshin.MiHoYoAPI.Response;
+﻿using DGP.Genshin.Common.Request;
+using DGP.Genshin.Common.Response;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Journey
@@ -27,7 +27,7 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
         /// <param name="region"></param>
         /// <param name="month">0为起始请求</param>
         /// <returns></returns>
-        public async Task<JourneyInfo?> GetMonthInfoAsync(string? uid, string? region, int month = 0)
+        public JourneyInfo? GetMonthInfo(string? uid, string? region, int month = 0)
         {
             if (uid == null || region == null)
             {
@@ -41,7 +41,7 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
                 {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
-            Response<JourneyInfo>? resp = await requester.GetAsync<JourneyInfo>
+            Response<JourneyInfo>? resp = requester.Get<JourneyInfo>
                 ($@"{ApiHk4e}/event/ys_ledger/monthInfo?month={month}&bind_uid={uid}&bind_region={region}&{BBSQueryString}");
             return resp?.Data;
         }
@@ -55,7 +55,7 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
         /// <param name="type">1：原石，2：摩拉</param>
         /// <param name="page">请求的页码</param>
         /// <returns>当返回列表的数量不足10个时应停止请求</returns>
-        public async Task<JourneyDetail?> GetMonthDetailAsync(string uid, string region, int month, int type, int page = 1)
+        public JourneyDetail? GetMonthDetail(string uid, string region, int month, int type, int page = 1)
         {
             Requester requester = new(new RequestOptions
             {
@@ -64,7 +64,7 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
                 {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
-            Response<JourneyDetail>? resp = await requester.GetAsync<JourneyDetail>
+            Response<JourneyDetail>? resp = requester.Get<JourneyDetail>
                 ($@"{ApiHk4e}/event/ys_ledger/monthDetail?page={page}&month={month}&limit=10&type=2&bind_uid={uid}&bind_region={region}&{BBSQueryString}");
             return resp?.Data;
         }

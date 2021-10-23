@@ -1,5 +1,5 @@
-﻿using DGP.Genshin.MiHoYoAPI.Request;
-using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
+﻿using DGP.Genshin.Common.Request;
+using DGP.Genshin.Common.Request.DynamicSecret;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +11,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         private const string Referer = @"https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6";
 
         private readonly Requester requester;
-        
+
         public RecordProvider(string cookie)
         {
             requester = new(new RequestOptions
@@ -55,7 +55,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="uid"></param>
         /// <param name="server"></param>
         /// <returns></returns>
-        public PlayerInfo? GetPlayerInfo(string uid,string server)
+        public PlayerInfo? GetPlayerInfo(string uid, string server)
         {
             return requester.GetWhileUpdateDynamicSecret2<PlayerInfo>(
                 $@"{BaseUrl}/index?server={server}&role_id={uid}");
@@ -96,7 +96,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         public Avatar.DetailedAvatarInfo? GetDetailAvaterInfo(string uid, string server, PlayerInfo playerInfo)
         {
             List<Avatar.Avatar>? avatars = playerInfo.Avatars;
-            
+
             var data = new
             {
                 //but normally avatars will not be null

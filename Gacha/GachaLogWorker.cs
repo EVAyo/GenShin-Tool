@@ -1,6 +1,6 @@
-﻿using DGP.Genshin.MiHoYoAPI.Request;
-using DGP.Genshin.MiHoYoAPI.Request.QueryString;
-using DGP.Genshin.MiHoYoAPI.Response;
+﻿using DGP.Genshin.Common.Request;
+using DGP.Genshin.Common.Request.QueryString;
+using DGP.Genshin.Common.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;

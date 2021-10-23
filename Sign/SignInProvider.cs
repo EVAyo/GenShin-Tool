@@ -1,5 +1,5 @@
-﻿using DGP.Genshin.MiHoYoAPI.Request;
-using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
+﻿using DGP.Genshin.Common.Request;
+using DGP.Genshin.Common.Request.DynamicSecret;
 using DGP.Genshin.MiHoYoAPI.User;
 
 namespace DGP.Genshin.MiHoYoAPI.Sign

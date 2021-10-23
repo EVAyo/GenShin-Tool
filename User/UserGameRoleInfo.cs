@@ -1,4 +1,5 @@
-﻿
+﻿using DGP.Genshin.Common.Response;
+
 namespace DGP.Genshin.MiHoYoAPI.User
 {
     /// <summary>

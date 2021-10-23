@@ -22,7 +22,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                     {
                         if (one.ContainsKey(type.Key))
                         {
-                            var item = one[type.Key];
+                            List<GachaLogItem>? item = one[type.Key];
                             if (item is not null)
                             {
                                 return item[0].TimeId;

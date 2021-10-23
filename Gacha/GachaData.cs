@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DGP.Genshin.MiHoYoAPI.Gacha
 {
@@ -8,6 +7,6 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
     /// </summary>
     public class GachaData : Dictionary<string, List<GachaLogItem>?>
     {
-        
+
     }
 }
