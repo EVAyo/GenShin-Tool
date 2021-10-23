@@ -21,7 +21,13 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         private readonly int batchSize;
         private readonly string gachaLogUrl;
 
-        public GachaLogWorker(string gachaLogUrl,GachaDataCollection gachaData, int batchSize = 20)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gachaLogUrl">url</param>
+        /// <param name="gachaData">需要操作的祈愿数据</param>
+        /// <param name="batchSize">每次请求获取的批大小</param>
+        public GachaLogWorker(string gachaLogUrl, GachaDataCollection gachaData, int batchSize = 20)
         {
             this.gachaLogUrl = gachaLogUrl;
             WorkingGachaData = gachaData;
@@ -30,6 +36,8 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         #endregion
 
         private Config? gachaConfig;
+        private (int min, int max) delay = (1000, 2000);
+
         public Config? GachaConfig
         {
             get
@@ -43,7 +51,25 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
             }
         }
 
+        /// <summary>
+        /// 设置祈愿接口获取延迟是否启用
+        /// </summary>
         public bool IsFetchDelayEnabled { get; set; } = true;
+
+        /// <summary>
+        /// 随机延迟的范围
+        /// </summary>
+        public (int min, int max) Delay
+        {
+            get => delay; set
+            {
+                if (value.min > value.max)
+                {
+                    throw new InvalidOperationException("最小值不能大于最大值");
+                }
+                delay = value;
+            }
+        }
 
         /// <summary>
         /// 获取祈愿池信息
@@ -106,15 +132,20 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                 else
                 {
                     //url not valid
-                    break;
+                    throw new InvalidOperationException("提供的Url无效");
                 }
                 if (IsFetchDelayEnabled)
                 {
-                    Task.Delay(1000 + random.Next(0, 1000)).Wait();
+                    Task.Delay(GetRandomDelay()).Wait();
                 }
             } while (true);
             //first time fecth could go here
             MergeIncrement(type, increment);
+        }
+
+        private int GetRandomDelay()
+        {
+            return Delay.min + random.Next(Delay.max - Delay.min, Delay.max);
         }
 
         /// <summary>

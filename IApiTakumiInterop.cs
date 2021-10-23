@@ -5,6 +5,5 @@
     /// </summary>
     internal interface IApiTakumiInterop
     {
-        const string ApiTakumi = @"https://api-takumi.mihoyo.com";
     }
 }

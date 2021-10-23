@@ -6,7 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".git" />
+    <None Remove="README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
+
+  <Import Project="..\DGP.Genshin.Common\DGP.Genshin.Common.projitems" Label="Shared" />
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using DGP.Genshin.MiHoYoAPI.Response;
+﻿using DGP.Genshin.Common;
+using DGP.Genshin.MiHoYoAPI.Response;
 using System;
 using System.Collections.Generic;
 using System.Net;
