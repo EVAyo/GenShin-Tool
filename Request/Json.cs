@@ -23,7 +23,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         public static string Stringify(object? value)
         {
             //set date format string to make it compatible to gachaData
-            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+            JsonSerializerSettings jsonSerializerSettings = new()
             {
                 NullValueHandling = NullValueHandling.Include,
                 //兼容原神api格式

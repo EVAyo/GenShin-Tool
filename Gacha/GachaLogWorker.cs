@@ -3,7 +3,6 @@ using DGP.Genshin.MiHoYoAPI.Request.QueryString;
 using DGP.Genshin.MiHoYoAPI.Response;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,6 +43,8 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
             }
         }
 
+        public bool IsFetchDelayEnabled { get; set; } = true;
+
         /// <summary>
         /// 获取祈愿池信息
         /// </summary>
@@ -83,7 +84,6 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                         foreach (GachaLogItem item in gachaLog.List)
                         {
                             workingUid = item.Uid;
-                            Debug.Assert(workingUid is not null);
                             //this one is increment
                             if (item.TimeId > WorkingGachaData.GetNewestTimeId(type, item.Uid))
                             {
@@ -108,7 +108,10 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                     //url not valid
                     break;
                 }
-                Task.Delay(1000 + random.Next(0, 1000)).Wait();
+                if (IsFetchDelayEnabled)
+                {
+                    Task.Delay(1000 + random.Next(0, 1000)).Wait();
+                }
             } while (true);
             //first time fecth could go here
             MergeIncrement(type, increment);
@@ -123,7 +126,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         {
             if (workingUid is null)
             {
-                throw new InvalidOperationException($"{nameof(workingUid)}不应为 null");
+                throw new InvalidOperationException($"{nameof(workingUid)} 不应为 null");
             }
 
             //简单的将老数据插入到增量后侧，最后重置数据

@@ -1,26 +1,19 @@
 ﻿using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
-using DGP.Genshin.MiHoYoAPI.Response;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record
 {
-    public class RecordProvider
+    public class RecordProvider : IApiTakumiInterop
     {
-        private const string QueryHistoryFile = "history.dat";
         private const string BaseUrl = @"https://api-takumi.mihoyo.com/game_record/app/genshin/api";
         private const string Referer = @"https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6";
 
         private readonly Requester requester;
         
-        private readonly string cookie;
         public RecordProvider(string cookie)
         {
-            this.cookie = cookie;
             requester = new(new RequestOptions
             {
                 {"Accept", RequestOptions.Json },
@@ -33,82 +26,18 @@ namespace DGP.Genshin.MiHoYoAPI.Record
             });
         }
 
-        public async Task<Record> GetRecordAsync(string? uid)
-        {
-            if (uid is null)
-            {
-                return new Record("请输入Uid");
-            }
-            
-            //figure out the server
-            if (!this.TryEvaluateUidRegion(uid, out string? server))
-            {
-                return new Record("不支持查询此UID");
-            }
-
-            Response<PlayerInfo>? playerInfo = null;
-            if (!await Task.Run(() => this.TryGetWhileChangeDS(
-                $@"{BaseUrl}/index?server={server}&role_id={uid}", requester, out playerInfo)))
-            {
-                return new Record($"获取玩家基本信息失败：\n{playerInfo?.Message}");
-            }
-            Response<SpiralAbyss>? spiralAbyss = null;
-            if (!await Task.Run(() => this.TryGetWhileChangeDS(
-                $@"{BaseUrl}/spiralAbyss?schedule_type=1&server={server}&role_id={uid}", requester, out spiralAbyss)))
-            {
-                return new Record($"获取本期深境螺旋信息失败：\n{spiralAbyss?.Message}");
-            }
-            Response<SpiralAbyss>? lastSpiralAbyss = null;
-            if (!await Task.Run(() => this.TryGetWhileChangeDS(
-                $@"{BaseUrl}/spiralAbyss?schedule_type=2&server={server}&role_id={uid}", requester, out lastSpiralAbyss)))
-            {
-                return new Record($"获取上期深境螺旋信息失败：\n{lastSpiralAbyss?.Message}");
-            }
-            Response<dynamic>? activitiesInfo = null;
-            if (!await Task.Run(() => this.TryGetWhileChangeDS(
-                $@"{BaseUrl}/activities?server={server}&role_id={uid}", requester, out activitiesInfo)))
-            {
-                return new Record($"获取活动信息失败：\n{activitiesInfo?.Message}");
-            }
-            //prepare for character
-            requester.Headers.Remove("x-rpc-device_id");
-            var data = new
-            {
-                character_ids = playerInfo?.Data?.Avatars?.Select(x => x.Id).ToList(),
-                role_id = uid,
-                server = server
-            };
-            Response<DetailedAvatarInfo>? roles = null;
-            if (!await Task.Run(() => this.TryPostWhileChangeDS(
-                $@"{BaseUrl}/character", data, requester, out roles)))
-            {
-                RecordProgressed?.Invoke(null);
-                return new Record($"获取详细角色信息失败：\n{roles?.Message}");
-            }
-
-            RecordProgressed?.Invoke(null);
-            //return
-            return roles?.ReturnCode != 0 ? new Record(roles?.Message) : new Record
-            {
-                Success = true,
-                UserId = uid,
-                Server = server,
-                PlayerInfo = playerInfo?.Data,
-                SpiralAbyss = spiralAbyss?.Data,
-                LastSpiralAbyss = lastSpiralAbyss?.Data,
-                DetailedAvatars = roles.Data?.Avatars,
-                Activities = activitiesInfo?.Data
-            };
-        }
-
-        private bool TryEvaluateUidRegion(string? uid, out string? result)
+        /// <summary>
+        /// 解析玩家服务器
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        public string? EvaluateUidRegion(string? uid)
         {
             if (string.IsNullOrEmpty(uid))
             {
-                result = null;
-                return false;
+                return null;
             }
-            result = uid[0] switch
+            return uid[0] switch
             {
                 >= '1' and <= '4' => "cn_gf01",
                 '5' => "cn_qd01",
@@ -118,19 +47,65 @@ namespace DGP.Genshin.MiHoYoAPI.Record
                 '9' => "os_cht",
                 _ => null
             };
-            return result is not null;    
         }
-        private bool TryGetWhileChangeDS<T>(string url, Requester requester, out Response<T>? response)
+
+        /// <summary>
+        /// 获取玩家基础信息
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="server"></param>
+        /// <returns></returns>
+        public PlayerInfo? GetPlayerInfo(string uid,string server)
         {
-            requester.Headers["DS"] = DynamicSecretProvider2.Create(url);
-            response = requester.Get<T>(url);
-            return response?.ReturnCode == 0;
+            return requester.GetWhileUpdateDynamicSecret2<PlayerInfo>(
+                $@"{BaseUrl}/index?server={server}&role_id={uid}");
         }
-        private bool TryPostWhileChangeDS<T>(string url, object data, Requester requester, out Response<T>? response)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="server"></param>
+        /// <param name="type">1：当期，2：上期</param>
+        /// <returns></returns>
+        public SpiralAbyss.SpiralAbyss? GetSpiralAbyss(string uid, string server, int type)
         {
-            requester.Headers["DS"] = DynamicSecretProvider2.Create(url, data);
-            response = requester.Post<T>(url, data);
-            return response?.ReturnCode == 0;
+            return requester.GetWhileUpdateDynamicSecret2<SpiralAbyss.SpiralAbyss>(
+                $@"{BaseUrl}/spiralAbyss?schedule_type={type}&server={server}&role_id={uid}");
+        }
+
+        /// <summary>
+        /// 获取玩家活动信息
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="server"></param>
+        /// <returns></returns>
+        public dynamic? GetActivities(string uid, string server)
+        {
+            return requester.GetWhileUpdateDynamicSecret2<dynamic>(
+                $@"{BaseUrl}/activities?server={server}&role_id={uid}");
+        }
+
+        /// <summary>
+        /// 获取玩家角色详细信息
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="server"></param>
+        /// <param name="playerInfo">玩家的基础信息</param>
+        /// <returns></returns>
+        public Avatar.DetailedAvatarInfo? GetDetailAvaterInfo(string uid, string server, PlayerInfo playerInfo)
+        {
+            List<Avatar.Avatar>? avatars = playerInfo.Avatars;
+            
+            var data = new
+            {
+                //but normally avatars will not be null
+                character_ids = avatars is null ? new() : avatars.Select(x => x.Id).ToList(),
+                role_id = uid,
+                server = server
+            };
+            return requester.PostWhileUpdateDynamicSecret2<dynamic>(
+                $@"{BaseUrl}/character", data);
         }
     }
 }
