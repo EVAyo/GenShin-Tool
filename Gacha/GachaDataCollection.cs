@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DGP.Genshin.MiHoYoAPI.Gacha
 {
@@ -8,6 +9,14 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
     /// </summary>
     public class GachaDataCollection : Dictionary<string, GachaData>
     {
+        public event Action<string>? UidAdded;
+
+        public new void Add(string uid, GachaData data)
+        {
+            base.Add(uid, data);
+            UidAdded?.Invoke(uid);
+        }
+
         /// <summary>
         /// 获取最新的时间戳id
         /// </summary>

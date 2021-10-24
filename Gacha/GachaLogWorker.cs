@@ -160,21 +160,24 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
             {
                 throw new InvalidOperationException($"{nameof(workingUid)} 不应为 null");
             }
-
+            if (!WorkingGachaData.ContainsKey(workingUid))
+            {
+                WorkingGachaData.Add(workingUid, new GachaData());
+            }
             //简单的将老数据插入到增量后侧，最后重置数据
-            GachaData? dict = WorkingGachaData[workingUid];
+            GachaData? data = WorkingGachaData[workingUid];
             string? key = type.Key;
             if (key is not null)
             {
-                if (dict.ContainsKey(key))
+                if (data.ContainsKey(key))
                 {
-                    List<GachaLogItem>? local = dict[key];
+                    List<GachaLogItem>? local = data[key];
                     if (local is not null)
                     {
                         increment.AddRange(local);
                     }
                 }
-                dict[key] = increment;
+                data[key] = increment;
             }
         }
 

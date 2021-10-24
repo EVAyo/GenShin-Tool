@@ -108,7 +108,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
                 role_id = uid,
                 server = server
             };
-            return requester.PostWhileUpdateDynamicSecret2<dynamic>(
+            return requester.PostWhileUpdateDynamicSecret2<Avatar.DetailedAvatarInfo>(
                 $@"{BaseUrl}/character", data);
         }
     }

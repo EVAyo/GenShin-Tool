@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
@@ -17,6 +18,20 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// 树脂恢复时间<see cref="string"/>类型的秒数
         /// </summary>
         [JsonProperty("resin_recovery_time")] public string? ResinRecoveryTime { get; set; }
+
+        public string? ResinRecoveryTimeFormatted
+        {
+            get
+            {
+                if (ResinRecoveryTime is not null)
+                {
+                    TimeSpan ts = new(0, 0, int.Parse(ResinRecoveryTime));
+                    return ts.Days > 0 ? $"{ts.Days}天{ts.Hours}时{ts.Minutes}分" : $"{ts.Hours}时{ts.Minutes}分";
+                }
+                return null;
+            }
+        }
+
         /// <summary>
         /// 委托完成数
         /// </summary>
@@ -29,6 +44,14 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// 4次委托额外奖励是否领取
         /// </summary>
         [JsonProperty("is_extra_task_reward_received")] public bool IsExtraTaskRewardReceived { get; set; }
+
+        public string ExtraTaskRewardDescription =>
+            IsExtraTaskRewardReceived 
+            ? "已领取「每日委托」奖励" 
+            : FinishedTaskNum == TotalTaskNum 
+            ? "「每日委托」奖励待领取" 
+            : "今日完成委托次数不足";
+
         /// <summary>
         /// 剩余周本折扣次数
         /// </summary>
