@@ -4,6 +4,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
 {
     /// <summary>
     /// 包装了包含Uid与抽卡记录的字典
+    /// 所有与抽卡记录相关的服务都基于对此类的操作
     /// </summary>
     public class GachaDataCollection : Dictionary<string, GachaData>
     {

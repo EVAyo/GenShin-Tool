@@ -12,6 +12,10 @@ namespace DGP.Genshin.MiHoYoAPI.Record
 
         private readonly Requester requester;
 
+        /// <summary>
+        /// 使用同一个提供器可用重复请求
+        /// </summary>
+        /// <param name="cookie"></param>
         public RecordProvider(string cookie)
         {
             requester = new(new RequestOptions

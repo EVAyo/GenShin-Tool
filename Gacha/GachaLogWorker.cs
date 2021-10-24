@@ -94,6 +94,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
 
         /// <summary>
         /// 获取单个奖池的祈愿记录增量信息
+        /// 并自动合并数据
         /// </summary>
         /// <param name="type">卡池类型</param>
         public void FetchGachaLogIncrement(ConfigType type)

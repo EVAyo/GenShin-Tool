@@ -13,6 +13,10 @@ namespace DGP.Genshin.MiHoYoAPI.User
         [JsonProperty("region_name")] public string? RegionName { get; set; }
         [JsonProperty("is_official")] public string? IsOfficial { get; set; }
 
+        /// <summary>
+        /// 重写的方法
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return $"{Nickname} | {Level}级 | {RegionName}";

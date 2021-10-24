@@ -2,7 +2,6 @@
 
 namespace DGP.Genshin.MiHoYoAPI.Sign
 {
-    [JsonModel]
     public class SignInResult
     {
         /// <summary>

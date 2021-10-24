@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace DGP.Genshin.MiHoYoAPI.Sign
 {
-    [JsonModel]
     public class SignInReward
     {
         /// <summary>
