@@ -1,6 +1,5 @@
 ﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Response;
-using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Journey
 {

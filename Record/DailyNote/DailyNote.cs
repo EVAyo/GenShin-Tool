@@ -46,10 +46,10 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         [JsonProperty("is_extra_task_reward_received")] public bool IsExtraTaskRewardReceived { get; set; }
 
         public string ExtraTaskRewardDescription =>
-            IsExtraTaskRewardReceived 
-            ? "已领取「每日委托」奖励" 
-            : FinishedTaskNum == TotalTaskNum 
-            ? "「每日委托」奖励待领取" 
+            IsExtraTaskRewardReceived
+            ? "已领取「每日委托」奖励"
+            : FinishedTaskNum == TotalTaskNum
+            ? "「每日委托」奖励待领取"
             : "今日完成委托次数不足";
 
         /// <summary>
