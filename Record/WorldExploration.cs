@@ -18,5 +18,11 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         [JsonProperty("type")] public string? Type { get; set; }
         [JsonProperty("offerings")] public List<Offering>? Offerings { get; set; }
         [JsonProperty("id")] public string? Id { get; set; }
+
+        #region Snap Genshin Extensions
+        public double ExplorationPercentageBy10 => ExplorationPercentage / 10.0;
+        public bool IsReputation => Type == "Reputation";
+        public string ConvertedType => IsReputation ? "声望等级" : "供奉等级";
+        #endregion
     }
 }
