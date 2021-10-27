@@ -2,6 +2,7 @@
 using DGP.Genshin.Common.Request.DynamicSecret;
 using DGP.Genshin.Common.Response;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Post
 {
@@ -19,7 +20,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
         /// 获取推荐的帖子列表
         /// </summary>
         /// <returns></returns>
-        public List<Post>? GetOfficialRecommendedPosts()
+        public async Task<List<Post>?> GetOfficialRecommendedPostsAsync()
         {
             Requester requester = new(new RequestOptions
             {
@@ -32,8 +33,8 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Referer",Referer },
                 {"Cookie", cookie }
             });
-            Response<ListWrapper<Post>>? resp =
-            requester.Get<ListWrapper<Post>>($"{PostBaseUrl}/getOfficialRecommendedPosts?gids=2");
+            Response<ListWrapper<Post>>? resp = 
+                await requester.GetAsync<ListWrapper<Post>>($"{PostBaseUrl}/getOfficialRecommendedPosts?gids=2");
             return resp?.Data?.List;
         }
         /// <summary>
@@ -41,7 +42,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
         /// </summary>
         /// <param name="postId"></param>
         /// <returns></returns>
-        public dynamic? GetPostFullAsync(string postId)
+        public async Task<dynamic?> GetPostFullAsync(string postId)
         {
             Requester requester = new(new RequestOptions
             {
@@ -54,7 +55,8 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Referer",Referer },
                 {"Cookie", cookie }
             });
-            Response<dynamic>? resp = requester.Get<dynamic>($"{PostBaseUrl}/getPostFull?gids=2&post_id={postId}&read=1");
+            Response<dynamic>? resp = 
+                await requester.GetAsync<dynamic>($"{PostBaseUrl}/getPostFull?gids=2&post_id={postId}&read=1");
             return resp?.Data;
         }
     }

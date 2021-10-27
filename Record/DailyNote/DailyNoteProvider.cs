@@ -1,5 +1,6 @@
 ﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
+using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
 {
@@ -24,9 +25,9 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
             });
         }
 
-        public DailyNote? GetDailyNote(string server, string uid)
+        public async Task<DailyNote?> GetDailyNoteAsync(string server, string uid)
         {
-            return requester.GetWhileUpdateDynamicSecret2<DailyNote>($"{BaseUrl}/dailyNote?server={server}&role_id={uid}");
+            return await requester.GetWhileUpdateDynamicSecret2Async<DailyNote>($"{BaseUrl}/dailyNote?server={server}&role_id={uid}");
         }
     }
 }

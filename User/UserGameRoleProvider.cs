@@ -1,5 +1,6 @@
 ﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Response;
+using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.User
 {
@@ -17,7 +18,7 @@ namespace DGP.Genshin.MiHoYoAPI.User
         /// 获取用户角色信息
         /// </summary>
         /// <returns>用户角色信息</returns>
-        public UserGameRoleInfo? GetUserGameRoles()
+        public async Task<UserGameRoleInfo?> GetUserGameRolesAsync()
         {
             Requester requester = new(new RequestOptions
             {
@@ -26,7 +27,7 @@ namespace DGP.Genshin.MiHoYoAPI.User
                 {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
-            Response<UserGameRoleInfo>? resp = requester.Get<UserGameRoleInfo>
+            Response<UserGameRoleInfo>? resp = await requester.GetAsync<UserGameRoleInfo>
                 ($"{ApiTakumi}/binding/api/getUserGameRolesByCookie?game_biz=hk4e_cn");
             return resp?.Data;
         }

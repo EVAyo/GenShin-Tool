@@ -1,6 +1,7 @@
 ﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
 using DGP.Genshin.Common.Response;
+using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.UserInfo
 {
@@ -15,7 +16,7 @@ namespace DGP.Genshin.MiHoYoAPI.UserInfo
             this.cookie = cookie;
         }
 
-        public UserInfo? GetUserInfo()
+        public async Task<UserInfo?> GetUserInfoAsync()
         {
             Requester requester = new(new RequestOptions
             {
@@ -28,7 +29,7 @@ namespace DGP.Genshin.MiHoYoAPI.UserInfo
                 {"Referer",Referer },
                 {"Cookie", cookie }
             });
-            Response<UserInfoWrapper>? resp = requester.Get<UserInfoWrapper>($"{BaseUrl}/getUserFullInfo?gids=2");
+            Response<UserInfoWrapper>? resp = await requester.GetAsync<UserInfoWrapper>($"{BaseUrl}/getUserFullInfo?gids=2");
             return resp?.Data?.UserInfo;
         }
     }

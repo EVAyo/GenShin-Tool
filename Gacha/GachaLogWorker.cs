@@ -1,4 +1,5 @@
-﻿using DGP.Genshin.Common.Request;
+﻿using DGP.Genshin.Common.Extensions.System.Threading.Tasks;
+using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.QueryString;
 using DGP.Genshin.Common.Response;
 using System;
@@ -44,7 +45,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
             {
                 if (gachaConfig == null)
                 {
-                    gachaConfig = GetGachaConfig();
+                    gachaConfig = GetGachaConfigAsync().RunSync();
                 }
 
                 return gachaConfig;
@@ -75,14 +76,14 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         /// 获取祈愿池信息
         /// </summary>
         /// <returns>网络问题导致的可能会返回null</returns>
-        private Config? GetGachaConfig()
+        private async Task<Config?> GetGachaConfigAsync()
         {
             Requester requester = new(new RequestOptions
             {
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 }
             });
-            Response<Config>? resp = requester.Get<Config>(gachaLogUrl?.Replace("getGachaLog?", "getConfigList?"));
+            Response<Config>? resp = await requester.GetAsync<Config>(gachaLogUrl?.Replace("getGachaLog?", "getConfigList?"));
             return resp?.Data;
         }
         /// <summary>
@@ -97,18 +98,19 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         /// 并自动合并数据
         /// </summary>
         /// <param name="type">卡池类型</param>
-        public void FetchGachaLogIncrement(ConfigType type)
+        public async Task FetchGachaLogIncrementAsync(ConfigType type)
         {
             List<GachaLogItem> increment = new();
             int currentPage = 0;
             long endId = 0;
             do
             {
-                if (TryGetBatch(out GachaLog gachaLog, type, endId, ++currentPage))
+                (bool Succeed, GachaLog log) = await TryGetBatchAsync(type, endId, ++currentPage);
+                if (Succeed)
                 {
-                    if (gachaLog.List is not null)
+                    if (log.List is not null)
                     {
-                        foreach (GachaLogItem item in gachaLog.List)
+                        foreach (GachaLogItem item in log.List)
                         {
                             workingUid = item.Uid;
                             //this one is increment
@@ -123,11 +125,11 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                             }
                         }
                         //last page
-                        if (gachaLog.List.Count < batchSize)
+                        if (log.List.Count < batchSize)
                         {
                             break;
                         }
-                        endId = gachaLog.List.Last().TimeId;
+                        endId = log.List.Last().TimeId;
                     }
                 }
                 else
@@ -188,7 +190,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         /// <param name="type"></param>
         /// <param name="endId"></param>
         /// <returns></returns>
-        private bool TryGetBatch(out GachaLog result, ConfigType type, long endId, int currentPage)
+        private async Task<(bool Succeed, GachaLog GachaLog)> TryGetBatchAsync(ConfigType type, long endId, int currentPage)
         {
             OnFetchProgressed?.Invoke(new() { Type = type.Name, Page = currentPage });
             //modify the url
@@ -209,18 +211,9 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 }
             });
-            Response<GachaLog>? resp = requester.Get<GachaLog>(finalUrl);
+            Response<GachaLog>? resp = await requester.GetAsync<GachaLog>(finalUrl);
 
-            if (resp?.ReturnCode == 0)
-            {
-                result = resp.Data ?? new();
-                return true;
-            }
-            else
-            {
-                result = new();
-                return false;
-            }
+            return resp?.ReturnCode == 0 ? (true, resp.Data ?? new()) : (false, new());
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
+using DGP.Genshin.MiHoYoAPI.Record.Avatar;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record
 {
@@ -37,20 +40,18 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <returns></returns>
         public string? EvaluateUidRegion(string? uid)
         {
-            if (string.IsNullOrEmpty(uid))
-            {
-                return null;
-            }
-            return uid[0] switch
-            {
-                >= '1' and <= '4' => "cn_gf01",
-                '5' => "cn_qd01",
-                '6' => "os_usa",
-                '7' => "os_euro",
-                '8' => "os_asia",
-                '9' => "os_cht",
-                _ => null
-            };
+            return string.IsNullOrEmpty(uid)
+                ? null
+                : uid[0] switch
+                {
+                    >= '1' and <= '4' => "cn_gf01",
+                    '5' => "cn_qd01",
+                    '6' => "os_usa",
+                    '7' => "os_euro",
+                    '8' => "os_asia",
+                    '9' => "os_cht",
+                    _ => null
+                };
         }
 
         /// <summary>
@@ -59,9 +60,9 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="uid"></param>
         /// <param name="server"></param>
         /// <returns></returns>
-        public PlayerInfo? GetPlayerInfo(string uid, string server)
+        public async Task<PlayerInfo?> GetPlayerInfoAsync(string uid, string server)
         {
-            return requester.GetWhileUpdateDynamicSecret2<PlayerInfo>(
+            return await requester.GetWhileUpdateDynamicSecret2Async<PlayerInfo>(
                 $@"{BaseUrl}/index?server={server}&role_id={uid}");
         }
 
@@ -72,9 +73,9 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="server"></param>
         /// <param name="type">1：当期，2：上期</param>
         /// <returns></returns>
-        public SpiralAbyss.SpiralAbyss? GetSpiralAbyss(string uid, string server, int type)
+        public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, int type)
         {
-            return requester.GetWhileUpdateDynamicSecret2<SpiralAbyss.SpiralAbyss>(
+            return await requester.GetWhileUpdateDynamicSecret2Async<SpiralAbyss.SpiralAbyss>(
                 $@"{BaseUrl}/spiralAbyss?schedule_type={type}&server={server}&role_id={uid}");
         }
 
@@ -84,9 +85,9 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="uid"></param>
         /// <param name="server"></param>
         /// <returns></returns>
-        public dynamic? GetActivities(string uid, string server)
+        public async Task<dynamic?> GetActivitiesAsync(string uid, string server)
         {
-            return requester.GetWhileUpdateDynamicSecret2<dynamic>(
+            return await requester.GetWhileUpdateDynamicSecret2Async<dynamic>(
                 $@"{BaseUrl}/activities?server={server}&role_id={uid}");
         }
 
@@ -97,7 +98,8 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="server"></param>
         /// <param name="playerInfo">玩家的基础信息</param>
         /// <returns></returns>
-        public Avatar.DetailedAvatarInfo? GetDetailAvaterInfo(string uid, string server, PlayerInfo playerInfo)
+        [SuppressMessage("","IDE0050")]
+        public async Task<DetailedAvatarInfo?> GetDetailAvaterInfoAsync(string uid, string server, PlayerInfo playerInfo)
         {
             List<Avatar.Avatar>? avatars = playerInfo.Avatars;
 
@@ -108,7 +110,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
                 role_id = uid,
                 server = server
             };
-            return requester.PostWhileUpdateDynamicSecret2<Avatar.DetailedAvatarInfo>(
+            return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarInfo>(
                 $@"{BaseUrl}/character", data);
         }
     }
