@@ -98,7 +98,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="server"></param>
         /// <param name="playerInfo">玩家的基础信息</param>
         /// <returns></returns>
-        [SuppressMessage("","IDE0050")]
+        [SuppressMessage("", "IDE0050")]
         public async Task<DetailedAvatarInfo?> GetDetailAvaterInfoAsync(string uid, string server, PlayerInfo playerInfo)
         {
             List<Avatar.Avatar>? avatars = playerInfo.Avatars;

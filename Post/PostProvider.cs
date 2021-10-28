@@ -33,7 +33,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Referer",Referer },
                 {"Cookie", cookie }
             });
-            Response<ListWrapper<Post>>? resp = 
+            Response<ListWrapper<Post>>? resp =
                 await requester.GetAsync<ListWrapper<Post>>($"{PostBaseUrl}/getOfficialRecommendedPosts?gids=2");
             return resp?.Data?.List;
         }
@@ -55,7 +55,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Referer",Referer },
                 {"Cookie", cookie }
             });
-            Response<dynamic>? resp = 
+            Response<dynamic>? resp =
                 await requester.GetAsync<dynamic>($"{PostBaseUrl}/getPostFull?gids=2&post_id={postId}&read=1");
             return resp?.Data;
         }
