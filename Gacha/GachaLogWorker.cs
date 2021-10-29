@@ -1,5 +1,4 @@
-﻿using DGP.Genshin.Common.Extensions.System.Threading.Tasks;
-using DGP.Genshin.Common.Request;
+﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.QueryString;
 using DGP.Genshin.Common.Response;
 using System;
@@ -39,17 +38,14 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         private Config? gachaConfig;
         private (int min, int max) delay = (1000, 2000);
 
-        public Config? GachaConfig
+        public async Task<Config?> GetCurrentGachaConfigAsync()
         {
-            get
+            if (gachaConfig == null)
             {
-                if (gachaConfig == null)
-                {
-                    gachaConfig = GetGachaConfigAsync().RunSync();
-                }
-
-                return gachaConfig;
+                gachaConfig = await GetGachaConfigAsync();
             }
+
+            return gachaConfig;
         }
 
         /// <summary>
