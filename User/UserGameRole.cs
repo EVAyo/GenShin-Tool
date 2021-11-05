@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DGP.Genshin.MiHoYoAPI.User
+namespace DGP.Genshin.MiHoYoAPI.GameRole
 {
     public class UserGameRole
     {

@@ -10,6 +10,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
 {
     public class RecordProvider : IApiTakumiInterop
     {
+        private const string ApiTakumi = @"https://api-takumi.mihoyo.com";
         private const string BaseUrl = @"https://api-takumi.mihoyo.com/game_record/app/genshin/api";
         private const string Referer = @"https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6";
 
@@ -112,6 +113,21 @@ namespace DGP.Genshin.MiHoYoAPI.Record
             };
             return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarInfo>(
                 $@"{BaseUrl}/character", data);
+        }
+
+        /// <summary>
+        /// 开关记录数据
+        /// </summary>
+        /// <param name="isPublic">开关状态</param>
+        /// <param name="switchId">"1"：个人主页卡片 "2"：角色详情数据</param>
+        /// <returns></returns>
+        [SuppressMessage("", "IDE0050")]
+        [UnTestedAPI]
+        public async Task<dynamic?> ChangeRecordDataSwitch(bool isPublic, string switchId)
+        {
+            var data = new { is_public = isPublic, switch_id = switchId, game_id = "2" };
+            return await requester.PostWhileUpdateDynamicSecret2Async<dynamic>(
+                $"{ApiTakumi}/game_record/app/card/wapi/changeDataSwitch", data);
         }
     }
 }

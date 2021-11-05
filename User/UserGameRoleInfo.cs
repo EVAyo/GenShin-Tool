@@ -1,6 +1,6 @@
 ﻿using DGP.Genshin.Common.Response;
 
-namespace DGP.Genshin.MiHoYoAPI.User
+namespace DGP.Genshin.MiHoYoAPI.GameRole
 {
     /// <summary>
     /// 包装用户角色列表信息

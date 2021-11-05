@@ -2,7 +2,7 @@
 using DGP.Genshin.Common.Response;
 using System.Threading.Tasks;
 
-namespace DGP.Genshin.MiHoYoAPI.User
+namespace DGP.Genshin.MiHoYoAPI.GameRole
 {
     public class UserGameRoleProvider
     {

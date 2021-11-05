@@ -1,7 +1,7 @@
 ﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
 using DGP.Genshin.Common.Response;
-using DGP.Genshin.MiHoYoAPI.User;
+using DGP.Genshin.MiHoYoAPI.GameRole;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Sign
