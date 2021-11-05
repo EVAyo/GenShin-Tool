@@ -1,9 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record.Card
 {
@@ -22,16 +18,5 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
         [JsonProperty("url")] public string? Url { get; set; }
         [JsonProperty("data_switches")] public List<DataSwitch>? DataSwitches { get; set; }
         [JsonProperty("h5_data_switches")] public List<DataSwitch>? H5DataSwitches { get; set; }
-    }
-    public class DataSwitch
-    {
-        /// <summary>
-        /// 1：个人主页卡片
-        /// 2：角色详情数据
-        /// 3：实时便笺数据展示
-        /// </summary>
-        [JsonProperty("switch_id")] public int SwitchId { get; set; }
-        [JsonProperty("is_public")] public bool IsPublic { get; set; }
-        [JsonProperty("switch_name")] public string? SwitchName { get; set; }
     }
 }

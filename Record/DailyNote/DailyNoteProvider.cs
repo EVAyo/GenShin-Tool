@@ -1,6 +1,5 @@
 ﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
-using DGP.Genshin.MiHoYoAPI.Record.Card;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
