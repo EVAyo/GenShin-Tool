@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  
   <ItemGroup>
     <None Remove=".git" />
     <None Remove=".gitignore" />

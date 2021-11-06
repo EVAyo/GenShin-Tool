@@ -26,7 +26,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         /// </summary>
         /// <param name="gachaLogUrl">url</param>
         /// <param name="gachaData">需要操作的祈愿数据</param>
-        /// <param name="batchSize">每次请求获取的批大小</param>
+        /// <param name="batchSize">每次请求获取的批大小 最大20</param>
         public GachaLogWorker(string gachaLogUrl, GachaDataCollection gachaData, int batchSize = 20)
         {
             this.gachaLogUrl = gachaLogUrl;
@@ -44,7 +44,6 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
             {
                 gachaConfig = await GetGachaConfigAsync();
             }
-
             return gachaConfig;
         }
 
@@ -130,16 +129,59 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                 }
                 else
                 {
-                    //url not valid
                     throw new InvalidOperationException("提供的Url无效");
                 }
                 if (IsFetchDelayEnabled)
                 {
-                    Task.Delay(GetRandomDelay()).Wait();
+                    await Task.Delay(GetRandomDelay());
                 }
             } while (true);
             //first time fecth could go here
             MergeIncrement(type, increment);
+        }
+
+        /// <summary>
+        /// 获取单个奖池的祈愿记录全量信息
+        /// 并自动合并数据
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public async Task FetchGachaLogAggressivelyAsync(ConfigType type)
+        {
+            List<GachaLogItem> full = new();
+            int currentPage = 0;
+            long endId = 0;
+            do
+            {
+                (bool Succeed, GachaLog log) = await TryGetBatchAsync(type, endId, ++currentPage);
+                if (Succeed)
+                {
+                    if (log.List is not null)
+                    {
+                        foreach (GachaLogItem item in log.List)
+                        {
+                            workingUid = item.Uid;
+                            full.Add(item);
+                        }
+                        //last page
+                        if (log.List.Count < batchSize)
+                        {
+                            break;
+                        }
+                        endId = log.List.Last().TimeId;
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("提供的Url无效");
+                }
+                if (IsFetchDelayEnabled)
+                {
+                    await Task.Delay(GetRandomDelay());
+                }
+            } while (true);
+            //first time fecth could go here
+            MergeFull(type, full);
         }
 
         private int GetRandomDelay()
@@ -154,16 +196,13 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         /// <param name="increment">增量</param>
         private void MergeIncrement(ConfigType type, List<GachaLogItem> increment)
         {
-            if (workingUid is null)
-            {
-                throw new InvalidOperationException($"{nameof(workingUid)} 不应为 null");
-            }
+            _ = workingUid ?? throw new InvalidOperationException($"{nameof(workingUid)} 不应为 null");
             if (!WorkingGachaData.ContainsKey(workingUid))
             {
                 WorkingGachaData.Add(workingUid, new GachaData());
             }
             //简单的将老数据插入到增量后侧，最后重置数据
-            GachaData? data = WorkingGachaData[workingUid];
+            GachaData data = WorkingGachaData[workingUid];
             string? key = type.Key;
             if (key is not null)
             {
@@ -180,9 +219,42 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         }
 
         /// <summary>
+        /// 合并全量
+        /// </summary>
+        /// <param name="type">卡池类型</param>
+        /// <param name="increment">增量</param>
+        private void MergeFull(ConfigType type, List<GachaLogItem> full)
+        {
+            _ = workingUid ?? throw new InvalidOperationException($"{nameof(workingUid)} 不应为 null");
+            if (!WorkingGachaData.ContainsKey(workingUid))
+            {
+                WorkingGachaData.Add(workingUid, new GachaData());
+            }
+            //将老数据插入到后侧，最后重置数据
+            GachaData data = WorkingGachaData[workingUid];
+            string? key = type.Key;
+            if (key is not null)
+            {
+                if (data.ContainsKey(key))
+                {
+                    List<GachaLogItem>? local = data[key];
+                    if (local is not null)
+                    {
+                        int lastIndex = local.FindLastIndex(i => i.TimeId == full.Last().TimeId);
+                        if (lastIndex >= 0)
+                        {
+                            local = local.GetRange(lastIndex + 1, (local.Count - 1) - (lastIndex + 1) + 1);
+                        }
+                        full.AddRange(local);
+                    }
+                }
+                data[key] = full;
+            }
+        }
+
+        /// <summary>
         /// 尝试获得20个奖池物品
         /// </summary>
-        /// <param name="result">空列表或包含数据的列表</param>
         /// <param name="type"></param>
         /// <param name="endId"></param>
         /// <returns></returns>
