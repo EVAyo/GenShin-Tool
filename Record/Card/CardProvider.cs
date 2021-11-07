@@ -23,7 +23,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
         /// <summary>
         /// 获取游戏展示卡片信息
         /// </summary>
-        /// <param name="uid">米游社uid</param>
+        /// <param name="uid">米游社uid，可以是别人的uid</param>
         /// <returns></returns>
         public async Task<ListWrapper<Card>?> GetGameRecordCardAsync(string uid)
         {

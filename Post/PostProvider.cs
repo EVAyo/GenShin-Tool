@@ -56,7 +56,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Cookie", cookie }
             });
             Response<dynamic>? resp =
-                await requester.GetAsync<dynamic>($"{PostBaseUrl}/getPostFull?gids=2&post_id={postId}&read=1");
+                await requester.GetAsync<dynamic>($"{PostBaseUrl}/getPostFull?post_id={postId}&read=1");
             return resp?.Data;
         }
     }
