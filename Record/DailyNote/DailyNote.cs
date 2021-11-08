@@ -26,11 +26,36 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
                 if (ResinRecoveryTime is not null)
                 {
                     TimeSpan ts = new(0, 0, int.Parse(ResinRecoveryTime));
-                    return ts.Days > 0 ? $"{ts.Days}天{ts.Hours}时{ts.Minutes}分" : $"{ts.Hours}时{ts.Minutes}分";
+                    return ts.Days > 0
+                        ? $"{ts.Days}天{ts.Hours}时{ts.Minutes}分"
+                        : ts.Hours > 0 
+                            ? $"{ts.Hours}时{ts.Minutes}分"
+                            : $"{ts.Minutes}分";
                 }
                 return null;
             }
         }
+
+        public string? ResinRecovertTargetTimeFormatted
+        {
+            get
+            {
+                if (ResinRecoveryTime is not null)
+                {
+                    DateTime tt = DateTime.Now.AddSeconds(int.Parse(ResinRecoveryTime));
+                    string day = (tt.Day - DateTime.Now.Day) switch
+                    {
+                        0 => "今天",
+                        1 => "明天",
+                        2 => "后天",
+                        _ => $"{tt.Day}日"
+                    };
+                    return $"{day} {tt:HH:mm}";
+                }
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// 委托完成数
