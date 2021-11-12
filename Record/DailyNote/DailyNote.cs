@@ -28,7 +28,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
                     TimeSpan ts = new(0, 0, int.Parse(ResinRecoveryTime));
                     return ts.Days > 0
                         ? $"{ts.Days}天{ts.Hours}时{ts.Minutes}分"
-                        : ts.Hours > 0 
+                        : ts.Hours > 0
                             ? $"{ts.Hours}时{ts.Minutes}分"
                             : $"{ts.Minutes}分";
                 }
