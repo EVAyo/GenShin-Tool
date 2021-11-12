@@ -14,6 +14,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         public const string PermanentWish = "200";
         public const string NoviceWishes = "100";
         public const string CharacterEventWish = "301";
+        public const string CharacterEventWish2 = "Unknown";
         public const string WeaponEventWish = "302";
     }
 }
