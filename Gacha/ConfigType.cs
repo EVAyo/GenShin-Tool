@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace DGP.Genshin.MiHoYoAPI.Gacha
 {
@@ -16,5 +17,13 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         public const string CharacterEventWish = "301";
         public const string CharacterEventWish2 = "Unknown";
         public const string WeaponEventWish = "302";
+        public static readonly Dictionary<string, string> Known = new()
+        {
+            { "100", "新手祈愿" },
+            { "200", "奔行世间" },
+            { "301", "角色活动" },
+            { "Unknown", "角色活动-2" },
+            { "302", "神铸赋形" }
+        };
     }
 }
