@@ -240,10 +240,14 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                     List<GachaLogItem>? local = data[key];
                     if (local is not null)
                     {
-                        int lastIndex = local.FindLastIndex(i => i.TimeId == full.Last().TimeId);
-                        if (lastIndex >= 0)
+                        //fix InvalidOperationException at full.Last()
+                        if (full.Count > 0)
                         {
-                            local = local.GetRange(lastIndex + 1, (local.Count - 1) - (lastIndex + 1) + 1);
+                            int lastIndex = local.FindLastIndex(i => i.TimeId == full.Last().TimeId);
+                            if (lastIndex >= 0)
+                            {
+                                local = local.GetRange(lastIndex + 1, (local.Count - 1) - (lastIndex + 1) + 1);
+                            }
                         }
                         full.AddRange(local);
                     }
