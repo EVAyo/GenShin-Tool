@@ -11,6 +11,12 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
     {
         public event Action<string>? UidAdded;
 
+        /// <summary>
+        /// 向集合添加数据
+        /// 触发uid增加事件，便于前台响应
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="data"></param>
         public new void Add(string uid, GachaData data)
         {
             base.Add(uid, data);
@@ -23,20 +29,21 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         /// <returns>default 0</returns>
         public long GetNewestTimeId(ConfigType type, string? uid)
         {
-            //有uid有卡池记录就读取最新物品的id,否则返回0
-            if (uid is not null && ContainsKey(uid))
+            string? typeId = type.Key;
+            if (uid is null || typeId is null)
             {
-                if (type.Key is not null)
+                return 0;
+            }
+            //有uid有卡池记录就读取最新物品的id,否则返回0
+            if (ContainsKey(uid))
+            {
+                if (this[uid] is GachaData matchedData)
                 {
-                    if (this[uid] is GachaData one)
+                    if (matchedData.ContainsKey(typeId))
                     {
-                        if (one.ContainsKey(type.Key))
+                        if (matchedData[typeId] is List<GachaLogItem> item)
                         {
-                            List<GachaLogItem>? item = one[type.Key];
-                            if (item is not null)
-                            {
-                                return item[0].TimeId;
-                            }
+                            return item[0].TimeId;
                         }
                     }
                 }
