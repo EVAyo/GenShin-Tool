@@ -31,7 +31,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
             {
                 {"Accept", RequestOptions.Json },
                 {"x-rpc-app_version", DynamicSecretProvider.AppVersion },
-                {"User-Agent",RequestOptions.CommonUA2111 },
+                {"User-Agent",RequestOptions.CommonUA2161 },
                 {"x_rpc_client_type", "5" },
                 {"Referer", Referer },
                 {"Cookie", cookie },

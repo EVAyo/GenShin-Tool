@@ -19,7 +19,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
             {
                 {"Accept", RequestOptions.Json },
                 {"x-rpc-app_version", DynamicSecretProvider2.AppVersion },
-                {"User-Agent", RequestOptions.CommonUA2111 },
+                {"User-Agent", RequestOptions.CommonUA2161 },
                 {"x-rpc-client_type", "5" },
                 {"Referer",Referer },
                 {"Cookie", cookie },
