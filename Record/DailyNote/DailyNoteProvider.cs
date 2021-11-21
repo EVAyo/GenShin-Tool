@@ -15,7 +15,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
 
         public DailyNoteProvider(string cookie)
         {
-            requester = new Requester(new RequestOptions
+            requester = new(new RequestOptions
             {
                 {"Accept", RequestOptions.Json },
                 {"x-rpc-app_version", DynamicSecretProvider2.AppVersion },
@@ -44,13 +44,12 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// </summary>
         /// <param name="isPublic">开关状态</param>
         /// <returns></returns>
-        [SuppressMessage("", "IDE0050")]
-        [UnTestedAPI]
         public async Task<dynamic?> ChangeDailyNoteDataSwitch(bool isPublic)
         {
             var data = new { is_public = isPublic, switch_id = "3", game_id = "2" };
             return await requester.PostWhileUpdateDynamicSecret2Async<dynamic>(
                 $"{ApiTakumi}/game_record/app/card/wapi/changeDataSwitch", data);
         }
+
     }
 }

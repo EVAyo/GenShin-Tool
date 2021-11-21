@@ -41,5 +41,28 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
                 $"{ApiTakumi}/game_record/app/card/wapi/getGameRecordCard?uid={uid}");
             return resp;
         }
+
+        /// <summary>
+        /// 开关米游社数据
+        /// </summary>
+        /// <param name="isPublic">开关状态</param>
+        /// <param name="id">开关的id</param>
+        /// <returns></returns>
+        public async Task<dynamic?> ChangeDataSwitch(bool isPublic, string id)
+        {
+            var data = new { is_public = isPublic, switch_id = id, game_id = "2" };
+            Requester requester = new(new RequestOptions
+            {
+                {"Accept", RequestOptions.Json },
+                {"x-rpc-app_version", DynamicSecretProvider2.AppVersion },
+                {"User-Agent", RequestOptions.CommonUA2161 },
+                {"x-rpc-client_type", "5" },
+                {"Referer",Referer },
+                {"Cookie", cookie },
+                {"X-Requested-With", RequestOptions.Hyperion }
+            });
+            return await requester.PostWhileUpdateDynamicSecret2Async<dynamic>(
+                $"{ApiTakumi}/game_record/app/card/wapi/changeDataSwitch", data);
+        }
     }
 }
