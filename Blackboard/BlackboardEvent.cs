@@ -33,7 +33,7 @@ namespace DGP.Genshin.MiHoYoAPI.Blackboard
         [JsonProperty("sort")] public string? Sort { get; set; }
 
         public DateTime? StartDateTime
-        { 
+        {
             get
             {
                 if (StartTime is not null)

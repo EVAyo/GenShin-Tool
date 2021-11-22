@@ -2,7 +2,7 @@
 
 namespace DGP.Genshin.MiHoYoAPI.Calculation
 {
-    public class Weapon:Calculable
+    public class Weapon : Calculable
     {
         [JsonProperty("weapon_cat_id")] public int WeaponCatId { get; set; }
         /// <summary>

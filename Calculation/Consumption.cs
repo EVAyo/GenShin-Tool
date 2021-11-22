@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DGP.Genshin.MiHoYoAPI.Calculation
 {
-    public class Consumption 
+    public class Consumption
     {
         [JsonProperty("avatar_comsume")] public List<ConsumeItem>? AvatarConsume { get; set; }
         [JsonProperty("avatar_skill_comsume")] public List<ConsumeItem>? AvatarSkillConsume { get; set; }

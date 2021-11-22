@@ -8,7 +8,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
     /// </summary>
     public class AvatarPromotionDelta
     {
-        [JsonProperty("avatar_id")] public int AvatarId {get;set;}
+        [JsonProperty("avatar_id")] public int AvatarId { get; set; }
         [JsonProperty("avatar_level_current")] public int AvatarLevelCurrent { get; set; }
         [JsonProperty("avatar_level_target")] public int AvatarLevelTarget { get; set; }
         [JsonProperty("element_attr_id")] public int ElementAttrId { get; set; }

@@ -1,6 +1,5 @@
 ﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote

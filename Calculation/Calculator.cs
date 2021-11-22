@@ -26,7 +26,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         /// <param name="uid">游戏内uid</param>
         /// <param name="region">服务器名称</param>
         /// <returns></returns>
-        public async Task<DetailedAvatar?> GetDetailedAvatarAsync(string avatarId,string uid,string region)
+        public async Task<DetailedAvatar?> GetDetailedAvatarAsync(string avatarId, string uid, string region)
         {
             Requester requester = new(new RequestOptions
             {
@@ -58,7 +58,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<Consumption>? resp = await requester.PostAsync<Consumption>
-                ($"{ApiTakumi}/event/e20200928calculate/v2/compute",promotion);
+                ($"{ApiTakumi}/event/e20200928calculate/v2/compute", promotion);
             return resp?.Data;
         }
     }
