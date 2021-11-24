@@ -102,7 +102,7 @@
         do {
             console.log(`正在获取${name}第${page}页`);
             res = await getGachaLog(key, page, end_id);
-            // await sleep(0.2);
+            await sleep(0.5);
             end_id = res.data.list.length > 0 ? res.data.list[res.data.list.length - 1].id : 0;
             list = res.data.list;
             data.push(...list);
