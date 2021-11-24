@@ -17,6 +17,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         public const string CharacterEventWish = "301";
         public const string CharacterEventWish2 = "400";
         public const string WeaponEventWish = "302";
+
         public static readonly Dictionary<string, string> Known = new()
         {
             { "100", "新手祈愿" },
