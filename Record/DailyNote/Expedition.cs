@@ -25,6 +25,10 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         {
             get
             {
+                if (Status == "Finished")
+                {
+                    return "已完成";
+                }
                 if (RemainedTime is not null)
                 {
                     TimeSpan ts = new(0, 0, int.Parse(RemainedTime));

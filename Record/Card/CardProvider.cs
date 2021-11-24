@@ -1,6 +1,7 @@
 ﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
 using DGP.Genshin.Common.Response;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record.Card
@@ -8,6 +9,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
     public class CardProvider
     {
         private const string ApiTakumi = @"https://api-takumi.mihoyo.com";
+        private const string BBSApi = @"https://bbs-api.mihoyo.com";
         private const string Referer = "https://webstatic.mihoyo.com/app/community-game-records/index.html?bbs_presentation_style=fullscreen";
         private readonly string cookie;
 
@@ -21,16 +23,17 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
         }
 
         /// <summary>
-        /// 获取游戏展示卡片信息
+        /// 获取游戏展示卡片信息]
+        /// 提供的cookie需要包含 stuid 与 stoken
         /// </summary>
         /// <param name="uid">米游社uid，可以是别人的uid</param>
         /// <returns></returns>
-        public async Task<ListWrapper<Card>?> GetGameRecordCardAsync(string uid)
+        public async Task<List<Card>?> GetGameRecordCardAsync(string uid)
         {
             Requester requester = new(new RequestOptions
             {
                 {"Accept", RequestOptions.Json },
-                {"x-rpc-app_version", DynamicSecretProvider.AppVersion },
+                {"x-rpc-app_version", DynamicSecretProvider2.AppVersion },
                 {"User-Agent",RequestOptions.CommonUA2161 },
                 {"x_rpc_client_type", "5" },
                 {"Referer", Referer },
@@ -38,8 +41,8 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             ListWrapper<Card>? resp = await requester.GetWhileUpdateDynamicSecret2Async<ListWrapper<Card>>(
-                $"{ApiTakumi}/game_record/app/card/wapi/getGameRecordCard?uid={uid}");
-            return resp;
+                $"{BBSApi}/game_record/app/card/wapi/getGameRecordCard?uid={uid}");
+            return resp?.List;
         }
 
         /// <summary>

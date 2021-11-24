@@ -81,6 +81,8 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// 剩余周本折扣次数
         /// </summary>
         [JsonProperty("remain_resin_discount_num")] public int RemainResinDiscountNum { get; set; }
+
+        public int ResinDiscountUsedNum => ResinDiscountNumLimit - RemainResinDiscountNum;
         /// <summary>
         /// 周本折扣总次数
         /// </summary>

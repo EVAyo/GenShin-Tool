@@ -1,4 +1,5 @@
-﻿using DGP.Genshin.Common.Request;
+﻿using DGP.Genshin.Common.Extensions.System;
+using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.QueryString;
 using DGP.Genshin.Common.Response;
 using System;
@@ -14,8 +15,6 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
     public class GachaLogWorker
     {
         public GachaDataCollection WorkingGachaData { get; set; }
-
-        private string? workingUid;
 
         #region Initialization
         private readonly int batchSize;
@@ -67,6 +66,8 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
             }
         }
 
+        public string? WorkingUid { get; private set; }
+
         /// <summary>
         /// 获取祈愿池信息
         /// </summary>
@@ -79,6 +80,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                 {"User-Agent", RequestOptions.CommonUA2101 }
             });
             Response<Config>? resp = await requester.GetAsync<Config>(gachaLogUrl?.Replace("getGachaLog?", "getConfigList?"));
+            this.Log(resp?.Data ?? new object());
             return resp?.Data;
         }
         /// <summary>
@@ -107,7 +109,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                     {
                         foreach (GachaLogItem item in log.List)
                         {
-                            workingUid = item.Uid;
+                            WorkingUid = item.Uid;
                             //this one is increment
                             if (item.TimeId > WorkingGachaData.GetNewestTimeId(type, item.Uid))
                             {
@@ -160,7 +162,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                     {
                         foreach (GachaLogItem item in log.List)
                         {
-                            workingUid = item.Uid;
+                            WorkingUid = item.Uid;
                             full.Add(item);
                         }
                         //last page
@@ -196,13 +198,13 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         /// <param name="increment">增量</param>
         private void MergeIncrement(ConfigType type, List<GachaLogItem> increment)
         {
-            _ = workingUid ?? throw new InvalidOperationException($"{nameof(workingUid)} 不应为 null");
-            if (!WorkingGachaData.ContainsKey(workingUid))
+            _ = WorkingUid ?? throw new InvalidOperationException($"{nameof(WorkingUid)} 不应为 null");
+            if (!WorkingGachaData.ContainsKey(WorkingUid))
             {
-                WorkingGachaData.Add(workingUid, new GachaData());
+                WorkingGachaData.Add(WorkingUid, new GachaData());
             }
             //简单的将老数据插入到增量后侧，最后重置数据
-            GachaData data = WorkingGachaData[workingUid];
+            GachaData data = WorkingGachaData[WorkingUid];
             string? key = type.Key;
             if (key is not null)
             {
@@ -225,13 +227,13 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         /// <param name="increment">增量</param>
         private void MergeFull(ConfigType type, List<GachaLogItem> full)
         {
-            _ = workingUid ?? throw new InvalidOperationException($"{nameof(workingUid)} 不应为 null");
-            if (!WorkingGachaData.ContainsKey(workingUid))
+            _ = WorkingUid ?? throw new InvalidOperationException($"{nameof(WorkingUid)} 不应为 null");
+            if (!WorkingGachaData.ContainsKey(WorkingUid))
             {
-                WorkingGachaData.Add(workingUid, new GachaData());
+                WorkingGachaData.Add(WorkingUid, new GachaData());
             }
             //将老数据插入到后侧，最后重置数据
-            GachaData data = WorkingGachaData[workingUid];
+            GachaData data = WorkingGachaData[WorkingUid];
             string? key = type.Key;
             if (key is not null)
             {
