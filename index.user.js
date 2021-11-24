@@ -302,7 +302,7 @@
     var t = document.createTextNode("导出");
     var eButton = document.createElement("button");
     eButton.appendChild(t);
-    eButton.style = "position: absolute;right: 0px;padding: .1rem;";
+    eButton.style = "padding: .1rem;";
     eButton.setAttribute("onclick", "window.gachaExport()");
     eButton.classList = "title";
     document.querySelector("div.type-select-container").appendChild(eButton)
