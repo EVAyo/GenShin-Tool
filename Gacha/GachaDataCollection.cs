@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DGP.Genshin.MiHoYoAPI.Gacha
 {
@@ -43,7 +44,10 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
                     {
                         if (matchedData[typeId] is List<GachaLogItem> item)
                         {
-                            return item[0].TimeId;
+                            if (item.Any())
+                            {
+                                return item[0].TimeId;
+                            }
                         }
                     }
                 }

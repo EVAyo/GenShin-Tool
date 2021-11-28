@@ -186,7 +186,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
             MergeFull(type, full);
         }
 
-        private int GetRandomDelay()
+        public int GetRandomDelay()
         {
             return Delay.min + random.Next(Delay.max - Delay.min, Delay.max);
         }
