@@ -13,18 +13,18 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         [JsonProperty("name")] public string? Name { get; set; }
 
         public const string PermanentWish = "200";
-        public const string NoviceWishes = "100";
+        public const string NoviceWish = "100";
         public const string CharacterEventWish = "301";
         public const string CharacterEventWish2 = "400";
         public const string WeaponEventWish = "302";
 
         public static readonly Dictionary<string, string> Known = new()
         {
-            { "100", "新手祈愿" },
-            { "200", "奔行世间" },
-            { "301", "角色活动" },
-            { "400", "角色活动-2" },
-            { "302", "神铸赋形" }
+            { NoviceWish, "新手祈愿" },
+            { PermanentWish, "常驻祈愿" },
+            { CharacterEventWish, "角色活动祈愿" },
+            { CharacterEventWish2, "角色活动祈愿-2" },
+            { WeaponEventWish, "武器活动祈愿" }
         };
     }
 }
