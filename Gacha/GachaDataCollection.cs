@@ -11,6 +11,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
     public class GachaDataCollection : Dictionary<string, GachaData>
     {
         public event Action<string>? UidAdded;
+        public event Action<string>? UidSyncRequested;
 
         /// <summary>
         /// 向集合添加数据
@@ -22,6 +23,11 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         {
             base.Add(uid, data);
             UidAdded?.Invoke(uid);
+        }
+
+        public void SyncUid(string uid)
+        {
+            UidSyncRequested?.Invoke(uid);
         }
 
         /// <summary>
