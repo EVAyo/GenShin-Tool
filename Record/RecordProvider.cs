@@ -1,6 +1,8 @@
-﻿using DGP.Genshin.Common.Request;
+﻿using DGP.Genshin.Common.Exceptions;
+using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
 using DGP.Genshin.MiHoYoAPI.Record.Avatar;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -94,25 +96,48 @@ namespace DGP.Genshin.MiHoYoAPI.Record
 
         /// <summary>
         /// 获取玩家角色详细信息
+        /// 经过修改后已经支持获取全角色信息
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="server"></param>
         /// <param name="playerInfo">玩家的基础信息</param>
         /// <returns></returns>
-        [SuppressMessage("", "IDE0050")]
-        public async Task<DetailedAvatarInfo?> GetDetailAvaterInfoAsync(string uid, string server, PlayerInfo playerInfo)
+        [SuppressMessage("", "IDE0037")]
+        public async Task<DetailedAvatarInfo?> GetDetailAvaterInfoAsync(string uid, string server, PlayerInfo playerInfo, bool isUsingBypassMethod = false)
         {
-            List<Avatar.Avatar>? avatars = playerInfo.Avatars;
-
-            var data = new
+            if (isUsingBypassMethod)
             {
-                //but normally avatars will not be null
-                character_ids = avatars is null ? new() : avatars.Select(x => x.Id).ToList(),
-                role_id = uid,
-                server = server
-            };
-            return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarInfo>(
-                $@"{BaseUrl}/character", data);
+                //bypass mihoyo's api limit by attemptting request all avatar at same time
+                List<Task<DetailedAvatarInfo?>> tasks = new();
+                Random random = new();
+                foreach (int id in Enumerable.Range(10000002, 80))
+                {
+                    var data = new
+                    {
+                        character_ids = new List<int> { id },
+                        role_id = uid,
+                        server = server
+                    };
+                    Task<DetailedAvatarInfo?> task = requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarInfo>(
+                        $@"{BaseUrl}/character", data);
+                    tasks.Add(task);
+                }
+                DetailedAvatarInfo?[] result = await Task.WhenAll(tasks);
+                return new() { Avatars = result.Where(info => info is not null).SelectMany(info => info!.Avatars ?? new()).ToList() };
+            }
+            else
+            {
+                //original method
+                List<Avatar.Avatar>? avatars = playerInfo.Avatars;
+                var data = new
+                {
+                    character_ids = avatars?.Select(x => x.Id).ToList() ?? throw new SnapGenshinInternalException("avatars 不应为 null"),
+                    role_id = uid,
+                    server = server
+                };
+                return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarInfo>(
+                    $@"{BaseUrl}/character", data);
+            }
         }
 
         /// <summary>
@@ -121,7 +146,6 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="isPublic">开关状态</param>
         /// <param name="switchId">"1"：个人主页卡片 "2"：角色详情数据</param>
         /// <returns></returns>
-        [SuppressMessage("", "IDE0050")]
         [UnTestedAPI]
         public async Task<dynamic?> ChangeRecordDataSwitch(bool isPublic, string switchId)
         {
