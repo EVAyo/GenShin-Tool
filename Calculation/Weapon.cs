@@ -6,7 +6,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
     {
         [JsonProperty("weapon_cat_id")] public int WeaponCatId { get; set; }
         /// <summary>
-        /// 圣遗物品质
+        /// 武器品质
         /// </summary>
         [JsonProperty("weapon_level")] public int WeaponLevel { get; set; }
     }

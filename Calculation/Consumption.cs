@@ -1,13 +1,19 @@
-﻿using Newtonsoft.Json;
+﻿using DGP.Genshin.Common.Data.Behavior;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace DGP.Genshin.MiHoYoAPI.Calculation
 {
-    public class Consumption
+    public class Consumption : Observable
     {
-        [JsonProperty("avatar_comsume")] public List<ConsumeItem>? AvatarConsume { get; set; }
-        [JsonProperty("avatar_skill_comsume")] public List<ConsumeItem>? AvatarSkillConsume { get; set; }
-        [JsonProperty("weapon_comsume")] public List<ConsumeItem>? WeaponConsume { get; set; }
-        [JsonProperty("reliquary_comsume")] public List<ReliquaryConsumeItem>? ReliquaryConsume { get; set; }
+        private List<ConsumeItem>? avatarConsume;
+        private List<ConsumeItem>? avatarSkillConsume;
+        private List<ConsumeItem>? weaponConsume;
+        private List<ReliquaryConsumeItem>? reliquaryConsume;
+
+        [JsonProperty("avatar_consume")] public List<ConsumeItem>? AvatarConsume { get => avatarConsume; set => Set(ref avatarConsume, value); }
+        [JsonProperty("avatar_skill_consume")] public List<ConsumeItem>? AvatarSkillConsume { get => avatarSkillConsume; set => Set(ref avatarSkillConsume, value); }
+        [JsonProperty("weapon_consume")] public List<ConsumeItem>? WeaponConsume { get => weaponConsume; set => Set(ref weaponConsume, value); }
+        [JsonProperty("reliquary_consume")] public List<ReliquaryConsumeItem>? ReliquaryConsume { get => reliquaryConsume; set => Set(ref reliquaryConsume, value); }
     }
 }

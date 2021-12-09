@@ -2,7 +2,7 @@
 
 namespace DGP.Genshin.MiHoYoAPI.Calculation
 {
-    public class Reliquary : GroupCalculable
+    public class Reliquary : Calculable
     {
         [JsonProperty("reliquary_cat_id")] public int ReliquaryCatId { get; set; }
         /// <summary>

@@ -11,5 +11,6 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         [JsonProperty("name")] public string? Name { get; set; }
         [JsonProperty("icon")] public string? Icon { get; set; }
         [JsonProperty("num")] public int Num { get; set; }
+        [JsonProperty("wiki_url")] public string? WikiUrl { get; set; }
     }
 }

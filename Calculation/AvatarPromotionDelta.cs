@@ -12,8 +12,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         [JsonProperty("avatar_level_current")] public int AvatarLevelCurrent { get; set; }
         [JsonProperty("avatar_level_target")] public int AvatarLevelTarget { get; set; }
         [JsonProperty("element_attr_id")] public int ElementAttrId { get; set; }
-        [JsonProperty("skill_list")] public List<PromotionDelta>? SkillList { get; set; }
+        [JsonProperty("skill_list")] public IEnumerable<PromotionDelta>? SkillList { get; set; }
         [JsonProperty("weapon")] public PromotionDelta? Weapon { get; set; }
-        [JsonProperty("reliquary_list")] public List<PromotionDelta>? ReliquaryList { get; set; }
+        [JsonProperty("reliquary_list")] public IEnumerable<PromotionDelta>? ReliquaryList { get; set; }
     }
 }
