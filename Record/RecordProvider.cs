@@ -1,6 +1,8 @@
 ﻿using DGP.Genshin.Common.Exceptions;
 using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
+using DGP.Genshin.MiHoYoAPI.Calculation;
+using DGP.Genshin.MiHoYoAPI.GameRole;
 using DGP.Genshin.MiHoYoAPI.Record.Avatar;
 using System;
 using System.Collections.Generic;
@@ -17,13 +19,14 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         private const string Referer = @"https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6";
 
         private readonly Requester requester;
-
+        private readonly string _cookie;
         /// <summary>
         /// 使用同一个提供器可用重复请求
         /// </summary>
         /// <param name="cookie"></param>
         public RecordProvider(string cookie)
         {
+            _cookie = cookie;
             requester = new(new RequestOptions
             {
                 {"Accept", RequestOptions.Json },
@@ -31,7 +34,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
                 {"User-Agent", RequestOptions.CommonUA2161 },
                 {"x-rpc-client_type", "5" },
                 {"Referer",Referer },
-                {"Cookie", cookie },
+                {"Cookie", _cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
         }
@@ -110,7 +113,17 @@ namespace DGP.Genshin.MiHoYoAPI.Record
                 //bypass mihoyo's api limit by attemptting request all avatar at same time
                 List<Task<DetailedAvatarInfo?>> tasks = new();
                 Random random = new();
-                foreach (int id in Enumerable.Range(10000002, 80))
+
+                UserGameRoleInfo? roles = await new UserGameRoleProvider(_cookie).GetUserGameRolesAsync();
+                UserGameRole? role =roles?.List?.FirstOrDefault();
+
+                _ = role ?? throw new UnexceptedNullException("role 不应为 null");
+                _ = role.GameUid ?? throw new UnexceptedNullException("uid 不应为 null");
+                _ = role.Region ?? throw new UnexceptedNullException("server 不应为 null");
+                //从计算器API获得全部角色列表
+                List<Calculation.Avatar> avatars = await new Calculator(_cookie).GetAvatarListAsync(role.GameUid, role.Region, false);
+                IEnumerable<int> idList = avatars.Select(a => a.Id).OrderBy(x => x);
+                foreach (int id in idList)
                 {
                     var data = new
                     {
