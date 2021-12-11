@@ -1,5 +1,6 @@
 ﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Response;
+using DGP.Genshin.MiHoYoAPI.Calculation.Filter;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,14 +23,34 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         }
 
         /// <summary>
-        /// 同步当前cookie的角色
+        /// 获取筛选器
         /// </summary>
-        /// <param name="uid"></param>
-        /// <param name="server"></param>
-        /// <param name="isSync">是否同步玩家角色信息</param>
+        /// <param name="avatarId">角色id</param>
+        /// <param name="uid">游戏内uid</param>
+        /// <param name="region">服务器名称</param>
+        /// <returns></returns>
+        public async Task<Filters?> GetFiltersAsync()
+        {
+            Requester requester = new(new RequestOptions
+            {
+                {"Accept", RequestOptions.Json },
+                {"User-Agent", RequestOptions.CommonUA2101 },
+                {"Referer", Referer },
+                {"Cookie", cookie },
+                {"X-Requested-With", RequestOptions.Hyperion }
+            });
+            Response<Filters>? resp = await requester.GetAsync<Filters>
+                ($"{ApiTakumi}/event/e20200928calculate/v1/item/filter");
+            return resp?.Data;
+        }
+
+        /// <summary>
+        /// 获取所有可计算的角色
+        /// </summary>
+        /// <param name="filter"></param>
         /// <param name="isRandomDelayEnabled"></param>
         /// <returns></returns>
-        public async Task<List<Avatar>> GetAvatarListAsync(string uid, string server, bool isSync, bool isRandomDelayEnabled = false)
+        public async Task<List<Avatar>> GetAvatarListAsync(AllAvatarIdFilter filter,bool isRandomDelayEnabled = false)
         {
             int currentPage = 1;
             Random random = new();
@@ -41,38 +62,34 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
-            List<Avatar> syncedAvatars = new();
+            List<Avatar> avatars = new();
             Response<ListWrapper<Avatar>>? resp;
             do
             {
-                AvatarFilterData data = new() { Page = currentPage, Size = 20, Uid = uid, Region = server };
+                filter.Page = currentPage++;
                 resp = await requester.PostAsync<ListWrapper<Avatar>>
-                    ($"{ApiTakumi}/event/e20200928calculate/v1{(isSync ? "/sync" : "")}/avatar/list", data);
+                    ($"{ApiTakumi}/event/e20200928calculate/v1/avatar/list", filter);
                 //add to cached list
                 if (resp?.Data?.List is not null)
                 {
-                    syncedAvatars.AddRange(resp.Data.List);
+                    avatars.AddRange(resp.Data.List);
                 }
 
                 if (currentPage != 1 && isRandomDelayEnabled)
                 {
                     await Task.Delay(random.Next(0, 1000));
                 }
-                currentPage++;
             }
             while (resp?.Data?.List?.Count == 20);
 
-            return syncedAvatars;
+            return avatars;
         }
 
         /// <summary>
-        /// 获取角色详细计算信息
+        /// 获取未拥有的角色的技能列表
         /// </summary>
-        /// <param name="avatarId">角色id</param>
-        /// <param name="uid">游戏内uid</param>
-        /// <param name="region">服务器名称</param>
         /// <returns></returns>
-        public async Task<AvatarDetailData?> GetAvatarDetailDataAsync(int avatarId, string uid, string region)
+        public async Task<List<Skill>?> GetAvatarSkillListAsync(Avatar avatar)
         {
             Requester requester = new(new RequestOptions
             {
@@ -82,11 +99,177 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
-            //https://api-takumi.mihoyo.com
+            Response<ListWrapper<Skill>>? resp = await requester.GetAsync<ListWrapper<Skill>>
+                ($"{ApiTakumi}/event/e20200928calculate/v1/avatarSkill/list?avatar_id={avatar.Id}&element_attr_id={avatar.ElementAttrId}");
+            return resp?.Data?.List;
+        }
+
+        /// <summary>
+        /// 获取未拥有的武器列表
+        /// </summary>
+        /// <param name="avatarId">角色id</param>
+        /// <returns></returns>
+        public async Task<List<Weapon>> GetWeaponListAsync(WeaponIdFilter filter, bool isRandomDelayEnabled = false)
+        {
+            int currentPage = 1;
+            Random random = new();
+            Requester requester = new(new RequestOptions
+            {
+                {"Accept", RequestOptions.Json },
+                {"User-Agent", RequestOptions.CommonUA2101 },
+                {"Referer", Referer },
+                {"Cookie", cookie },
+                {"X-Requested-With", RequestOptions.Hyperion }
+            });
+            List<Weapon> weapons = new();
+            Response<ListWrapper<Weapon>>? resp;
+            do
+            {
+                filter.Page = currentPage++;
+                resp = await requester.PostAsync<ListWrapper<Weapon>>
+                    ($"{ApiTakumi}/event/e20200928calculate/v1/weapon/list", filter);
+                //add to cached list
+                if (resp?.Data?.List is not null)
+                {
+                    weapons.AddRange(resp.Data.List);
+                }
+
+                if (currentPage != 1 && isRandomDelayEnabled)
+                {
+                    await Task.Delay(random.Next(0, 1000));
+                }
+            }
+            while (resp?.Data?.List?.Count == 20);
+
+            return weapons;
+        }
+
+        /// <summary>
+        /// 获取未拥有的圣遗物列表
+        /// </summary>
+        /// <param name="avatarId">角色id</param>
+        /// <returns></returns>
+        public async Task<List<Reliquary>> GetReliquaryListAsync(ReliquaryIdFilter filter, bool isRandomDelayEnabled = false)
+        {
+            int currentPage = 1;
+            Random random = new();
+            Requester requester = new(new RequestOptions
+            {
+                {"Accept", RequestOptions.Json },
+                {"User-Agent", RequestOptions.CommonUA2101 },
+                {"Referer", Referer },
+                {"Cookie", cookie },
+                {"X-Requested-With", RequestOptions.Hyperion }
+            });
+            List<Reliquary> reliquaries = new();
+            Response<ListWrapper<Reliquary>>? resp;
+            do
+            {
+                filter.Page = currentPage++;
+                resp = await requester.PostAsync<ListWrapper<Reliquary>>
+                    ($"{ApiTakumi}/event/e20200928calculate/v1/reliquary/list", filter);
+                //add to cached list
+                if (resp?.Data?.List is not null)
+                {
+                    reliquaries.AddRange(resp.Data.List);
+                }
+
+                if (currentPage != 1 && isRandomDelayEnabled)
+                {
+                    await Task.Delay(random.Next(0, 1000));
+                }
+            }
+            while (resp?.Data?.List?.Count == 20);
+
+            return reliquaries;
+        }
+
+        /// <summary>
+        /// 获取圣遗物匹配套装
+        /// </summary>
+        /// <param name="avatarId">角色id</param>
+        /// <param name="uid">游戏内uid</param>
+        /// <param name="region">服务器名称</param>
+        /// <returns></returns>
+        public async Task<List<Reliquary>?> GetReliquarySetAsync(int reliquaryId)
+        {
+            Requester requester = new(new RequestOptions
+            {
+                {"Accept", RequestOptions.Json },
+                {"User-Agent", RequestOptions.CommonUA2101 },
+                {"Referer", Referer },
+                {"Cookie", cookie },
+                {"X-Requested-With", RequestOptions.Hyperion }
+            });
+            Response<ReliquaryListWrapper>? resp = await requester.GetAsync<ReliquaryListWrapper>
+                ($"{ApiTakumi}/event/e20200928calculate/v1/reliquary/set?reliquary_id={reliquaryId}");
+            return resp?.Data?.ReliquaryList;
+        }
+
+        #region sync
+        /// <summary>
+        /// 同步当前cookie的角色
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="isRandomDelayEnabled"></param>
+        /// <returns></returns>
+        public async Task<List<Avatar>> GetSyncedAvatarListAsync(SyncAvatarIdFilter filter, bool isRandomDelayEnabled = false)
+        {
+            int currentPage = 1;
+            Random random = new();
+            Requester requester = new(new RequestOptions
+            {
+                {"Accept", RequestOptions.Json },
+                {"User-Agent", RequestOptions.CommonUA2101 },
+                {"Referer", Referer },
+                {"Cookie", cookie },
+                {"X-Requested-With", RequestOptions.Hyperion }
+            });
+            List<Avatar> avatars = new();
+            Response<ListWrapper<Avatar>>? resp;
+            do
+            {
+                filter.Page = currentPage++;
+                resp = await requester.PostAsync<ListWrapper<Avatar>>
+                    ($"{ApiTakumi}/event/e20200928calculate/v1/sync/avatar/list", filter);
+                //add to cached list
+                if (resp?.Data?.List is not null)
+                {
+                    avatars.AddRange(resp.Data.List);
+                }
+
+                if (currentPage != 1 && isRandomDelayEnabled)
+                {
+                    await Task.Delay(random.Next(0, 1000));
+                }
+            }
+            while (resp?.Data?.List?.Count == 20);
+
+            return avatars;
+        }
+
+        /// <summary>
+        /// 获取角色详细计算信息
+        /// </summary>
+        /// <param name="avatarId">角色id</param>
+        /// <param name="uid">游戏内uid</param>
+        /// <param name="region">服务器名称</param>
+        /// <returns></returns>
+        public async Task<AvatarDetailData?> GetSyncedAvatarDetailDataAsync(int avatarId, string uid, string region)
+        {
+            Requester requester = new(new RequestOptions
+            {
+                {"Accept", RequestOptions.Json },
+                {"User-Agent", RequestOptions.CommonUA2101 },
+                {"Referer", Referer },
+                {"Cookie", cookie },
+                {"X-Requested-With", RequestOptions.Hyperion }
+            });
             Response<AvatarDetailData>? resp = await requester.GetAsync<AvatarDetailData>
                 ($"{ApiTakumi}/event/e20200928calculate/v1/sync/avatar/detail?avatar_id={avatarId}&uid={uid}&region={region}");
             return resp?.Data;
         }
+        #endregion
 
         /// <summary>
         /// 计算所需的材料
@@ -107,7 +290,5 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 ($"{ApiTakumi}/event/e20200928calculate/v2/compute", promotion);
             return resp?.Data;
         }
-        //获取未拥有的角色的技能
-        //https://api-takumi.mihoyo.com/event/e20200928calculate/v1/avatarSkill/list?avatar_id=10000054&element_attr_id=6
     }
 }

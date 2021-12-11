@@ -9,5 +9,6 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         /// </summary>
         [JsonProperty("avatar_level")] public int AvatarLevel { get; set; }
         [JsonProperty("weapon_cat_id")] public int WeaponCatId { get; set; }
+        [JsonProperty("element_attr_id")] public int ElementAttrId { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
 using DGP.Genshin.MiHoYoAPI.Calculation;
+using DGP.Genshin.MiHoYoAPI.Calculation.Filter;
 using DGP.Genshin.MiHoYoAPI.GameRole;
 using DGP.Genshin.MiHoYoAPI.Record.Avatar;
 using System;
@@ -73,7 +74,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         }
 
         /// <summary>
-        /// 
+        /// 获取玩家深渊信息
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="server"></param>
@@ -112,22 +113,14 @@ namespace DGP.Genshin.MiHoYoAPI.Record
             {
                 //bypass mihoyo's api limit by attemptting request all avatar at same time
                 List<Task<DetailedAvatarInfo?>> tasks = new();
-                Random random = new();
-
-                UserGameRoleInfo? roles = await new UserGameRoleProvider(_cookie).GetUserGameRolesAsync();
-                UserGameRole? role =roles?.List?.FirstOrDefault();
-
-                _ = role ?? throw new UnexceptedNullException("role 不应为 null");
-                _ = role.GameUid ?? throw new UnexceptedNullException("uid 不应为 null");
-                _ = role.Region ?? throw new UnexceptedNullException("server 不应为 null");
                 //从计算器API获得全部角色列表
-                List<Calculation.Avatar> avatars = await new Calculator(_cookie).GetAvatarListAsync(role.GameUid, role.Region, false);
+                List<Calculation.Avatar> avatars = await new Calculator(_cookie).GetAvatarListAsync(new AllAvatarIdFilter());
                 IEnumerable<int> idList = avatars.Select(a => a.Id).OrderBy(x => x);
                 foreach (int id in idList)
                 {
                     var data = new
                     {
-                        character_ids = new List<int> { id },
+                        character_ids = new int[] { id },
                         role_id = uid,
                         server = server
                     };
@@ -144,7 +137,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
                 List<Avatar.Avatar>? avatars = playerInfo.Avatars;
                 var data = new
                 {
-                    character_ids = avatars?.Select(x => x.Id).ToList() ?? throw new SnapGenshinInternalException("avatars 不应为 null"),
+                    character_ids = avatars?.Select(x => x.Id) ?? throw new SnapGenshinInternalException("avatars 不应为 null"),
                     role_id = uid,
                     server = server
                 };
