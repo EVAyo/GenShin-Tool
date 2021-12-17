@@ -5,6 +5,16 @@
     /// </summary>
     public class FetchProgress
     {
+        public FetchProgress()
+        {
+
+        }
+        public FetchProgress(string? type, int page)
+        {
+            Type = type;
+            Page = page;
+        }
+
         public string? Type { get; set; }
         public int Page { get; set; }
         public override string ToString()

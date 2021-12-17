@@ -50,7 +50,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         /// <param name="filter"></param>
         /// <param name="isRandomDelayEnabled"></param>
         /// <returns></returns>
-        public async Task<List<Avatar>> GetAvatarListAsync(AllAvatarIdFilter filter,bool isRandomDelayEnabled = false)
+        public async Task<List<Avatar>> GetAvatarListAsync(AllAvatarIdFilter filter, bool isRandomDelayEnabled = false)
         {
             int currentPage = 1;
             Random random = new();

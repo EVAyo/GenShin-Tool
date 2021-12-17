@@ -20,7 +20,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
         /// 获取推荐的帖子列表
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Post>?> GetOfficialRecommendedPostsAsync()
+        public async Task<List<Post>> GetOfficialRecommendedPostsAsync()
         {
             Requester requester = new(new RequestOptions
             {
@@ -35,7 +35,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
             });
             Response<ListWrapper<Post>>? resp =
                 await requester.GetAsync<ListWrapper<Post>>($"{PostBaseUrl}/getOfficialRecommendedPosts?gids=2");
-            return resp?.Data?.List;
+            return resp?.Data?.List ?? new();
         }
         /// <summary>
         /// 获取单个帖子的详细信息
