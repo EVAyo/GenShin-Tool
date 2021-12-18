@@ -26,5 +26,14 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
             { CharacterEventWish2, "角色活动祈愿-2" },
             { WeaponEventWish, "武器活动祈愿" }
         };
+
+        public static readonly Dictionary<string, string> UIGFGachaTypeMap = new()
+        {
+            { NoviceWish, NoviceWish },
+            { PermanentWish, PermanentWish },
+            { CharacterEventWish, CharacterEventWish },
+            { CharacterEventWish2, CharacterEventWish },
+            { WeaponEventWish, WeaponEventWish }
+        };
     }
 }
