@@ -303,9 +303,18 @@
     var eButton = document.createElement("button");
     eButton.appendChild(t);
     eButton.style = "padding: .1rem;";
+    eButton.style.position = 'absolute'
+    eButton.style.top =0;
+    eButton.style.right = 0;
     eButton.setAttribute("onclick", "window.gachaExport()");
-    eButton.classList = "title";
-    document.querySelector("div.type-select-container").appendChild(eButton)
 
 
+    const tips = document.createElement('div')
+    tips.classList = "tips"
+    tips.style.position = 'absolute';
+    tips.style.top = '10px';
+
+    const container = document.querySelector("div.content-container")??document.body;
+    container.appendChild(eButton)
+    container.appendChild(tips)
 })();
