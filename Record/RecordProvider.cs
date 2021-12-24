@@ -14,7 +14,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
     public class RecordProvider : IApiTakumiInterop
     {
         private const string ApiTakumi = @"https://api-takumi.mihoyo.com";
-        private const string BaseUrl = @"https://api-takumi.mihoyo.com/game_record/app/genshin/api";
+        private const string ApiTakumiRecord = @"https://api-takumi-record.mihoyo.com/game_record/app/genshin/api";
         private const string Referer = @"https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6";
 
         private readonly Requester requester;
@@ -68,7 +68,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         public async Task<PlayerInfo?> GetPlayerInfoAsync(string uid, string server)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<PlayerInfo>(
-                $@"{BaseUrl}/index?server={server}&role_id={uid}");
+                $@"{ApiTakumiRecord}/index?server={server}&role_id={uid}");
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, int type)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<SpiralAbyss.SpiralAbyss>(
-                $@"{BaseUrl}/spiralAbyss?schedule_type={type}&server={server}&role_id={uid}");
+                $@"{ApiTakumiRecord}/spiralAbyss?schedule_type={type}&server={server}&role_id={uid}");
         }
 
         /// <summary>
@@ -93,69 +93,28 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         public async Task<dynamic?> GetActivitiesAsync(string uid, string server)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<dynamic>(
-                $@"{BaseUrl}/activities?server={server}&role_id={uid}");
+                $@"{ApiTakumiRecord}/activities?server={server}&role_id={uid}");
         }
 
         /// <summary>
         /// 获取玩家角色详细信息
-        /// 经过修改后已经支持获取全角色信息
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="server"></param>
         /// <param name="playerInfo">玩家的基础信息</param>
         /// <returns></returns>
         [SuppressMessage("", "IDE0037")]
-        public async Task<DetailedAvatarInfo?> GetDetailAvaterInfoAsync(string uid, string server, PlayerInfo playerInfo, bool isUsingBypassMethod = false)
+        public async Task<DetailedAvatarInfo?> GetDetailAvaterInfoAsync(string uid, string server, PlayerInfo playerInfo)
         {
-            if (isUsingBypassMethod)
+            List<Avatar.Avatar>? avatars = playerInfo.Avatars;
+            var data = new
             {
-                //bypass mihoyo's api limit by attemptting request all avatar at same time
-                List<Task<DetailedAvatarInfo?>> tasks = new();
-                //从计算器API获得全部角色列表
-                List<Calculation.Avatar> avatars = await new Calculator(_cookie).GetAvatarListAsync(new AllAvatarIdFilter());
-                IEnumerable<int> idList = avatars.Select(a => a.Id).OrderBy(x => x);
-                foreach (int id in idList)
-                {
-                    var data = new
-                    {
-                        character_ids = new int[] { id },
-                        role_id = uid,
-                        server = server
-                    };
-                    Task<DetailedAvatarInfo?> task = requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarInfo>(
-                        $@"{BaseUrl}/character", data);
-                    tasks.Add(task);
-                }
-                DetailedAvatarInfo?[] result = await Task.WhenAll(tasks);
-                return new() { Avatars = result.Where(info => info is not null).SelectMany(info => info!.Avatars ?? new()).ToList() };
-            }
-            else
-            {
-                //original method
-                List<Avatar.Avatar>? avatars = playerInfo.Avatars;
-                var data = new
-                {
-                    character_ids = avatars?.Select(x => x.Id) ?? throw new SnapGenshinInternalException("avatars 不应为 null"),
-                    role_id = uid,
-                    server = server
-                };
-                return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarInfo>(
-                    $@"{BaseUrl}/character", data);
-            }
-        }
-
-        /// <summary>
-        /// 开关记录数据
-        /// </summary>
-        /// <param name="isPublic">开关状态</param>
-        /// <param name="switchId">"1"：个人主页卡片 "2"：角色详情数据</param>
-        /// <returns></returns>
-        [UnTestedAPI]
-        public async Task<dynamic?> ChangeRecordDataSwitch(bool isPublic, string switchId)
-        {
-            var data = new { is_public = isPublic, switch_id = switchId, game_id = "2" };
-            return await requester.PostWhileUpdateDynamicSecret2Async<dynamic>(
-                $"{ApiTakumi}/game_record/app/card/wapi/changeDataSwitch", data);
+                character_ids = avatars?.Select(x => x.Id) ?? throw new SnapGenshinInternalException("avatars 不应为 null"),
+                role_id = uid,
+                server = server
+            };
+            return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarInfo>(
+                $@"{ApiTakumiRecord}/character", data);
         }
     }
 }

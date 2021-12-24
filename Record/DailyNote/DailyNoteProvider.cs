@@ -6,8 +6,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
 {
     public class DailyNoteProvider : IApiTakumiInterop
     {
-        private const string ApiTakumi = @"https://api-takumi.mihoyo.com";
-        private const string BaseUrl = @"https://api-takumi.mihoyo.com/game_record/app/genshin/api";
+        private const string ApiTakumiRecord = @"https://api-takumi-record.mihoyo.com/game_record/app/genshin/api";
         private const string Referer = @"https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6";
 
         private readonly Requester requester;
@@ -35,7 +34,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         public async Task<DailyNote?> GetDailyNoteAsync(string server, string uid)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<DailyNote>(
-                $"{BaseUrl}/dailyNote?server={server}&role_id={uid}");
+                $"{ApiTakumiRecord}/dailyNote?server={server}&role_id={uid}");
         }
 
         /// <summary>
@@ -47,7 +46,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         {
             var data = new { is_public = isPublic, switch_id = "3", game_id = "2" };
             return await requester.PostWhileUpdateDynamicSecret2Async<dynamic>(
-                $"{ApiTakumi}/game_record/app/card/wapi/changeDataSwitch", data);
+                $"{ApiTakumiRecord}/game_record/app/card/wapi/changeDataSwitch", data);
         }
 
     }
