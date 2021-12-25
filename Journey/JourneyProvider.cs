@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Journey
 {
-    public class JourneyProvider : IHk4eApiInterop
+    public class JourneyProvider
     {
         private const string ApiHk4e = "https://hk4e-api.mihoyo.com";
         private const string ReferBaseUrl = @"https://webstatic.mihoyo.com/bbs/event/e20200709ysjournal/index.html";

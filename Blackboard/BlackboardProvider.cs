@@ -12,7 +12,8 @@ namespace DGP.Genshin.MiHoYoAPI.Blackboard
         {
             Requester requester = new();
             Response<ListWrapper<BlackboardEvent>>? resp =
-                await requester.GetAsync<ListWrapper<BlackboardEvent>>($"{ApiStatic}/common/blackboard/ys_obc/v1/get_activity_calendar?app_sn=ys_obc");
+                await requester.GetAsync<ListWrapper<BlackboardEvent>>(
+                    $"{ApiStatic}/common/blackboard/ys_obc/v1/get_activity_calendar?app_sn=ys_obc");
             return resp?.Data?.List ?? new();
         }
     }

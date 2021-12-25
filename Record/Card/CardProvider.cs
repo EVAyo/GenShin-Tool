@@ -23,12 +23,12 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
         }
 
         /// <summary>
-        /// 获取游戏展示卡片信息]
+        /// 获取游戏展示卡片信息
         /// 提供的cookie需要包含 stuid 与 stoken
         /// </summary>
         /// <param name="uid">米游社uid，可以是别人的uid</param>
         /// <returns></returns>
-        public async Task<List<Card>?> GetGameRecordCardAsync(string uid)
+        public async Task<List<Card>> GetGameRecordCardAsync(string uid)
         {
             Requester requester = new(new RequestOptions
             {
@@ -42,7 +42,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
             });
             ListWrapper<Card>? resp = await requester.GetWhileUpdateDynamicSecret2Async<ListWrapper<Card>>(
                 $"{BBSApi}/game_record/app/card/wapi/getGameRecordCard?uid={uid}");
-            return resp?.List;
+            return resp?.List ?? new();
         }
     }
 }

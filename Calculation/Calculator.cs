@@ -89,7 +89,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         /// 获取未拥有的角色的技能列表
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Skill>?> GetAvatarSkillListAsync(Avatar avatar)
+        public async Task<List<Skill>> GetAvatarSkillListAsync(Avatar avatar)
         {
             Requester requester = new(new RequestOptions
             {
@@ -101,7 +101,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
             });
             Response<ListWrapper<Skill>>? resp = await requester.GetAsync<ListWrapper<Skill>>
                 ($"{ApiTakumi}/event/e20200928calculate/v1/avatarSkill/list?avatar_id={avatar.Id}&element_attr_id={avatar.ElementAttrId}");
-            return resp?.Data?.List;
+            return resp?.Data?.List ?? new();
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         /// <param name="uid">游戏内uid</param>
         /// <param name="region">服务器名称</param>
         /// <returns></returns>
-        public async Task<List<Reliquary>?> GetReliquarySetAsync(int reliquaryId)
+        public async Task<List<Reliquary>> GetReliquarySetAsync(int reliquaryId)
         {
             Requester requester = new(new RequestOptions
             {
@@ -203,7 +203,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
             });
             Response<ReliquaryListWrapper>? resp = await requester.GetAsync<ReliquaryListWrapper>
                 ($"{ApiTakumi}/event/e20200928calculate/v1/reliquary/set?reliquary_id={reliquaryId}");
-            return resp?.Data?.ReliquaryList;
+            return resp?.Data?.ReliquaryList ?? new();
         }
 
         #region sync

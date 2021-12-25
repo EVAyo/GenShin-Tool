@@ -1,8 +1,6 @@
 ﻿using DGP.Genshin.Common.Exceptions;
 using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
-using DGP.Genshin.MiHoYoAPI.Calculation;
-using DGP.Genshin.MiHoYoAPI.Calculation.Filter;
 using DGP.Genshin.MiHoYoAPI.Record.Avatar;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -11,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record
 {
-    public class RecordProvider : IApiTakumiInterop
+    public class RecordProvider
     {
-        private const string ApiTakumi = @"https://api-takumi.mihoyo.com";
         private const string ApiTakumiRecord = @"https://api-takumi-record.mihoyo.com/game_record/app/genshin/api";
         private const string Referer = @"https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6";
 

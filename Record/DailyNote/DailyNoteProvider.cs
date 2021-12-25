@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
 {
-    public class DailyNoteProvider : IApiTakumiInterop
+    public class DailyNoteProvider
     {
         private const string ApiTakumiRecord = @"https://api-takumi-record.mihoyo.com/game_record/app/genshin/api";
         private const string Referer = @"https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6";
