@@ -19,7 +19,7 @@ type cache struct {
 
 func newcache() *cache {
 	c := &cache{}
-	c.f = fastcache.New(32000000)
+	c.f = fastcache.New(50000000)
 	c.bfpool = sync.Pool{
 		New: func() interface{} {
 			return bytes.NewBuffer(nil)

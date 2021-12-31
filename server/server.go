@@ -42,6 +42,7 @@ func less(cookie []string) httprouter.Handle {
 		t := card2temp(&acard, p.ByName("skin"))
 
 		w.Header().Set("Content-Type", "image/svg+xml")
+		w.Header().Set("Cache-Control", "max-age=600")
 		w.Write([]byte(t.Parse()))
 	}
 }
@@ -82,6 +83,7 @@ func more(cookie []string) httprouter.Handle {
 		t.World = fmt.Sprintf("%v%%", fall)
 
 		w.Header().Set("Content-Type", "image/svg+xml")
+		w.Header().Set("Cache-Control", "max-age=1200")
 		w.Write([]byte(t.Parse()))
 	}
 }

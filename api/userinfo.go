@@ -68,6 +68,7 @@ func (a *ApiConfig) httpGet(url string) ([]byte, error) {
 	req.Header.Set("Referer", a.Referer)
 	req.Header.Set("x-rpc-app_version", a.XRpcAppVersion)
 	req.Header.Set("x-rpc-client_type", a.XRpClientType)
+	req.Header.Set("x-rpc-language", "zh-cn")
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
 	req.Header.Set("DS", a.GetDs())
 	resp, err := a.Client.Do(req)
@@ -96,7 +97,7 @@ func (a *ApiConfig) GetRoleInfo(uid int) (*Card, error) {
 	q.Set("uid", strconv.Itoa(uid))
 	u.RawQuery = q.Encode()
 
-	b, err := a.getSome(u.String(), time.Minute*15)
+	b, err := a.getSome(u.String(), time.Hour*6)
 	if err != nil {
 		return nil, fmt.Errorf("GetRoleInfo: %w", err)
 	}
@@ -136,7 +137,7 @@ func (a *ApiConfig) GetRoleIndex(gameId int, region string) (*Detail, error) {
 	q.Set("server", region)
 	u.RawQuery = q.Encode()
 
-	b, err := a.getSome(u.String(), time.Minute*30)
+	b, err := a.getSome(u.String(), 48*time.Hour)
 	if err != nil {
 		return nil, fmt.Errorf("GetRoleIndex: %w", err)
 	}
