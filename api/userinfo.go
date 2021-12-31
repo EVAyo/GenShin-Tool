@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -33,10 +34,11 @@ var MihoyoAPI = map[string]ApiConfig{
 			key := "6cqshh5dhw73bzxn20oexa9k516chk7s"
 			nowtime := time.Now().Unix()
 			r := randStr(6)
-			s := fmt.Sprintf("salt=%v&t=%d&r=%v", key, nowtime, r)
+			s := fmt.Sprintf("salt=%v&t=%v&r=%v", key, nowtime, r)
 			m := md5.New()
-			md5s := hex.EncodeToString(m.Sum([]byte(s)))
-			return fmt.Sprintf("%d,%v,%v", nowtime, r, md5s)
+			m.Write([]byte(s))
+			md5s := hex.EncodeToString(m.Sum(nil))
+			return fmt.Sprintf("%v,%v,%v", nowtime, r, md5s)
 		},
 		Referer:        "https://webstatic-sea.mihoyo.com/",
 		XRpcAppVersion: "1.5.0",
@@ -66,7 +68,7 @@ func (a *ApiConfig) httpGet(url string) ([]byte, error) {
 	req.Header.Set("Referer", a.Referer)
 	req.Header.Set("x-rpc-app_version", a.XRpcAppVersion)
 	req.Header.Set("x-rpc-client_type", a.XRpClientType)
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
 	req.Header.Set("DS", a.GetDs())
 	resp, err := a.Client.Do(req)
 	if resp != nil {
@@ -112,7 +114,8 @@ func (a *ApiConfig) getSome(url string, expTime time.Duration) ([]byte, error) {
 	}
 
 	if b == nil {
-		b, err := a.httpGet(url)
+		var err error
+		b, err = a.httpGet(url)
 		if err != nil {
 			return nil, fmt.Errorf("getSome: %w", err)
 		}
@@ -139,6 +142,7 @@ func (a *ApiConfig) GetRoleIndex(gameId int, region string) (*Detail, error) {
 	}
 	var r Detail
 	if err := json.Unmarshal(b, &r); err != nil {
+		log.Println(string(b))
 		return nil, fmt.Errorf("GetRoleIndex: %w", err)
 	}
 	return &r, nil

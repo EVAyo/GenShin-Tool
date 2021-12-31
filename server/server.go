@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/julienschmidt/httprouter"
@@ -12,7 +13,7 @@ import (
 func Server(addr string, cookie []string) error {
 	mux := httprouter.New()
 	mux.GET("/card/:region/:server/:skin/:uid", less(cookie))
-	mux.GET("/card/detail/:region/:server/:skin/:uid", more(cookie))
+	mux.GET("/detail/:region/:server/:skin/:uid", more(cookie))
 
 	s := http.Server{
 		Addr:              addr,
@@ -54,7 +55,12 @@ func more(cookie []string) httprouter.Handle {
 		server := p.ByName("server")
 		acard := findCardInfo(server, card)
 
-		d, err := c.GetRoleIndex(acard.GameID, server)
+		gameUid, err := strconv.Atoi(acard.GameRoleID)
+		if err != nil {
+			httpErrf(w, "invalid uid", 1, http.StatusBadRequest)
+			return
+		}
+		d, err := c.GetRoleIndex(gameUid, server)
 		if err != nil {
 			httpErrf(w, err.Error(), -1, 500)
 			return

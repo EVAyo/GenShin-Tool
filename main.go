@@ -33,7 +33,7 @@ var (
 func init() {
 	flag.StringVar(&addr, "addr", "127.0.0.1:5153", "http server address")
 	flag.Parse()
-	if addr == "127.0.0.1:5153" {
+	if addr == "127.0.0.1:5153" && os.Getenv("PORT") != "" {
 		addr = ":" + os.Getenv("PORT")
 	}
 }

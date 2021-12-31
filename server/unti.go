@@ -4,6 +4,7 @@ import (
 	"embed"
 	"encoding/base64"
 	"encoding/json"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -29,6 +30,7 @@ func httpErrf(w http.ResponseWriter, err string, code, httpCode int) {
 	if err := json.NewEncoder(w).Encode(e); err != nil {
 		panic(err)
 	}
+	log.Println(e)
 }
 
 //go:embed imgs
@@ -54,7 +56,10 @@ func card2temp(c *api.CardDataList, skin string) template.Card {
 		SkinBase64: getSkin(skin),
 		Name:       c.Nickname,
 		Level:      c.Level,
-		UID:        c.GameID,
+		UID: func() int {
+			i, _ := strconv.Atoi(c.GameRoleID)
+			return i
+		}(),
 	}
 
 	for _, v := range c.Data {
