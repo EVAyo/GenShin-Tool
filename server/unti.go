@@ -100,7 +100,7 @@ func getData(p httprouter.Params, w http.ResponseWriter, cookies []string) (*api
 
 	uid, err := strconv.Atoi(p.ByName("uid"))
 	if err != nil {
-		httpErrf(w, "uid not found", 2, http.StatusBadRequest)
+		httpErrf(w, "invalid uid", 1, http.StatusBadRequest)
 		return nil, nil, true
 	}
 	card, err := c.GetRoleInfo(uid)
