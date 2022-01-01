@@ -18,7 +18,7 @@ func main() {
 		}
 		cookie = string(b)
 	}
-	cookies := []string{}
+	cookies := map[string][]string{}
 	err := json.Unmarshal([]byte(cookie), &cookies)
 	if err != nil {
 		panic(err)

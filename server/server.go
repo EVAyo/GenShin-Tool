@@ -10,7 +10,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func Server(addr string, cookie []string) error {
+func Server(addr string, cookie map[string][]string) error {
 	mux := httprouter.New()
 	mux.GET("/card/:region/:server/:skin/:uid", less(cookie))
 	mux.GET("/detail/:region/:server/:skin/:uid", more(cookie))
@@ -29,7 +29,7 @@ func Server(addr string, cookie []string) error {
 	return nil
 }
 
-func less(cookie []string) httprouter.Handle {
+func less(cookie map[string][]string) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		card, _, shouldReturn := getData(p, w, cookie)
 		if shouldReturn {
@@ -47,7 +47,7 @@ func less(cookie []string) httprouter.Handle {
 	}
 }
 
-func more(cookie []string) httprouter.Handle {
+func more(cookie map[string][]string) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		card, c, shouldReturn := getData(p, w, cookie)
 		if shouldReturn {

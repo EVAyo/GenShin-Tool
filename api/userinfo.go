@@ -43,7 +43,8 @@ var MihoyoAPI = map[string]ApiConfig{
 		Referer:        "https://webstatic-sea.mihoyo.com/",
 		XRpcAppVersion: "1.5.0",
 		XRpClientType:  "4",
-		Client:         http.Client{},
+		Client:         http.Client{Timeout: 10 * time.Second},
+		UseCache:       true,
 	},
 }
 

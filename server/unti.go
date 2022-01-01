@@ -89,13 +89,14 @@ func findCardInfo(server string, card *api.Card) api.CardDataList {
 	return acard
 }
 
-func getData(p httprouter.Params, w http.ResponseWriter, cookies []string) (*api.Card, *api.ApiConfig, bool) {
-	c, ok := api.MihoyoAPI[p.ByName("region")]
+func getData(p httprouter.Params, w http.ResponseWriter, cookies map[string][]string) (*api.Card, *api.ApiConfig, bool) {
+	region := p.ByName("region")
+	c, ok := api.MihoyoAPI[region]
 	if !ok {
 		httpErrf(w, "region not found", 1, http.StatusBadRequest)
 		return nil, nil, true
 	}
-	cookie := cookies[arand.Intn(len(cookies))]
+	cookie := cookies[region][arand.Intn(len(cookies[region]))]
 	c.Cookie = cookie
 
 	uid, err := strconv.Atoi(p.ByName("uid"))
