@@ -19,43 +19,26 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// </summary>
         [JsonProperty("resin_recovery_time")] public string? ResinRecoveryTime { get; set; }
 
-        public string? ResinRecoveryTimeFormatted
-        {
-            get
-            {
-                if (ResinRecoveryTime is not null)
-                {
-                    TimeSpan ts = new(0, 0, int.Parse(ResinRecoveryTime));
-                    return ts.Days > 0
-                        ? $"{ts.Days}天{ts.Hours}时{ts.Minutes}分"
-                        : ts.Hours > 0
-                            ? $"{ts.Hours}时{ts.Minutes}分"
-                            : $"{ts.Minutes}分";
-                }
-                return null;
-            }
-        }
-
-        public string? ResinRecovertTargetTimeFormatted
+        public string? ResinRecoveryTargetTimeFormatted
         {
             get
             {
                 if (ResinRecoveryTime is not null)
                 {
                     DateTime tt = DateTime.Now.AddSeconds(int.Parse(ResinRecoveryTime));
-                    string day = (tt.Day - DateTime.Now.Day) switch
+                    int totalDays = (int)(tt - DateTime.Now).TotalDays;
+                    string day = totalDays switch
                     {
                         0 => "今天",
                         1 => "明天",
                         2 => "后天",
-                        _ => $"{tt.Day}日"
+                        _ => $"{totalDays}天"
                     };
                     return $"{day} {tt:HH:mm}";
                 }
                 return null;
             }
         }
-
 
         /// <summary>
         /// 委托完成数
@@ -99,6 +82,40 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// 派遣
         /// </summary>
         [JsonProperty("expeditions")] public List<Expedition>? Expeditions { get; set; }
+
+        /// <summary>
+        /// 当前洞天宝钱
+        /// </summary>
+        [JsonProperty("current_home_coin")] public int CurrentHomeCoin { get; set; }
+        /// <summary>
+        /// 最大洞天宝钱
+        /// </summary>
+        [JsonProperty("max_home_coin")] public int MaxHomeCoin { get; set; }
+        /// <summary>
+        /// 洞天宝钱恢复时间 <see cref="string"/>类型的秒数
+        /// </summary>
+        [JsonProperty("home_coin_recovery_time")] public string? HomeCoinRecoveryTime { get; set; }
+
+        public string? HomeCoinRecoveryTargetTimeFormatted
+        {
+            get
+            {
+                if (HomeCoinRecoveryTime is not null)
+                {
+                    DateTime tt = DateTime.Now.AddSeconds(int.Parse(HomeCoinRecoveryTime));
+                    int totalDays = (int)(tt - DateTime.Now).TotalDays;
+                    string day = totalDays switch
+                    {
+                        0 => "今天",
+                        1 => "明天",
+                        2 => "后天",
+                        _ => $"{totalDays}天"
+                    };
+                    return $"{day} {tt:HH:mm}";
+                }
+                return null;
+            }
+        }
     }
 
 }
