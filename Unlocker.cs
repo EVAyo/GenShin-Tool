@@ -8,6 +8,7 @@ namespace DGP.Genshin.FPSUnlocking
 {
     /// <summary>
     /// FPS Unlocker
+    /// 需要 .NET 进程为 64 位 才能正常使用
     /// Credit to @Crskycode Github
     /// </summary>
     public class Unlocker
@@ -44,8 +45,16 @@ namespace DGP.Genshin.FPSUnlocking
         /// <param name="targetFPS">目标fps</param>
         public Unlocker(Process gameProcess,int targetFPS)
         {
-            this.gameProcess = gameProcess;
+            if (!Environment.Is64BitProcess)
+            {
+                throw new InvalidOperationException("无法在32位进程中使用 Unlocker");
+            }
+            if (targetFPS < 30 || targetFPS > 2000)
+            {
+                throw new ArgumentOutOfRangeException(nameof(targetFPS));
+            }
             TargetFPSBytes = BitConverter.GetBytes(targetFPS);
+            this.gameProcess = gameProcess;
         }
 
         /// <summary>
