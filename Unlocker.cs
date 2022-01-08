@@ -1,9 +1,15 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using static DGP.Genshin.FPSUnlocking.NativeMethods;
 
 namespace DGP.Genshin.FPSUnlocking
 {
+    /// <summary>
+    /// FPS Unlocker 
+    /// Credit to @Crskycode Github
+    /// </summary>
     public class Unlocker
     {
         /// <summary>
