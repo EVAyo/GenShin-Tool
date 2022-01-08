@@ -26,7 +26,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
                 if (ResinRecoveryTime is not null)
                 {
                     DateTime tt = DateTime.Now.AddSeconds(int.Parse(ResinRecoveryTime));
-                    int totalDays = (int)(tt - DateTime.Now).TotalDays;
+                    int totalDays = (tt - DateTime.Today).Days;
                     string day = totalDays switch
                     {
                         0 => "今天",
@@ -103,7 +103,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
                 if (HomeCoinRecoveryTime is not null)
                 {
                     DateTime tt = DateTime.Now.AddSeconds(int.Parse(HomeCoinRecoveryTime));
-                    int totalDays = (int)(tt - DateTime.Now).TotalDays;
+                    int totalDays = (tt - DateTime.Today).Days;
                     string day = totalDays switch
                     {
                         0 => "今天",
