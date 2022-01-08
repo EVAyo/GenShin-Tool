@@ -1,5 +1,8 @@
 ﻿namespace DGP.Genshin.FPSUnlocking
 {
+    /// <summary>
+    /// 解锁结果
+    /// </summary>
     public enum UnlockResult
     {
         /// <summary>
@@ -7,13 +10,29 @@
         /// </summary>
         Ok,
         /// <summary>
-        /// 
+        /// 进程已经退出
         /// </summary>
-        ProcessIsNull,
         ProcessHasExited,
+        /// <summary>
+        /// 模块搜索超时
+        /// </summary>
         ModuleSearchTimeExceed,
+        /// <summary>
+        /// 读取进程内存失败
+        /// </summary>
         ReadProcessMemoryFailed,
+        /// <summary>
+        /// 进程内存中不存在对应的模式
+        /// </summary>
         NoMatchedPatternFound,
-        UnlockerInvalid
+        /// <summary>
+        /// 此解锁器已经失效
+        /// </summary>
+        UnlockerInvalid,
+
+        /// <summary>
+        /// 进程启动失败
+        /// </summary>
+        ProcessStartFailed
     }
 }

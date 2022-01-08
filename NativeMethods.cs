@@ -3,6 +3,10 @@ using System.Runtime.InteropServices;
 
 namespace DGP.Genshin.FPSUnlocking
 {
+    /// <summary>
+    /// 本机方法
+    /// P/Invoke codes
+    /// </summary>
     internal static class NativeMethods 
     {
         [Flags]
@@ -53,5 +57,4 @@ namespace DGP.Genshin.FPSUnlocking
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool WriteProcessMemory(IntPtr hProcess, UIntPtr lpBaseAddress, byte[] lpBuffer, uint nSize, out uint lpNumberOfBytesWritten);
     }
-
 }

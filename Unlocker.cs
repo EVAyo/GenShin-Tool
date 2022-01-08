@@ -7,7 +7,7 @@ using static DGP.Genshin.FPSUnlocking.NativeMethods;
 namespace DGP.Genshin.FPSUnlocking
 {
     /// <summary>
-    /// FPS Unlocker 
+    /// FPS Unlocker
     /// Credit to @Crskycode Github
     /// </summary>
     public class Unlocker
@@ -49,21 +49,49 @@ namespace DGP.Genshin.FPSUnlocking
         }
 
         /// <summary>
-        /// 异步的解锁原神进程的帧数限制
-        /// 调用不会阻止，直到遇到错误或原神进程结束前不会返回
+        /// 启动进程，然后调用<see cref="UnlockAsync(int, int, int)"/>
         /// </summary>
         /// <param name="findModuleMillisecondsDelay">每次查找UnityPlayer的延时,默认100毫秒</param>
         /// <param name="findModuleTimeMillisecondLimit">查找UnityPlayer的最大阈值,默认10000毫秒</param>
+        /// <param name="adjustFpsMillisecondDelay">每次循环调整的间隔时间，默认2000毫秒</param>
         /// <returns>解锁的结果</returns>
-        public async Task<UnlockResult> UnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondLimit = 10000)
+        public async Task<UnlockResult> StartProcessAndUnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondLimit = 10000, int adjustFpsMillisecondDelay = 2000)
+        {
+            bool result = gameProcess.Start();
+            if(result)
+            {
+                return await UnlockAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondLimit, adjustFpsMillisecondDelay);
+            }
+            else
+            {
+                return UnlockResult.ProcessStartFailed;
+            }
+        }
+
+        /// <summary>
+        /// 异步的解锁原神进程的帧数限制，
+        /// 只调整了fps，并没有调整垂直同步限制，需要用户手动关闭，
+        /// 调用不会阻止，直到遇到错误或原神进程结束前不会返回
+        /// <para/>
+        /// 应在 async void 方法内使用此方法，以使调用等待不影响UI线程
+        /// <para/>
+        /// 用法
+        /// <code>
+        /// Process p = new(){...};
+        /// Unlocker unlocker = new(p,144);
+        /// p.Start();
+        /// var result = await unlocker.UnlockAsync();
+        /// </code>
+        /// </summary>
+        /// <param name="findModuleMillisecondsDelay">每次查找UnityPlayer的延时,默认100毫秒</param>
+        /// <param name="findModuleTimeMillisecondLimit">查找UnityPlayer的最大阈值,默认10000毫秒</param>
+        /// <param name="adjustFpsMillisecondDelay">每次循环调整的间隔时间，默认2000毫秒</param>
+        /// <returns>解锁的结果</returns>
+        public async Task<UnlockResult> UnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondLimit = 10000, int adjustFpsMillisecondDelay = 2000)
         {
             if (isInvalid)
             {
                 return UnlockResult.UnlockerInvalid;
-            }
-            if (gameProcess is null)
-            {
-                return UnlockResult.ProcessIsNull;
             }
             if (gameProcess.HasExited)
             {
@@ -116,7 +144,7 @@ namespace DGP.Genshin.FPSUnlocking
                     fpsOffset = UIntPtr.Zero;
                     return UnlockResult.Ok;
                 }
-                await Task.Delay(2000);
+                await Task.Delay(adjustFpsMillisecondDelay);
             }
         }
 
