@@ -123,3 +123,13 @@ func getForMap(m map[string]interface{}, key string) int {
 	}
 	return int(v.(float64))
 }
+
+func getAbyssStars(a *api.Abyss) int {
+	i := 0
+	for _, v := range a.Data.Floors {
+		if v.Index >= 9 {
+			i += v.Star
+		}
+	}
+	return i
+}

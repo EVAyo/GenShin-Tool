@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -27,11 +26,12 @@ func randStr(i int) string {
 
 var MihoyoAPI = map[string]ApiConfig{
 	"hoyolab": {
-		FetchRoleIDURL:    "https://bbs-api-os.mihoyo.com/game_record/card/wapi/getGameRecordCard",
-		FetchRoleIndexURL: "https://bbs-api-os.mihoyo.com/game_record/genshin/api/index",
-		Cookie:            "",
-		GetDs: func() string {
-			key := "6cqshh5dhw73bzxn20oexa9k516chk7s"
+		FetchRoleIDURL:      "https://bbs-api-os.mihoyo.com/game_record/card/wapi/getGameRecordCard",
+		FetchRoleIndexURL:   "https://bbs-api-os.mihoyo.com/game_record/genshin/api/index",
+		FetchSpiralAbyssURL: "https://bbs-api-os.mihoyo.com/game_record/genshin/api/spiralAbyss",
+		Cookie:              "",
+		GetDs: func(_ ...string) string {
+			key := "6s25p5ox5y14umn1p61aqyyvbvvl3lrt"
 			nowtime := time.Now().Unix()
 			r := randStr(6)
 			s := fmt.Sprintf("salt=%v&t=%v&r=%v", key, nowtime, r)
@@ -42,22 +42,25 @@ var MihoyoAPI = map[string]ApiConfig{
 		},
 		Referer:        "https://webstatic-sea.mihoyo.com/",
 		XRpcAppVersion: "1.5.0",
-		XRpClientType:  "4",
+		XRpClientType:  "5",
 		Client:         http.Client{Timeout: 10 * time.Second},
 		UseCache:       true,
+		UserAgent:      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
 	},
 }
 
 type ApiConfig struct {
-	FetchRoleIDURL    string
-	FetchRoleIndexURL string
-	Cookie            string
-	GetDs             func() string
-	Referer           string
-	XRpcAppVersion    string
-	XRpClientType     string
-	Client            http.Client
-	UseCache          bool
+	FetchRoleIDURL      string
+	FetchRoleIndexURL   string
+	FetchSpiralAbyssURL string
+	Cookie              string
+	GetDs               func(s ...string) string
+	Referer             string
+	XRpcAppVersion      string
+	XRpClientType       string
+	Client              http.Client
+	UseCache            bool
+	UserAgent           string
 }
 
 func (a *ApiConfig) httpGet(url string) ([]byte, error) {
@@ -70,7 +73,7 @@ func (a *ApiConfig) httpGet(url string) ([]byte, error) {
 	req.Header.Set("x-rpc-app_version", a.XRpcAppVersion)
 	req.Header.Set("x-rpc-client_type", a.XRpClientType)
 	req.Header.Set("x-rpc-language", "zh-cn")
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
+	req.Header.Set("User-Agent", a.UserAgent)
 	req.Header.Set("DS", a.GetDs())
 	resp, err := a.Client.Do(req)
 	if resp != nil {
@@ -144,7 +147,28 @@ func (a *ApiConfig) GetRoleIndex(gameId int, region string) (*Detail, error) {
 	}
 	var r Detail
 	if err := json.Unmarshal(b, &r); err != nil {
-		log.Println(string(b))
+		return nil, fmt.Errorf("GetRoleIndex: %w", err)
+	}
+	return &r, nil
+}
+
+func (a *ApiConfig) GetSpiralAbyss(gameId int, region string) (*Abyss, error) {
+	u, err := url.Parse(a.FetchSpiralAbyssURL)
+	if err != nil {
+		return nil, fmt.Errorf("GetRoleIndex: %w", err)
+	}
+	q := url.Values{}
+	q.Set("role_id", strconv.Itoa(gameId))
+	q.Set("server", region)
+	q.Set("schedule_type", "1")
+	u.RawQuery = q.Encode()
+
+	b, err := a.getSome(u.String(), 48*time.Hour)
+	if err != nil {
+		return nil, fmt.Errorf("GetRoleIndex: %w", err)
+	}
+	var r Abyss
+	if err := json.Unmarshal(b, &r); err != nil {
 		return nil, fmt.Errorf("GetRoleIndex: %w", err)
 	}
 	return &r, nil

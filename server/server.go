@@ -82,6 +82,13 @@ func more(cookie map[string][]string) httprouter.Handle {
 		fall = math.Trunc(fall+0.5) / 10
 		t.World = fmt.Sprintf("%v%%", fall)
 
+		a, err := c.GetSpiralAbyss(gameUid, server)
+		if err != nil {
+			httpErrf(w, err.Error(), -1, 500)
+			return
+		}
+		t.AbyssStars = getAbyssStars(a)
+
 		w.Header().Set("Content-Type", "image/svg+xml")
 		w.Header().Set("Cache-Control", "max-age=1200")
 		w.Write([]byte(t.Parse()))

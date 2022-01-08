@@ -35,6 +35,7 @@ type Card struct {
 	Achievement int
 	Wpiral      string
 	World       string
+	AbyssStars  int
 }
 
 func (c Card) Parse() string {
