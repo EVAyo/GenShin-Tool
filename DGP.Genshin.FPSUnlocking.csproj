@@ -6,6 +6,11 @@
     <Platforms>x64</Platforms>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework.TrimEnd(`0123456789.`))' == 'net'">
+    <!-- Properties for .NET Framework -->
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  
   <ItemGroup>
     <None Remove=".git" />
     <None Remove=".gitignore" />
