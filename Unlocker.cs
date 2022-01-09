@@ -43,16 +43,18 @@ namespace DGP.Genshin.FPSUnlocking
         /// </summary>
         /// <param name="gameProcess">游戏进程</param>
         /// <param name="targetFPS">目标fps</param>
-        public Unlocker(Process gameProcess,int targetFPS)
+        public Unlocker(Process gameProcess, int targetFPS)
         {
             if (!Environment.Is64BitProcess)
             {
                 throw new InvalidOperationException("无法在32位进程中使用 Unlocker");
             }
+
             if (targetFPS < 30 || targetFPS > 2000)
             {
                 throw new ArgumentOutOfRangeException(nameof(targetFPS));
             }
+
             TargetFPSBytes = BitConverter.GetBytes(targetFPS);
             this.gameProcess = gameProcess;
         }
@@ -67,7 +69,7 @@ namespace DGP.Genshin.FPSUnlocking
         public async Task<UnlockResult> StartProcessAndUnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondLimit = 10000, int adjustFpsMillisecondDelay = 2000)
         {
             bool result = gameProcess.Start();
-            if(result)
+            if (result)
             {
                 return await UnlockAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondLimit, adjustFpsMillisecondDelay);
             }
@@ -250,7 +252,7 @@ namespace DGP.Genshin.FPSUnlocking
                 return null;
             }
 
-            MODULEENTRY32 entry = new()
+            MODULEENTRY32 entry = new MODULEENTRY32()
             {
                 dwSize = Marshal.SizeOf(typeof(MODULEENTRY32))
             };

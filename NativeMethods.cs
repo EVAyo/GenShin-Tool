@@ -7,7 +7,7 @@ namespace DGP.Genshin.FPSUnlocking
     /// 本机方法
     /// P/Invoke codes
     /// </summary>
-    internal static class NativeMethods 
+    internal static class NativeMethods
     {
         [Flags]
         internal enum SnapshotFlags : uint
