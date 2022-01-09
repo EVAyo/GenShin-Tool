@@ -16,7 +16,7 @@ namespace DGP.Genshin.MiHoYoAPI.GameRole
 
         public bool Equals(UserGameRole? other)
         {
-            if(other is null)
+            if (other is null)
             {
                 return false;
             }
@@ -39,7 +39,7 @@ namespace DGP.Genshin.MiHoYoAPI.GameRole
             return Equals(obj as UserGameRole);
         }
 
-        public static bool operator ==(UserGameRole? left,UserGameRole? right)
+        public static bool operator ==(UserGameRole? left, UserGameRole? right)
         {
             if (left is null || right is null)
             {
