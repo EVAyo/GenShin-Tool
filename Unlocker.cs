@@ -95,10 +95,10 @@ namespace DGP.Genshin.FPSUnlocking
         /// </code>
         /// </summary>
         /// <param name="findModuleMillisecondsDelay">每次查找UnityPlayer的延时,默认100毫秒</param>
-        /// <param name="findModuleTimeMillisecondLimit">查找UnityPlayer的最大阈值,默认10000毫秒</param>
+        /// <param name="findModuleTimeMillisecondsLimit">查找UnityPlayer的最大阈值,默认10000毫秒</param>
         /// <param name="adjustFpsMillisecondDelay">每次循环调整的间隔时间，默认2000毫秒</param>
         /// <returns>解锁的结果</returns>
-        public async Task<UnlockResult> UnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondLimit = 10000, int adjustFpsMillisecondDelay = 2000)
+        public async Task<UnlockResult> UnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondsLimit = 10000, int adjustFpsMillisecondDelay = 2000)
         {
             if (isInvalid)
             {
@@ -110,7 +110,7 @@ namespace DGP.Genshin.FPSUnlocking
             }
 
             MODULEENTRY32? module;
-            module = await FindModuleContinuously(findModuleMillisecondsDelay, findModuleTimeMillisecondLimit);
+            module = await FindModuleContinuously(findModuleMillisecondsDelay, findModuleTimeMillisecondsLimit);
 
             if (module is null)
             {
@@ -141,7 +141,7 @@ namespace DGP.Genshin.FPSUnlocking
                 return UnlockResult.NoMatchedPatternFound;
             }
 
-            CalculateFpsOffset(unityPlayer, image, adr.Value);
+            CalculateFPSOffset(unityPlayer, image, adr.Value);
 
             while (true)
             {
@@ -165,7 +165,7 @@ namespace DGP.Genshin.FPSUnlocking
         /// <param name="unityPlayer">UnityPlayer的模块信息</param>
         /// <param name="image">游戏进程镜像</param>
         /// <param name="adr">adr 指令偏移</param>
-        private void CalculateFpsOffset(MODULEENTRY32 unityPlayer, byte[] image, uint adr)
+        private void CalculateFPSOffset(MODULEENTRY32 unityPlayer, byte[] image, uint adr)
         {
             uint rip = adr + 2;
             uint rel = BitConverter.ToUInt32(image, Convert.ToInt32(rip + 2));
@@ -178,13 +178,13 @@ namespace DGP.Genshin.FPSUnlocking
         /// 调用前需要确保 <see cref="gameProcess"/> 不为 null
         /// </summary>
         /// <param name="findModuleMillisecondsDelay">延迟</param>
-        /// <param name="findModuleTimeMillisecondLimit">上限</param>
+        /// <param name="findModuleTimeMillisecondsLimit">上限</param>
         /// <returns>模块</returns>
-        private async Task<MODULEENTRY32?> FindModuleContinuously(int findModuleMillisecondsDelay, int findModuleTimeMillisecondLimit)
+        private async Task<MODULEENTRY32?> FindModuleContinuously(int findModuleMillisecondsDelay, int findModuleTimeMillisecondsLimit)
         {
             MODULEENTRY32? module;
             Stopwatch watch = Stopwatch.StartNew();
-            TimeSpan timeLimit = TimeSpan.FromMilliseconds(findModuleTimeMillisecondLimit);
+            TimeSpan timeLimit = TimeSpan.FromMilliseconds(findModuleTimeMillisecondsLimit);
 
             //gameProcess 实际上可能为 null
             while ((module = FindModule(gameProcess.Id, "UnityPlayer.dll")) is null)
@@ -213,11 +213,9 @@ namespace DGP.Genshin.FPSUnlocking
             while (startAddr < endAddr)
             {
                 bool found = true;
-
                 for (uint i = 0; i < pattern.Length; i++)
                 {
                     byte code = source[startAddr + i];
-
                     if (pattern[i] != 0x2A && pattern[i] != code)
                     {
                         found = false;
@@ -252,11 +250,11 @@ namespace DGP.Genshin.FPSUnlocking
                 return null;
             }
 
-            MODULEENTRY32 entry = new MODULEENTRY32()
+            MODULEENTRY32 entry = new()
             {
                 dwSize = Marshal.SizeOf(typeof(MODULEENTRY32))
             };
-            //First module must be exe.Ignoring it.
+            //First module must be exe. Ignoring it.
             for (Module32First(snapshot, ref entry); Module32Next(snapshot, ref entry);)
             {
                 if (entry.th32ProcessID == processId && entry.szModule == moduleName)
