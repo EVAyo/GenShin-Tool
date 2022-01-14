@@ -9,6 +9,7 @@ namespace DGP.Genshin.FPSUnlocking
     /// <summary>
     /// FPS Unlocker
     /// 需要 .NET 进程为 64 位 才能正常使用
+    /// <para/>
     /// Credit to @Crskycode Github
     /// </summary>
     public class Unlocker
@@ -64,14 +65,14 @@ namespace DGP.Genshin.FPSUnlocking
         /// </summary>
         /// <param name="findModuleMillisecondsDelay">每次查找UnityPlayer的延时,默认100毫秒</param>
         /// <param name="findModuleTimeMillisecondLimit">查找UnityPlayer的最大阈值,默认10000毫秒</param>
-        /// <param name="adjustFpsMillisecondDelay">每次循环调整的间隔时间，默认2000毫秒</param>
+        /// <param name="adjustFpsMillisecondsDelay">每次循环调整的间隔时间，默认2000毫秒</param>
         /// <returns>解锁的结果</returns>
-        public async Task<UnlockResult> StartProcessAndUnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondLimit = 10000, int adjustFpsMillisecondDelay = 2000)
+        public async Task<UnlockResult> StartProcessAndUnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondLimit = 10000, int adjustFpsMillisecondsDelay = 2000)
         {
             bool result = gameProcess.Start();
             if (result)
             {
-                return await UnlockAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondLimit, adjustFpsMillisecondDelay);
+                return await UnlockAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondLimit, adjustFpsMillisecondsDelay);
             }
             else
             {
@@ -96,9 +97,9 @@ namespace DGP.Genshin.FPSUnlocking
         /// </summary>
         /// <param name="findModuleMillisecondsDelay">每次查找UnityPlayer的延时,默认100毫秒</param>
         /// <param name="findModuleTimeMillisecondsLimit">查找UnityPlayer的最大阈值,默认10000毫秒</param>
-        /// <param name="adjustFpsMillisecondDelay">每次循环调整的间隔时间，默认2000毫秒</param>
+        /// <param name="adjustFpsMillisecondsDelay">每次循环调整的间隔时间，默认2000毫秒</param>
         /// <returns>解锁的结果</returns>
-        public async Task<UnlockResult> UnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondsLimit = 10000, int adjustFpsMillisecondDelay = 2000)
+        public async Task<UnlockResult> UnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondsLimit = 10000, int adjustFpsMillisecondsDelay = 2000)
         {
             if (isInvalid)
             {
@@ -155,7 +156,7 @@ namespace DGP.Genshin.FPSUnlocking
                     fpsOffset = UIntPtr.Zero;
                     return UnlockResult.Ok;
                 }
-                await Task.Delay(adjustFpsMillisecondDelay);
+                await Task.Delay(adjustFpsMillisecondsDelay);
             }
         }
 
