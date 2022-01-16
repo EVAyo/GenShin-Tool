@@ -9,9 +9,9 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         {
             return new()
             {
-                LevelCurrent = this.LevelCurrent,
-                LevelTarget = this.LevelTarget,
-                Id = this.GroupId
+                LevelCurrent = LevelCurrent,
+                LevelTarget = LevelTarget,
+                Id = GroupId
             };
         }
     }

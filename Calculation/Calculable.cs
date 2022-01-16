@@ -21,9 +21,9 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         {
             return new()
             {
-                LevelCurrent = this.LevelCurrent,
-                LevelTarget = this.LevelTarget,
-                Id = this.Id
+                LevelCurrent = LevelCurrent,
+                LevelTarget = LevelTarget,
+                Id = Id
             };
         }
     }
