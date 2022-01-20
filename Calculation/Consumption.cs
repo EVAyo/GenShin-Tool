@@ -1,5 +1,5 @@
-﻿using DGP.Genshin.Common.Data.Behavior;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Snap.Data.Primitive;
 using System.Collections.Generic;
 
 namespace DGP.Genshin.MiHoYoAPI.Calculation

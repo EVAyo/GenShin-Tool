@@ -1,7 +1,7 @@
-﻿using DGP.Genshin.Common.Exceptions;
-using DGP.Genshin.Common.Request;
+﻿using DGP.Genshin.Common.Request;
 using DGP.Genshin.Common.Request.DynamicSecret;
 using DGP.Genshin.MiHoYoAPI.Record.Avatar;
+using Snap.Exception;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -106,7 +106,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
             List<Avatar.Avatar>? avatars = playerInfo.Avatars;
             var data = new
             {
-                character_ids = avatars?.Select(x => x.Id) ?? throw new SnapGenshinInternalException("avatars 不应为 null"),
+                character_ids = avatars?.Select(x => x.Id) ?? throw new UnexceptedNullException("avatars 不应为 null"),
                 role_id = uid,
                 server = server
             };

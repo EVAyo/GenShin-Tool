@@ -12,7 +12,7 @@ namespace DGP.Genshin.MiHoYoAPI
         public static string RemoveXmlFormat(this string s)
         {
             //color
-            s = new Regex(@"<color=.*?>").Replace(s, "");
+            s = Regex.Replace(s, @"<color=.*?>", "");
             s = s.Replace("</color>", "");
             //important mark
             s = s.Replace("<i>", "").Replace("</i>", "");
