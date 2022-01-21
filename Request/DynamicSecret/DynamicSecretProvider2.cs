@@ -3,7 +3,7 @@ using Snap.Data.Utility;
 using System;
 using System.Linq;
 
-namespace DGP.Genshin.Common.Request.DynamicSecret
+namespace DGP.Genshin.MiHoYoAPI.Request.DynamicSecret
 {
     /// <summary>
     /// 为MiHoYo接口请求器 <see cref="Requester"/> 提供2代动态密钥

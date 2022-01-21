@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DGP.Genshin.Common.Request
+namespace DGP.Genshin.MiHoYoAPI.Request
 {
     public class RequestOptions : Dictionary<string, string>
     {

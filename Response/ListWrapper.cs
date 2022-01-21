@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace DGP.Genshin.Common.Response
+namespace DGP.Genshin.MiHoYoAPI.Response
 {
     /// <summary>
     /// 列表对象包装器

@@ -1,4 +1,4 @@
-﻿using DGP.Genshin.Common.Response;
+﻿using DGP.Genshin.MiHoYoAPI.Response;
 using Snap.Core.Logging;
 using Snap.Data.Json;
 using System;
@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DGP.Genshin.Common.Request
+namespace DGP.Genshin.MiHoYoAPI.Request
 {
     /// <summary>
     /// MiHoYo API 专用请求器

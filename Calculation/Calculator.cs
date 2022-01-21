@@ -1,6 +1,6 @@
-﻿using DGP.Genshin.Common.Request;
-using DGP.Genshin.Common.Response;
-using DGP.Genshin.MiHoYoAPI.Calculation.Filter;
+﻿using DGP.Genshin.MiHoYoAPI.Calculation.Filter;
+using DGP.Genshin.MiHoYoAPI.Request;
+using DGP.Genshin.MiHoYoAPI.Response;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

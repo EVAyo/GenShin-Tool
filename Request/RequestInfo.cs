@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace DGP.Genshin.Common.Request
+namespace DGP.Genshin.MiHoYoAPI.Request
 {
     public class RequestInfo
     {

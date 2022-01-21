@@ -1,4 +1,4 @@
-﻿namespace DGP.Genshin.Common.Response
+﻿namespace DGP.Genshin.MiHoYoAPI.Response
 {
     public enum KnownReturnCode
     {

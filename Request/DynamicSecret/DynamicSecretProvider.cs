@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 
-namespace DGP.Genshin.Common.Request.DynamicSecret
+namespace DGP.Genshin.MiHoYoAPI.Request.DynamicSecret
 {
 
     /// <summary>

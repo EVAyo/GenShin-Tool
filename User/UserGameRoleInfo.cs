@@ -1,4 +1,4 @@
-﻿using DGP.Genshin.Common.Response;
+﻿using DGP.Genshin.MiHoYoAPI.Response;
 
 namespace DGP.Genshin.MiHoYoAPI.GameRole
 {

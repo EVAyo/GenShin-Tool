@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DGP.Genshin.Common.Response
+namespace DGP.Genshin.MiHoYoAPI.Response
 {
     /// <summary>
     /// 提供 <see cref="Response{T}"/> 的非泛型基类

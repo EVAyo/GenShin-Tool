@@ -1,6 +1,7 @@
-﻿using DGP.Genshin.Common.Request;
-using DGP.Genshin.Common.Request.DynamicSecret;
-using DGP.Genshin.Common.Response;
+﻿using DGP.Genshin.Common.Request.DynamicSecret;
+using DGP.Genshin.MiHoYoAPI.Request;
+using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
+using DGP.Genshin.MiHoYoAPI.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

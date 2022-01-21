@@ -1,6 +1,7 @@
-﻿using DGP.Genshin.Common.Request;
-using DGP.Genshin.Common.Request.DynamicSecret;
+﻿using DGP.Genshin.Common.Request.DynamicSecret;
 using DGP.Genshin.MiHoYoAPI.Record.Avatar;
+using DGP.Genshin.MiHoYoAPI.Request;
+using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
 using Snap.Exception;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
