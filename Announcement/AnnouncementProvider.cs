@@ -21,7 +21,11 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
 
         public async Task<List<AnnouncementContent>> GetAnnouncementContentsAsync()
         {
-            Requester requester = new();
+            Requester requester = new(new()
+            {
+                { "Accept", "*/*" },
+                { "Accept-Encoding", "gzip" }
+            }, useGZipCompression: true);
             Response<ListWrapper<AnnouncementContent>>? resp =
                 await requester.GetAsync<ListWrapper<AnnouncementContent>>(
                     $"{Hk4eApi}/common/hk4e_cn/announcement/api/getAnnContent?{Query}");

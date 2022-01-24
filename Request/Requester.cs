@@ -3,6 +3,7 @@ using Snap.Core.Logging;
 using Snap.Data.Json;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace DGP.Genshin.MiHoYoAPI.Request
     {
         // HttpClient is intended to be instantiated once per application, rather than per-use.
         private static readonly Lazy<HttpClient> LazyHttpClient = new(() => new() { Timeout = Timeout.InfiniteTimeSpan });
+        private static readonly Lazy<HttpClient> LazyGZipCompressionHttpClient = new(() => 
+        { return new(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip }) { Timeout = Timeout.InfiniteTimeSpan }; });
 
         public static Action<Exception, string, string>? ResponseFailedAction { get; set; }
         public RequestOptions Headers { get; set; } = new RequestOptions();
@@ -35,11 +38,23 @@ namespace DGP.Genshin.MiHoYoAPI.Request
             Headers = headers;
         }
 
+        /// <summary>
+        /// 构造一个新的 <see cref="Requester"/> 对象
+        /// </summary>
+        /// <param name="headers">请求头</param>
+        public Requester(RequestOptions headers,bool useGZipCompression)
+        {
+            Headers = headers;
+            UseGZipCompression = useGZipCompression;
+        }
+
+        public bool UseGZipCompression { get; }
+
         private async Task<Response<T>?> Request<T>(Func<HttpClient, RequestInfo> requestFunc)
         {
             RequestInfo? info = null;
 
-            HttpClient client = LazyHttpClient.Value;
+            HttpClient client = UseGZipCompression ? LazyGZipCompressionHttpClient.Value : LazyHttpClient.Value;
             client.DefaultRequestHeaders.Clear();
             foreach (KeyValuePair<string, string> entry in Headers)
             {
@@ -50,7 +65,8 @@ namespace DGP.Genshin.MiHoYoAPI.Request
             {
                 HttpResponseMessage response = await info.RequestAsyncFunc.Invoke();
                 HttpContent content = response.Content;
-                return Json.ToObject<Response<T>>(await content.ReadAsStringAsync());
+                string contentString = await content.ReadAsStringAsync();
+                return Json.ToObject<Response<T>>(contentString);
             }
             catch (Exception ex)
             {
