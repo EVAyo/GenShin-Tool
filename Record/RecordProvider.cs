@@ -1,5 +1,4 @@
-﻿using DGP.Genshin.Common.Request.DynamicSecret;
-using DGP.Genshin.MiHoYoAPI.Record.Avatar;
+﻿using DGP.Genshin.MiHoYoAPI.Record.Avatar;
 using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
 using Snap.Exception;
@@ -16,23 +15,22 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         private const string Referer = @"https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6";
 
         private readonly Requester requester;
-        private readonly string _cookie;
+
         /// <summary>
         /// 使用同一个提供器可用重复请求
         /// </summary>
         /// <param name="cookie"></param>
         public RecordProvider(string cookie)
         {
-            _cookie = cookie;
-            requester = new(new RequestOptions
+            requester = new(new()
             {
-                {"Accept", RequestOptions.Json },
-                {"x-rpc-app_version", DynamicSecretProvider2.AppVersion },
-                {"User-Agent", RequestOptions.CommonUA2161 },
-                {"x-rpc-client_type", "5" },
-                {"Referer",Referer },
-                {"Cookie", _cookie },
-                {"X-Requested-With", RequestOptions.Hyperion }
+                { "Accept", RequestOptions.Json },
+                { "x-rpc-app_version", DynamicSecretProvider2.AppVersion },
+                { "User-Agent", RequestOptions.CommonUA2161 },
+                { "x-rpc-client_type", "5" },
+                { "Referer", Referer },
+                { "Cookie", cookie },
+                { "X-Requested-With", RequestOptions.Hyperion }
             });
         }
 
@@ -82,15 +80,20 @@ namespace DGP.Genshin.MiHoYoAPI.Record
                 $@"{ApiTakumiRecord}/spiralAbyss?schedule_type={type}&server={server}&role_id={uid}");
         }
 
+        public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, SpiralAbyssType type)
+        {
+            return await GetSpiralAbyssAsync(uid, server, (int)type);
+        }
+
         /// <summary>
         /// 获取玩家活动信息
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="server"></param>
         /// <returns></returns>
-        public async Task<dynamic?> GetActivitiesAsync(string uid, string server)
+        public async Task<object?> GetActivitiesAsync(string uid, string server)
         {
-            return await requester.GetWhileUpdateDynamicSecret2Async<dynamic>(
+            return await requester.GetWhileUpdateDynamicSecret2Async<object>(
                 $@"{ApiTakumiRecord}/activities?server={server}&role_id={uid}");
         }
 
@@ -102,7 +105,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="playerInfo">玩家的基础信息</param>
         /// <returns></returns>
         [SuppressMessage("", "IDE0037")]
-        public async Task<DetailedAvatarInfo?> GetDetailAvaterInfoAsync(string uid, string server, PlayerInfo playerInfo)
+        public async Task<DetailedAvatarWrapper?> GetDetailAvaterInfoAsync(string uid, string server, PlayerInfo playerInfo)
         {
             List<Avatar.Avatar>? avatars = playerInfo.Avatars;
             var data = new
@@ -111,7 +114,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
                 role_id = uid,
                 server = server
             };
-            return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarInfo>(
+            return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarWrapper>(
                 $@"{ApiTakumiRecord}/character", data);
         }
     }

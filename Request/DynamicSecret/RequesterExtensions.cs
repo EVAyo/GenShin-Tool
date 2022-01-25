@@ -1,9 +1,7 @@
-﻿using DGP.Genshin.MiHoYoAPI.Request;
-using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
-using DGP.Genshin.MiHoYoAPI.Response;
+﻿using DGP.Genshin.MiHoYoAPI.Response;
 using System.Threading.Tasks;
 
-namespace DGP.Genshin.Common.Request.DynamicSecret
+namespace DGP.Genshin.MiHoYoAPI.Request.DynamicSecret
 {
     public static class RequesterExtensions
     {

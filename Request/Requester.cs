@@ -18,7 +18,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
     {
         // HttpClient is intended to be instantiated once per application, rather than per-use.
         private static readonly Lazy<HttpClient> LazyHttpClient = new(() => new() { Timeout = Timeout.InfiniteTimeSpan });
-        private static readonly Lazy<HttpClient> LazyGZipCompressionHttpClient = new(() => 
+        private static readonly Lazy<HttpClient> LazyGZipCompressionHttpClient = new(() =>
         { return new(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip }) { Timeout = Timeout.InfiniteTimeSpan }; });
 
         public static Action<Exception, string, string>? ResponseFailedAction { get; set; }
@@ -42,7 +42,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         /// 构造一个新的 <see cref="Requester"/> 对象
         /// </summary>
         /// <param name="headers">请求头</param>
-        public Requester(RequestOptions headers,bool useGZipCompression)
+        public Requester(RequestOptions headers, bool useGZipCompression)
         {
             Headers = headers;
             UseGZipCompression = useGZipCompression;
