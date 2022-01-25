@@ -2,6 +2,13 @@
 {
     public class AvatarWeapon
     {
+        public AvatarWeapon(int id, int level, int affixLevel)
+        {
+            Id = id;
+            Level = level;
+            AffixLevel = affixLevel;
+        }
+
         public int Id { get; set; }
         public int Level { get; set; }
         /// <summary>
