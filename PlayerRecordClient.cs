@@ -40,9 +40,9 @@ namespace DGP.Genshin.HutaoAPI
                 _ = spiralAbyssInfo ?? throw new UnexceptedNullException("获取用户深境螺旋信息失败");
 
                 PlayerRecord playerRecord = PlayerRecordBuilder.BuildPlayerRecord(role.GameUid, detailAvatars, spiralAbyssInfo);
-                this.Log(Json.Stringify(playerRecord));
-                Response<string>? resp = await requester.PostAsync<string>($"{HutaoAPIHost}/statistic/post", playerRecord);
-                results.Add(resp);
+                this.WriteToDesktopFile(Json.Stringify(playerRecord), $"{role.GameUid}.json");
+                //Response<string>? resp = await requester.PostAsync<string>($"{HutaoAPIHost}/statistic/post", playerRecord);
+                //results.Add(resp);
             }
             return results;
         }
