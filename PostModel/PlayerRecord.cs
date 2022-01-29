@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DGP.Genshin.HutaoAPI.Model
+namespace DGP.Genshin.HutaoAPI.PostModel
 {
     public class PlayerRecord
     {

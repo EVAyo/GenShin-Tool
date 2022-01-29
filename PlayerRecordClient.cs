@@ -1,4 +1,5 @@
-﻿using DGP.Genshin.HutaoAPI.Model;
+﻿using DGP.Genshin.HutaoAPI.GetModel;
+using DGP.Genshin.HutaoAPI.PostModel;
 using DGP.Genshin.MiHoYoAPI.GameRole;
 using DGP.Genshin.MiHoYoAPI.Record;
 using DGP.Genshin.MiHoYoAPI.Record.Avatar;
@@ -8,24 +9,22 @@ using DGP.Genshin.MiHoYoAPI.Response;
 using Snap.Core.Logging;
 using Snap.Data.Json;
 using Snap.Exception;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.HutaoAPI
 {
     public class PlayerRecordClient
     {
-        public const string HutaoAPIHost = "";
-        public async Task<List<Response?>> GetAllRecordsAndPostAsync(string cookie)
+        //snapgenshin.com is coming soon
+        private const string HutaoAPIHost = "https://snapgenshin-hutao-api2.irain.in";
+        public async Task<List<Response>> GetAllRecordsAndUploadAsync(string cookie)
         {
             RecordProvider recordProvider = new(cookie);
-            Requester requester = new();
-            List<Response?> results = new();
+            List<Response> results = new();
 
             List<UserGameRole> userGameRoles = await new UserGameRoleProvider(cookie).GetUserGameRolesAsync();
-            foreach(UserGameRole role in userGameRoles)
+            foreach (UserGameRole role in userGameRoles)
             {
                 _ = role.GameUid ?? throw new UnexceptedNullException("获取uid失败");
                 _ = role.Region ?? throw new UnexceptedNullException("获取server失败");
@@ -41,84 +40,75 @@ namespace DGP.Genshin.HutaoAPI
 
                 PlayerRecord playerRecord = PlayerRecordBuilder.BuildPlayerRecord(role.GameUid, detailAvatars, spiralAbyssInfo);
                 this.WriteToDesktopFile(Json.Stringify(playerRecord), $"{role.GameUid}.json");
-                //Response<string>? resp = await requester.PostAsync<string>($"{HutaoAPIHost}/statistic/post", playerRecord);
-                //results.Add(resp);
+                Response<string>? resp = await AuthRequester
+                    .PostWithContentTypeAsync<string>($"{HutaoAPIHost}/Record/Upload", playerRecord, "text/json");
+                results.Add(resp ?? new Response()
+                {
+                    ReturnCode = (int)KnownReturnCode.InternalFailure,
+                    Message = $"UID:{role.GameUid} 的记录提交失败。"
+                });
             }
             return results;
         }
-    }
 
-    internal static class PlayerRecordBuilder
-    {
+        private Requester AuthRequester { get; set; } = new();
+
+        private class Token
+        {
+            public string? AccessToken { get; set; }
+        }
         /// <summary>
-        /// 表示一个对 <see cref="T"/> 类型的计数器
+        /// 登录获取token
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        private class CounterOf<T> : Dictionary<int, T> { }
-        private class FloorIndexedLevel
+        /// <returns></returns>
+        public async Task InitializeAsync()
         {
-            public FloorIndexedLevel(int floorIndex, Level level)
-            {
-                FloorIndex = floorIndex;
-                Level = level;
-            }
-
-            public int FloorIndex { get; set; }
-            public Level Level { get; set; }
-        }
-
-        internal static PlayerRecord BuildPlayerRecord(string uid, DetailedAvatarWrapper detailAvatars, SpiralAbyss spiralAbyss)
-        {
-            _ = detailAvatars.Avatars ?? throw new UnexceptedNullException("角色信息不应为 null");
-            List<PlayerAvatar> playerAvatars = detailAvatars.Avatars
-                .Select(avatar => new PlayerAvatar(
-                    avatar.Id,
-                    avatar.Level,
-                    avatar.ActivedConstellationNum,
-                    BuildAvatarWeapon(avatar.Weapon),
-                    BuildAvatarReliquarySets(avatar.Reliquaries)))
-                .ToList();
-
-            _ = spiralAbyss.Floors ?? throw new UnexceptedNullException("层信息不应为 null");
-            List<PlayerSpiralAbyssLevel> playerSpiralAbyssLevels = spiralAbyss.Floors
-                .SelectMany(f => f.Levels!, (f, level) => new FloorIndexedLevel(f.Index, level))
-                .Select(indexedLevel => new PlayerSpiralAbyssLevel(
-                    indexedLevel.FloorIndex,
-                    indexedLevel.Level.Index,
-                    indexedLevel.Level.Star,
-                    indexedLevel.Level.Battles!
-                    .Select(b => new PlayerSpiralAbyssBattle(
-                        b.Index, 
-                        b.Avatars!.Select(a => a.Id).ToList()))
-                    .ToList()))
-                .ToList();
-
-            PlayerRecord playerRecord = new(uid, playerAvatars, playerSpiralAbyssLevels);
-            return playerRecord;
-        }
-        private static AvatarWeapon BuildAvatarWeapon(Weapon? weapon)
-        {
-            _ = weapon ?? throw new UnexceptedNullException("weapon 不应为 null");
-            return new(weapon.Id, weapon.Level, weapon.AffixLevel);
-        }
-        private static List<AvatarReliquarySet> BuildAvatarReliquarySets(List<Reliquary>? reliquaries)
-        {
-            _ = reliquaries ?? throw new UnexceptedNullException("reliquaries 不应为 null");
-            CounterOf<int> reliquarySetId = new();
-            foreach(Reliquary reliquary in reliquaries)
-            {
-                if(reliquary.ReliquarySet is not null)
+            Response<Token>? resp = await new Requester()
+                .PostWithContentTypeAsync<Token>($"{HutaoAPIHost}/Auth/Login",
+                //registered from /Auth/Register
+                new
                 {
-                    reliquarySetId[reliquary.ReliquarySet.Id] = reliquarySetId.ContainsKey(reliquary.ReliquarySet.Id) 
-                        ? reliquarySetId[reliquary.ReliquarySet.Id] + 1 
-                        : 1;
-                }
+                    appid = "08d9e212-0cb3-4d71-8ed7-003606da7b20",
+                    secret = "7ueWgZGn53dDhrm8L5ZRw+YWfOeSWtgQmJWquRgaygw="
+                }, "text/json");
+            if (resp?.Data?.AccessToken is not null)
+            {
+                AuthRequester = new() { UseAuthToken = true, AuthToken = resp.Data.AccessToken };
             }
-            //含有2件套以上的套装
-            return reliquarySetId.Keys.Any(k => k >= 2)
-                ? reliquarySetId.Select(kvp => new AvatarReliquarySet(kvp.Key, kvp.Value)).ToList()
-                : (new());
+            else
+            {
+                throw new SnapGenshinInternalException("请求胡桃API访问权限时发生错误");
+            }
+        }
+        public async Task<Overview?> GetOverviewAsync()
+        {
+            Response<Overview>? resp = await AuthRequester
+                .GetAsync<Overview>($"{HutaoAPIHost}/Statistics/Overview");
+            return resp?.Data;
+        }
+        public async Task<IEnumerable<AvatarParticipation>> GetAvatarParticipationsAsync()
+        {
+            Response<IEnumerable<AvatarParticipation>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<AvatarParticipation>>($"{HutaoAPIHost}/Statistics/AvatarParticipation");
+            return resp?.Data ?? new List<AvatarParticipation>();
+        }
+        public async Task<IEnumerable<AvatarReliquaryUsage>> GetAvatarReliquaryUsagesAsync()
+        {
+            Response<IEnumerable<AvatarReliquaryUsage>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<AvatarReliquaryUsage>>($"{HutaoAPIHost}/Statistics/AvatarReliquaryUsage");
+            return resp?.Data ?? new List<AvatarReliquaryUsage>();
+        }
+        public async Task<IEnumerable<TeamCollocation>> GetTeamCollocationsAsync()
+        {
+            Response<IEnumerable<TeamCollocation>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<TeamCollocation>>($"{HutaoAPIHost}/Statistics/TeamCollocation");
+            return resp?.Data ?? new List<TeamCollocation>();
+        }
+        public async Task<IEnumerable<WeaponUsage>> GetWeaponUsagesAsync()
+        {
+            Response<IEnumerable<WeaponUsage>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<WeaponUsage>>($"{HutaoAPIHost}/Statistics/WeaponUsage");
+            return resp?.Data ?? new List<WeaponUsage>();
         }
     }
-
 }

@@ -1,12 +1,10 @@
-﻿using DGP.Genshin.MiHoYoAPI.Record.Avatar;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace DGP.Genshin.HutaoAPI.Model
+namespace DGP.Genshin.HutaoAPI.PostModel
 {
     public class PlayerAvatar
     {
-        public PlayerAvatar(int id, int level, int activedConstellationNum,AvatarWeapon weapon, List<AvatarReliquarySet> reliquarySets)
+        public PlayerAvatar(int id, int level, int activedConstellationNum, AvatarWeapon weapon, List<AvatarReliquarySet> reliquarySets)
         {
             Id = id;
             Level = level;
