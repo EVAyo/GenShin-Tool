@@ -3,10 +3,13 @@ using System.Collections.Generic;
 
 namespace DGP.Genshin.MiHoYoAPI.Calculation.Filter
 {
-    public class AvatarIdFilter
+    public class WeaponIdFilter
     {
-        [JsonProperty("element_attr_ids")] public List<int>? ElementAttrIds { get; set; } = new();
-        [JsonProperty("weapon_cat_ids")] public List<int>? WeaponCatIds { get; set; } = new();
+        /// <summary>
+        /// 武器稀有度
+        /// </summary>
+        [JsonProperty("weapon_levels")] public List<int>? WeaponLevels { get; set; } = new();
+        [JsonProperty("weapon_cat_ids")] public List<int>? WeaponCatIds { get; set; }
         [JsonProperty("page")] public int Page { get; set; }
         /// <summary>
         /// 请求页的尺寸，默认20

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,7 +49,10 @@ namespace DGP.Genshin.MiHoYoAPI.Request
             UseGZipCompression = useGZipCompression;
         }
 
+
         public bool UseGZipCompression { get; }
+        public bool UseAuthToken { get; set; }
+        public string? AuthToken { get; set; }
 
         private async Task<Response<T>?> Request<T>(Func<HttpClient, RequestInfo> requestFunc)
         {
@@ -56,11 +60,19 @@ namespace DGP.Genshin.MiHoYoAPI.Request
 
             HttpClient client = UseGZipCompression ? LazyGZipCompressionHttpClient.Value : LazyHttpClient.Value;
             client.DefaultRequestHeaders.Clear();
+
+            if (UseAuthToken)
+            {
+                client.DefaultRequestHeaders.Authorization = new("Bearer", AuthToken);
+            }
+
             foreach (KeyValuePair<string, string> entry in Headers)
             {
                 client.DefaultRequestHeaders.Add(entry.Key, entry.Value);
             }
+
             info = requestFunc(client);
+
             try
             {
                 HttpResponseMessage response = await info.RequestAsyncFunc.Invoke();
@@ -107,6 +119,21 @@ namespace DGP.Genshin.MiHoYoAPI.Request
             this.Log($"POST {url?.Split('?')[0]} with\n{dataString}");
             return url is null ? null : await Request<T>(client =>
             new RequestInfo("POST", url, () => client.PostAsync(url, new StringContent(dataString))));
+        }
+
+        /// <summary>
+        /// POST 操作,Content-Type
+        /// </summary>
+        /// <typeparam name="T">返回的类类型</typeparam>
+        /// <param name="url">地址</param>
+        /// <param name="data">要发送的.NET（匿名）对象</param>
+        /// <returns>响应</returns>
+        public async Task<Response<T>?> PostWithContentTypeAsync<T>(string? url, object data, string contentType)
+        {
+            string dataString = Json.Stringify(data);
+            this.Log($"POST {url?.Split('?')[0]} with\n{dataString}");
+            return url is null ? null : await Request<T>(client =>
+            new RequestInfo("POST", url, () => client.PostAsync(url, new StringContent(dataString, Encoding.UTF8, contentType))));
         }
     }
 }

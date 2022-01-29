@@ -12,7 +12,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         /// </summary>
         public const string CommonUA2161 = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) miHoYoBBS/2.16.1";
         public static readonly string DeviceId = Guid.NewGuid().ToString("D");
-        public const string Json = @"application/json";
+        public const string Json = "application/json";
         public const string Hyperion = "com.mihoyo.hyperion";
     }
 }

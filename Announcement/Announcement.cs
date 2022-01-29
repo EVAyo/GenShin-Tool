@@ -13,6 +13,7 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
         [JsonProperty("start_time")] public DateTime StartTime { get; set; }
         [JsonProperty("end_time")] public DateTime EndTime { get; set; }
 
+        #region inject
         public ICommand? OpenAnnouncementUICommand { get; set; }
         public bool ShouldShowTimeDescription => Type == 1;
         public string TimeDescription
@@ -28,10 +29,28 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
                 else
                 {
                     TimeSpan span = EndTime - now;
-                    return $"{(int)span.Duration().TotalDays} 天{(span < TimeSpan.Zero ? "前" : "后")}结束";
+                    return $"{(int)span.TotalDays} 天后结束";
                 }
             }
         }
+        public bool ShouldShowTimePrecent => ShouldShowTimeDescription && (TimePercent > 0 && TimePercent < 1);
+
+        private double timePercent;
+        public double TimePercent
+        {
+            get
+            {
+                if (timePercent == 0)
+                {
+                    TimeSpan current = DateTime.UtcNow - StartTime;
+                    TimeSpan total = EndTime - StartTime;
+                    timePercent = current / total;
+                }
+                return timePercent;
+            }
+        }
+        #endregion
+
         [JsonProperty("type")] public int Type { get; set; }
         [JsonProperty("remind")] public int Remind { get; set; }
         [JsonProperty("alert")] public int Alert { get; set; }
