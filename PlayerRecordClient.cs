@@ -6,8 +6,6 @@ using DGP.Genshin.MiHoYoAPI.Record.Avatar;
 using DGP.Genshin.MiHoYoAPI.Record.SpiralAbyss;
 using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Response;
-using Snap.Core.Logging;
-using Snap.Data.Json;
 using Snap.Exception;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,7 +37,7 @@ namespace DGP.Genshin.HutaoAPI
                 _ = spiralAbyssInfo ?? throw new UnexceptedNullException("获取用户深境螺旋信息失败");
 
                 PlayerRecord playerRecord = PlayerRecordBuilder.BuildPlayerRecord(role.GameUid, detailAvatars, spiralAbyssInfo);
-                this.WriteToDesktopFile(Json.Stringify(playerRecord), $"{role.GameUid}.json");
+                //this.WriteToDesktopFile(Json.Stringify(playerRecord), $"{role.GameUid}.json");
                 Response<string>? resp = await AuthRequester
                     .PostWithContentTypeAsync<string>($"{HutaoAPIHost}/Record/Upload", playerRecord, "text/json");
                 results.Add(resp ?? new Response()
