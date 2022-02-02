@@ -7,6 +7,7 @@ using DGP.Genshin.MiHoYoAPI.Record.SpiralAbyss;
 using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Response;
 using Snap.Exception;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,10 +17,10 @@ namespace DGP.Genshin.HutaoAPI
     {
         //snapgenshin.com is coming soon
         private const string HutaoAPIHost = "https://snapgenshin-hutao-api2.irain.in";
-        public async Task<List<Response>> GetAllRecordsAndUploadAsync(string cookie)
+        public async Task GetAllRecordsAndUploadAsync(string cookie,
+            Func<PlayerRecord, Task<bool>> confirmAsyncFunc, Func<Response, Task> resultAsyncFunc)
         {
             RecordProvider recordProvider = new(cookie);
-            List<Response> results = new();
 
             List<UserGameRole> userGameRoles = await new UserGameRoleProvider(cookie).GetUserGameRolesAsync();
             foreach (UserGameRole role in userGameRoles)
@@ -37,16 +38,17 @@ namespace DGP.Genshin.HutaoAPI
                 _ = spiralAbyssInfo ?? throw new UnexceptedNullException("获取用户深境螺旋信息失败");
 
                 PlayerRecord playerRecord = PlayerRecordBuilder.BuildPlayerRecord(role.GameUid, detailAvatars, spiralAbyssInfo);
-                //this.WriteToDesktopFile(Json.Stringify(playerRecord), $"{role.GameUid}.json");
-                Response<string>? resp = await AuthRequester
-                    .PostWithContentTypeAsync<string>($"{HutaoAPIHost}/Record/Upload", playerRecord, "text/json");
-                results.Add(resp ?? new Response()
+                if (await confirmAsyncFunc.Invoke(playerRecord))
                 {
-                    ReturnCode = (int)KnownReturnCode.InternalFailure,
-                    Message = $"UID:{role.GameUid} 的记录提交失败。"
-                });
+                    Response<string>? resp = await AuthRequester
+                        .PostWithContentTypeAsync<string>($"{HutaoAPIHost}/Record/Upload", playerRecord, "text/json");
+                    await resultAsyncFunc.Invoke(resp ?? new Response()
+                    {
+                        ReturnCode = (int)KnownReturnCode.InternalFailure,
+                        Message = $"UID:{role.GameUid} 的记录提交失败。"
+                    });
+                }
             }
-            return results;
         }
 
         private Requester AuthRequester { get; set; } = new();
