@@ -30,9 +30,15 @@ namespace DGP.Genshin.FPSUnlocking
         private bool isInvalid = false;
 
         /// <summary>
-        /// 目标FPS
+        /// 目标FPS,运行动态设置以动态更改帧率
         /// </summary>
-        public byte[] TargetFPSBytes { get; }
+        public int TargetFPS
+        {
+            get;
+            set;
+        }
+
+        private byte[] TargetFPSBytes { get => BitConverter.GetBytes(TargetFPS); }
 
         /// <summary>
         /// 构造一个新的 <see cref="Unlocker"/> 对象，
@@ -56,7 +62,7 @@ namespace DGP.Genshin.FPSUnlocking
                 throw new ArgumentOutOfRangeException(nameof(targetFPS));
             }
 
-            TargetFPSBytes = BitConverter.GetBytes(targetFPS);
+            TargetFPS = targetFPS;
             this.gameProcess = gameProcess;
         }
 
