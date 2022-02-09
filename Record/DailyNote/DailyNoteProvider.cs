@@ -42,11 +42,11 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// 开关实时便笺
         /// </summary>
         /// <param name="isPublic">开关状态</param>
-        /// <returns></returns>
-        public async Task<dynamic?> ChangeDailyNoteDataSwitchAsync(bool isPublic)
+        /// <returns>empty object</returns>
+        public async Task<object?> ChangeDailyNoteDataSwitchAsync(bool isPublic)
         {
             var data = new { is_public = isPublic, switch_id = "3", game_id = "2" };
-            return await requester.PostWhileUpdateDynamicSecret2Async<dynamic>(
+            return await requester.PostWhileUpdateDynamicSecret2Async<object>(
                 $"{ApiTakumi}/game_record/app/card/wapi/changeDataSwitch", data);
         }
     }
