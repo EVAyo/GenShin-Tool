@@ -3,14 +3,12 @@
 namespace DGP.Genshin.HutaoAPI.GetModel
 {
     /// <summary>
-    /// 圣遗物配置数据
+    /// 命座比例
     /// </summary>
-    public class AvatarReliquaryUsage
+    public class AvatarConstellationNum
     {
         public int Avatar { get; set; }
-        public IEnumerable<Rate<string>> ReliquaryUsage { get; set; } = null!;
+
+        public IEnumerable<Rate<int>> Rate { get; set; } = null!;
     }
-
-
-
 }

@@ -28,7 +28,7 @@ namespace DGP.Genshin.HutaoAPI
 
         internal static PlayerRecord BuildPlayerRecord(string uid, DetailedAvatarWrapper detailAvatars, SpiralAbyss spiralAbyss)
         {
-            _ = detailAvatars.Avatars ?? throw new UnexceptedNullException("角色信息不应为 null");
+            _ = detailAvatars.Avatars ?? throw new UnexpectedNullException("角色信息不应为 null");
             List<PlayerAvatar> playerAvatars = detailAvatars.Avatars
                 .Select(avatar => new PlayerAvatar(
                     avatar.Id,
@@ -38,7 +38,7 @@ namespace DGP.Genshin.HutaoAPI
                     BuildAvatarReliquarySets(avatar.Reliquaries)))
                 .ToList();
 
-            _ = spiralAbyss.Floors ?? throw new UnexceptedNullException("层信息不应为 null");
+            _ = spiralAbyss.Floors ?? throw new UnexpectedNullException("层信息不应为 null");
             List<PlayerSpiralAbyssLevel> playerSpiralAbyssLevels = spiralAbyss.Floors
                 .SelectMany(f => f.Levels!, (f, level) => new FloorIndexedLevel(f.Index, level))
                 .Select(indexedLevel => new PlayerSpiralAbyssLevel(
@@ -57,12 +57,12 @@ namespace DGP.Genshin.HutaoAPI
         }
         private static AvatarWeapon BuildAvatarWeapon(Weapon? weapon)
         {
-            _ = weapon ?? throw new UnexceptedNullException("weapon 不应为 null");
+            _ = weapon ?? throw new UnexpectedNullException("weapon 不应为 null");
             return new(weapon.Id, weapon.Level, weapon.AffixLevel);
         }
         private static List<AvatarReliquarySet> BuildAvatarReliquarySets(List<Reliquary>? reliquaries)
         {
-            _ = reliquaries ?? throw new UnexceptedNullException("reliquaries 不应为 null");
+            _ = reliquaries ?? throw new UnexpectedNullException("reliquaries 不应为 null");
             CounterOf<int> reliquarySetId = new();
             foreach (Reliquary reliquary in reliquaries)
             {
@@ -79,5 +79,4 @@ namespace DGP.Genshin.HutaoAPI
                 : (new());
         }
     }
-
 }
