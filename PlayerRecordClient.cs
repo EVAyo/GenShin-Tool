@@ -7,6 +7,7 @@ using DGP.Genshin.MiHoYoAPI.Record.SpiralAbyss;
 using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Response;
 using Snap.Exception;
+using Snap.Extenion.Enumerable;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,10 +114,13 @@ namespace DGP.Genshin.HutaoAPI
         public async Task<Response<string>?> UploadItemsAsync(DetailedAvatarWrapper detailedAvatar)
         {
             IEnumerable<GenshinItem>? avatars = detailedAvatar.Avatars?
-                .Select(avatar => new GenshinItem(avatar.Id, avatar.Name, avatar.Icon));
+                .Select(avatar => new GenshinItem(avatar.Id, avatar.Name, avatar.Icon))
+                .DistinctBy(item => item.Id);
             IEnumerable<GenshinItem>? weapons = detailedAvatar.Avatars?
                 .Select(avatar => avatar.Weapon)
-                .Select(weapon => new GenshinItem(weapon!.Id, weapon.Name, weapon.Icon));
+                .NotNull()
+                .Select(weapon => new GenshinItem(weapon.Id, weapon.Name, weapon.Icon))
+                .DistinctBy(item => item.Id);
             IEnumerable<GenshinItem>? reliquaries = detailedAvatar.Avatars?
                 .Select(avatars => avatars.Reliquaries)
                 .SelectMany(reliquaries => reliquaries!)
@@ -134,19 +138,19 @@ namespace DGP.Genshin.HutaoAPI
         {
             Response<IEnumerable<GenshinItem>>? resp = await AuthRequester
                 .GetAsync<IEnumerable<GenshinItem>>($"{HutaoAPIHost}/GenshinItems/Avatars");
-            return resp?.Data ?? Enumerable.Empty<GenshinItem>();
+            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<GenshinItem>();
         }
         public async Task<IEnumerable<GenshinItem>> GetWeaponMapAsync()
         {
             Response<IEnumerable<GenshinItem>>? resp = await AuthRequester
                 .GetAsync<IEnumerable<GenshinItem>>($"{HutaoAPIHost}/GenshinItems/Weapons");
-            return resp?.Data ?? Enumerable.Empty<GenshinItem>();
+            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<GenshinItem>();
         }
         public async Task<IEnumerable<GenshinItem>> GetReliquaryMapAsync()
         {
             Response<IEnumerable<GenshinItem>>? resp = await AuthRequester
                 .GetAsync<IEnumerable<GenshinItem>>($"{HutaoAPIHost}/GenshinItems/Reliquaries");
-            return resp?.Data ?? Enumerable.Empty<GenshinItem>();
+            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<GenshinItem>();
         }
 
         public async Task<IEnumerable<AvatarConstellationNum>> GetAvatarConstellationsAsync()

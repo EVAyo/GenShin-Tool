@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Snap.Exception\Snap.Exception.csproj" />
+    <ProjectReference Include="..\Common\Snap.Extension.Enumerable\Snap.Extension.Enumerable.csproj" />
     <ProjectReference Include="..\DGP.Genshin.MiHoYoAPI\DGP.Genshin.MiHoYoAPI.csproj" />
   </ItemGroup>
 
