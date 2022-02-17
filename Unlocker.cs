@@ -25,7 +25,7 @@ namespace DGP.Genshin.FPSUnlocking
         private readonly Process gameProcess;
 
         /// <summary>
-        /// 当前解锁器是否有效
+        /// 当前解锁器是否无效
         /// </summary>
         private bool isInvalid = false;
 
