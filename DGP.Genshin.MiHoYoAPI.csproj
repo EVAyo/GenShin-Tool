@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Common\Snap.Core.Logging\Snap.Core.Logging.csproj" />
     <ProjectReference Include="..\Common\Snap.Data.Json\Snap.Data.Json.csproj" />
     <ProjectReference Include="..\Common\Snap.Data.Primitive\Snap.Data.Primitive.csproj" />

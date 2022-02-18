@@ -17,6 +17,19 @@ namespace DGP.Genshin.MiHoYoAPI.Response
         {
             return $"状态：{ReturnCode} | 信息：{Message}";
         }
+
+        public static bool IsOk(Response? response)
+        {
+            return response?.ReturnCode == 0;
+        }
+        public static Response CreateFail(string message)
+        {
+            return new Response()
+            {
+                ReturnCode = (int)KnownReturnCode.InternalFailure,
+                Message = message
+            };
+        }
     }
 
     /// <summary>
