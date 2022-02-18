@@ -1,6 +1,8 @@
-﻿namespace DGP.Genshin.HutaoAPI.GetModel
+﻿using System;
+
+namespace DGP.Genshin.HutaoAPI.GetModel
 {
-    public class Rate<T>
+    public record Rate<T>
     {
         public T? Id { get; set; }
         public double Value { get; set; }

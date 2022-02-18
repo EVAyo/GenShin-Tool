@@ -18,6 +18,8 @@ namespace DGP.Genshin.HutaoAPI
     public class PlayerRecordClient
     {
         private const string HutaoAPIHost = "https://hutao-api.snapgenshin.com";
+        private const string ContentType = "text/json";
+
         private class Token
         {
             public string? AccessToken { get; set; }
@@ -33,7 +35,7 @@ namespace DGP.Genshin.HutaoAPI
         {
             //Please contract us for new token
             AuthToken token = new("08d9e212-0cb3-4d71-8ed7-003606da7b20", "7ueWgZGn53dDhrm8L5ZRw+YWfOeSWtgQmJWquRgaygw=");
-            Response<Token>? resp = await new Requester().PostWithContentTypeAsync<Token>($"{HutaoAPIHost}/Auth/Login", token , "text/json");
+            Response<Token>? resp = await new Requester().PostWithContentTypeAsync<Token>($"{HutaoAPIHost}/Auth/Login", token , ContentType);
             AuthRequester = resp?.Data?.AccessToken is not null
                 ? (new() { UseAuthToken = true, AuthToken = resp.Data.AccessToken })
                 : throw new SnapGenshinInternalException("请求胡桃API权限时发生错误");
@@ -62,16 +64,11 @@ namespace DGP.Genshin.HutaoAPI
                 if (await confirmAsyncFunc.Invoke(playerRecord))
                 {
                     Response<string>? resp = null;
-                    Response<string>? itemResp = await UploadItemsAsync(detailAvatars);
-                    if (itemResp?.ReturnCode == 0)
+                    if (Response.IsOk(await UploadItemsAsync(detailAvatars)))
                     {
-                        resp = await AuthRequester.PostWithContentTypeAsync<string>($"{HutaoAPIHost}/Record/Upload", playerRecord, "text/json");
+                        resp = await AuthRequester.PostWithContentTypeAsync<string>($"{HutaoAPIHost}/Record/Upload", playerRecord, ContentType);
                     }
-                    await resultAsyncFunc.Invoke(resp ?? new Response()
-                    {
-                        ReturnCode = (int)KnownReturnCode.InternalFailure,
-                        Message = $"{role.GameUid}-记录提交失败。"
-                    });
+                    await resultAsyncFunc.Invoke(resp ?? Response.CreateFail($"{role.GameUid}-记录提交失败。"));
                 }
             }
         }
@@ -113,44 +110,44 @@ namespace DGP.Genshin.HutaoAPI
         #region V2 API
         public async Task<Response<string>?> UploadItemsAsync(DetailedAvatarWrapper detailedAvatar)
         {
-            IEnumerable<GenshinItem>? avatars = detailedAvatar.Avatars?
-                .Select(avatar => new GenshinItem(avatar.Id, avatar.Name, avatar.Icon))
+            IEnumerable<HutaoItem>? avatars = detailedAvatar.Avatars?
+                .Select(avatar => new HutaoItem(avatar.Id, avatar.Name, avatar.Icon))
                 .DistinctBy(item => item.Id);
-            IEnumerable<GenshinItem>? weapons = detailedAvatar.Avatars?
+            IEnumerable<HutaoItem>? weapons = detailedAvatar.Avatars?
                 .Select(avatar => avatar.Weapon)
                 .NotNull()
-                .Select(weapon => new GenshinItem(weapon.Id, weapon.Name, weapon.Icon))
+                .Select(weapon => new HutaoItem(weapon.Id, weapon.Name, weapon.Icon))
                 .DistinctBy(item => item.Id);
-            IEnumerable<GenshinItem>? reliquaries = detailedAvatar.Avatars?
+            IEnumerable<HutaoItem>? reliquaries = detailedAvatar.Avatars?
                 .Select(avatars => avatars.Reliquaries)
                 .SelectMany(reliquaries => reliquaries!)
                 .Where(relic => relic.Position == 1)
-                .Select(relic => new GenshinItem(relic.ReliquarySet!.Id, relic.ReliquarySet.Name, relic.Icon))
+                .Select(relic => new HutaoItem(relic.ReliquarySet!.Id, relic.ReliquarySet.Name, relic.Icon))
                 .DistinctBy(item => item.Id);
 
             GenshinItemWrapper? data = new() { Avatars = avatars, Weapons = weapons, Reliquaries = reliquaries };
 
             return await AuthRequester
-                        .PostWithContentTypeAsync<string>($"{HutaoAPIHost}​/GenshinItems/Upload", data, "text/json");
+                        .PostWithContentTypeAsync<string>($"{HutaoAPIHost}​/GenshinItems/Upload", data, ContentType);
         }
 
-        public async Task<IEnumerable<GenshinItem>> GetAvatarMapAsync()
+        public async Task<IEnumerable<HutaoItem>> GetAvatarMapAsync()
         {
-            Response<IEnumerable<GenshinItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<GenshinItem>>($"{HutaoAPIHost}/GenshinItems/Avatars");
-            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<GenshinItem>();
+            Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Avatars");
+            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
         }
-        public async Task<IEnumerable<GenshinItem>> GetWeaponMapAsync()
+        public async Task<IEnumerable<HutaoItem>> GetWeaponMapAsync()
         {
-            Response<IEnumerable<GenshinItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<GenshinItem>>($"{HutaoAPIHost}/GenshinItems/Weapons");
-            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<GenshinItem>();
+            Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Weapons");
+            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
         }
-        public async Task<IEnumerable<GenshinItem>> GetReliquaryMapAsync()
+        public async Task<IEnumerable<HutaoItem>> GetReliquaryMapAsync()
         {
-            Response<IEnumerable<GenshinItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<GenshinItem>>($"{HutaoAPIHost}/GenshinItems/Reliquaries");
-            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<GenshinItem>();
+            Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Reliquaries");
+            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
         }
 
         public async Task<IEnumerable<AvatarConstellationNum>> GetAvatarConstellationsAsync()

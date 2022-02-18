@@ -1,13 +1,16 @@
 ﻿namespace DGP.Genshin.HutaoAPI.PostModel
 {
-    public class GenshinItem
+    public class HutaoItem
     {
-        public GenshinItem()
+        /// <summary>
+        /// 需要默认构造器以执行json反序列化
+        /// </summary>
+        public HutaoItem()
         {
 
         }
 
-        public GenshinItem(int id, string? name, string? url)
+        public HutaoItem(int id, string? name, string? url)
         {
             Id = id;
             Name = name;
