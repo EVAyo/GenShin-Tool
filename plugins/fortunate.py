@@ -40,7 +40,7 @@ async def set_fortunate_img(client: Client, message: Message):
     if name == '':
         name = 'random'
     else:
-        name, temp = get_character(name)
+        name, temp = await get_character(name)
         if not temp:
             await message.reply(name, quote=True)
             return
