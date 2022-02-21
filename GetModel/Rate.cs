@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DGP.Genshin.HutaoAPI.GetModel
+﻿namespace DGP.Genshin.HutaoAPI.GetModel
 {
     public record Rate<T>
     {

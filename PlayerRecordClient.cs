@@ -35,7 +35,7 @@ namespace DGP.Genshin.HutaoAPI
         {
             //Please contract us for new token
             AuthToken token = new("08d9e212-0cb3-4d71-8ed7-003606da7b20", "7ueWgZGn53dDhrm8L5ZRw+YWfOeSWtgQmJWquRgaygw=");
-            Response<Token>? resp = await new Requester().PostWithContentTypeAsync<Token>($"{HutaoAPIHost}/Auth/Login", token , ContentType);
+            Response<Token>? resp = await new Requester().PostWithContentTypeAsync<Token>($"{HutaoAPIHost}/Auth/Login", token, ContentType);
             AuthRequester = resp?.Data?.AccessToken is not null
                 ? (new() { UseAuthToken = true, AuthToken = resp.Data.AccessToken })
                 : throw new SnapGenshinInternalException("请求胡桃API权限时发生错误");
