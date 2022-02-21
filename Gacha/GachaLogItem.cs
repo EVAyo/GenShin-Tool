@@ -11,7 +11,7 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
     {
         [JsonProperty("uid")] public string? Uid { get; set; }
         [JsonProperty("gacha_type")] public string? GachaType { get; set; }
-        [Obsolete("api removed this property")] [JsonProperty("item_id")] public string? ItemId { get; set; }
+        [Obsolete("api removed this property")][JsonProperty("item_id")] public string? ItemId { get; set; }
         [JsonProperty("count")] public string? Count { get; set; }
         [JsonProperty("time")] public DateTime Time { get; set; }
         [JsonProperty("name")] public string? Name { get; set; }
