@@ -15,7 +15,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// </summary>
         [JsonProperty("max_resin")] public int MaxResin { get; set; }
         /// <summary>
-        /// 树脂恢复时间<see cref="string"/>类型的秒数
+        /// 树脂恢复时间 <see cref="string"/>类型的秒数
         /// </summary>
         [JsonProperty("resin_recovery_time")] public string? ResinRecoveryTime { get; set; }
 

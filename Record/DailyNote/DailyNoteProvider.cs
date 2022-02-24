@@ -1,4 +1,5 @@
-﻿using DGP.Genshin.MiHoYoAPI.Request;
+﻿using DGP.Genshin.MiHoYoAPI.GameRole;
+using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
 using System.Threading.Tasks;
 
@@ -36,6 +37,13 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<DailyNote>(
                 $"{ApiTakumiRecord}/dailyNote?server={server}&role_id={uid}");
+        }
+
+        public async Task<DailyNote?> GetDailyNoteAsync(UserGameRole role)
+        {
+            return role?.Region is null || role.GameUid is null
+                ? null
+                : await GetDailyNoteAsync(role.Region, role.GameUid);
         }
 
         /// <summary>
