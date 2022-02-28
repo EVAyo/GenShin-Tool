@@ -14,7 +14,7 @@ namespace DGP.Genshin.HutaoAPI
         /// </summary>
         /// <typeparam name="T"></typeparam>
         private class CounterOf<T> : Dictionary<int, T> { }
-        private record FloorIndexedLevel(int FloorIndex, Level Level); 
+        private record FloorIndexedLevel(int FloorIndex, Level Level);
 
         internal static PlayerRecord BuildPlayerRecord(string uid, DetailedAvatarWrapper detailAvatars, SpiralAbyss spiralAbyss)
         {
