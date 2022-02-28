@@ -1,4 +1,5 @@
-﻿using DGP.Genshin.MiHoYoAPI.Request;
+﻿using DGP.Genshin.MiHoYoAPI.GameRole;
+using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Response;
 using System.Threading.Tasks;
 
@@ -44,6 +45,11 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
             Response<JourneyInfo>? resp = await requester.GetAsync<JourneyInfo>
                 ($@"{ApiHk4e}/event/ys_ledger/monthInfo?month={month}&bind_uid={uid}&bind_region={region}&{BBSQueryString}");
             return resp?.Data;
+        }
+
+        public async Task<JourneyInfo?> GetMonthInfoAsync(UserGameRole userGameRole, int month = 0)
+        {
+            return await GetMonthInfoAsync(userGameRole.GameUid, userGameRole.Region, month);
         }
 
         /// <summary>
