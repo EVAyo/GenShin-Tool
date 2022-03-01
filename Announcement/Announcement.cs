@@ -15,7 +15,11 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
 
         #region inject
         public ICommand? OpenAnnouncementUICommand { get; set; }
-        public bool ShouldShowTimeDescription => Type == 1;
+        public bool ShouldShowTimeDescription
+        {
+            get => Type == 1;
+        }
+
         public string TimeDescription
         {
             get
@@ -33,7 +37,10 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
                 }
             }
         }
-        public bool ShouldShowTimePrecent => ShouldShowTimeDescription && (TimePercent > 0 && TimePercent < 1);
+        public bool ShouldShowTimePrecent
+        {
+            get => ShouldShowTimeDescription && (TimePercent > 0 && TimePercent < 1);
+        }
 
         private double timePercent;
         public double TimePercent

@@ -14,7 +14,12 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         /// 默认值设为1，因为部分API不返回该字段
         /// </summary>
         [JsonProperty("level_current")] public int LevelCurrent { get; set; } = 1;
-        public int LevelTarget { get => levelTarget; set => Set(ref levelTarget, value); }
+        public int LevelTarget
+        {
+            get => levelTarget;
+
+            set => Set(ref levelTarget, value);
+        }
         [JsonProperty("max_level")] public int MaxLevel { get; set; }
 
         public virtual PromotionDelta ToPromotionDelta()

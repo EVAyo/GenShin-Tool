@@ -16,7 +16,11 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         /// 今日是否已签到
         /// </summary>
         [JsonProperty("is_sign")] public bool IsSign { get; set; }
-        public bool IsNotSign => !IsSign;
+        public bool IsNotSign
+        {
+            get => !IsSign;
+        }
+
         [JsonProperty("is_sub")] public bool IsSub { get; set; }
         [JsonProperty("first_bind")] public bool FirstBind { get; set; }
         [JsonProperty("month_first")] public bool MonthFirst { get; set; }

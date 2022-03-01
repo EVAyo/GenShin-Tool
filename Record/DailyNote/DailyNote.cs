@@ -53,19 +53,28 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// </summary>
         [JsonProperty("is_extra_task_reward_received")] public bool IsExtraTaskRewardReceived { get; set; }
 
-        public string ExtraTaskRewardDescription =>
-            IsExtraTaskRewardReceived
-            ? "已领取「每日委托」奖励"
-            : FinishedTaskNum == TotalTaskNum
-            ? "「每日委托」奖励待领取"
-            : "今日完成委托次数不足";
+        public string ExtraTaskRewardDescription
+        {
+            get
+            {
+                return IsExtraTaskRewardReceived
+? "已领取「每日委托」奖励"
+: FinishedTaskNum == TotalTaskNum
+? "「每日委托」奖励待领取"
+: "今日完成委托次数不足";
+            }
+        }
 
         /// <summary>
         /// 剩余周本折扣次数
         /// </summary>
         [JsonProperty("remain_resin_discount_num")] public int RemainResinDiscountNum { get; set; }
 
-        public int ResinDiscountUsedNum => ResinDiscountNumLimit - RemainResinDiscountNum;
+        public int ResinDiscountUsedNum
+        {
+            get => ResinDiscountNumLimit - RemainResinDiscountNum;
+        }
+
         /// <summary>
         /// 周本折扣总次数
         /// </summary>
