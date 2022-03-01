@@ -38,7 +38,7 @@ namespace DGP.Genshin.FPSUnlocking
             set;
         }
 
-        private byte[] TargetFPSBytes { get => BitConverter.GetBytes(TargetFPS); }
+        private byte[] TargetFPSBytes => BitConverter.GetBytes(TargetFPS);
 
         /// <summary>
         /// 构造一个新的 <see cref="Unlocker"/> 对象，
