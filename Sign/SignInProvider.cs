@@ -29,11 +29,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         /// <summary>
         /// 签到通用请求器
         /// </summary>
-        private Requester SignInRequester
-        {
-            get
-            {
-                return new(new RequestOptions
+        private Requester SignInRequester => new(new RequestOptions
                 {
                     {"DS", DynamicSecretProvider.Create() },
                     {"x-rpc-app_version", DynamicSecretProvider.AppVersion },
@@ -45,8 +41,6 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                     {"Cookie", cookie },
                     {"X-Requested-With", RequestOptions.Hyperion }
                 });
-            }
-        }
 
         /// <summary>
         /// 获取当前签到信息
