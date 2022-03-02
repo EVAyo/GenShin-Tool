@@ -38,6 +38,9 @@ namespace DGP.Genshin.FPSUnlocking
             set;
         }
 
+        /// <summary>
+        /// 目标FPS对应的字节形式
+        /// </summary>
         private byte[] TargetFPSBytes
         {
             get => BitConverter.GetBytes(TargetFPS);
@@ -81,7 +84,8 @@ namespace DGP.Genshin.FPSUnlocking
             bool result = gameProcess.Start();
             if (result)
             {
-                return await UnlockAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondLimit, adjustFpsMillisecondsDelay);
+                return await UnlockAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondLimit, adjustFpsMillisecondsDelay)
+                    .ConfigureAwait(false);
             }
             else
             {
@@ -120,7 +124,8 @@ namespace DGP.Genshin.FPSUnlocking
             }
 
             MODULEENTRY32? module;
-            module = await FindModuleContinuously(findModuleMillisecondsDelay, findModuleTimeMillisecondsLimit);
+            module = await FindModuleContinuouslyAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondsLimit)
+                .ConfigureAwait(false);
 
             if (module is null)
             {
@@ -165,7 +170,8 @@ namespace DGP.Genshin.FPSUnlocking
                     fpsOffset = UIntPtr.Zero;
                     return UnlockResult.Ok;
                 }
-                await Task.Delay(adjustFpsMillisecondsDelay);
+                await Task.Delay(adjustFpsMillisecondsDelay)
+                    .ConfigureAwait(false);
             }
         }
 
@@ -190,7 +196,7 @@ namespace DGP.Genshin.FPSUnlocking
         /// <param name="findModuleMillisecondsDelay">延迟</param>
         /// <param name="findModuleTimeMillisecondsLimit">上限</param>
         /// <returns>模块</returns>
-        private async Task<MODULEENTRY32?> FindModuleContinuously(int findModuleMillisecondsDelay, int findModuleTimeMillisecondsLimit)
+        private async Task<MODULEENTRY32?> FindModuleContinuouslyAsync(int findModuleMillisecondsDelay, int findModuleTimeMillisecondsLimit)
         {
             MODULEENTRY32? module;
             Stopwatch watch = Stopwatch.StartNew();
@@ -203,7 +209,8 @@ namespace DGP.Genshin.FPSUnlocking
                 {
                     break;
                 }
-                await Task.Delay(findModuleMillisecondsDelay);
+                await Task.Delay(findModuleMillisecondsDelay)
+                    .ConfigureAwait(false);
             }
             watch.Stop();
             return module;
