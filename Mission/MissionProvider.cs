@@ -29,7 +29,8 @@ namespace DGP.Genshin.MiHoYoAPI.Mission
                 {"x_Request_with",RequestOptions.Hyperion }
             });
             Response<MissionWrapper>? resp =
-                await requester.GetAsync<MissionWrapper>($"{ApiTakumi}/apihub/wapi/getMissions?point_sn=myb");
+                await requester.GetAsync<MissionWrapper>($"{ApiTakumi}/apihub/wapi/getMissions?point_sn=myb")
+                .ConfigureAwait(false);
             return resp?.Data;
         }
     }

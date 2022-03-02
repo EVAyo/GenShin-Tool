@@ -35,9 +35,17 @@ namespace DGP.Genshin.MiHoYoAPI.Response
     /// <summary>
     /// Mihoyo 标准API响应
     /// </summary>
-    /// <typeparam name="T">数据类型</typeparam>
-    public class Response<T> : Response
+    /// <typeparam name="TData">数据类型</typeparam>
+    public class Response<TData> : Response
     {
-        [JsonProperty("data")] public T? Data { get; set; }
+        [JsonProperty("data")] public TData? Data { get; set; }
+        public static new Response<TData> CreateFail(string message)
+        {
+            return new Response<TData>()
+            {
+                ReturnCode = (int)KnownReturnCode.InternalFailure,
+                Message = message
+            };
+        }
     }
 }

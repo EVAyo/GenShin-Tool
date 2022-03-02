@@ -64,7 +64,8 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         public async Task<PlayerInfo?> GetPlayerInfoAsync(string uid, string server)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<PlayerInfo>(
-                $@"{ApiTakumiRecord}/index?server={server}&role_id={uid}");
+                $@"{ApiTakumiRecord}/index?server={server}&role_id={uid}")
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -77,12 +78,14 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, int type)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<SpiralAbyss.SpiralAbyss>(
-                $@"{ApiTakumiRecord}/spiralAbyss?schedule_type={type}&server={server}&role_id={uid}");
+                $@"{ApiTakumiRecord}/spiralAbyss?schedule_type={type}&server={server}&role_id={uid}")
+                .ConfigureAwait(false);
         }
 
         public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, SpiralAbyssType type)
         {
-            return await GetSpiralAbyssAsync(uid, server, (int)type);
+            return await GetSpiralAbyssAsync(uid, server, (int)type)
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -94,7 +97,8 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         public async Task<object?> GetActivitiesAsync(string uid, string server)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<object>(
-                $@"{ApiTakumiRecord}/activities?server={server}&role_id={uid}");
+                $@"{ApiTakumiRecord}/activities?server={server}&role_id={uid}")
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -115,7 +119,8 @@ namespace DGP.Genshin.MiHoYoAPI.Record
                 server = server
             };
             return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarWrapper>(
-                $@"{ApiTakumiRecord}/character", data);
+                $@"{ApiTakumiRecord}/character", data)
+                .ConfigureAwait(false);
         }
     }
 }

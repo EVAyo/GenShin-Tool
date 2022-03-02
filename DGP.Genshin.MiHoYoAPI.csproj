@@ -15,6 +15,13 @@
     <None Remove=".gitignore" />
     <None Remove="README.md" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.1.46">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Snap.Core.Logging\Snap.Core.Logging.csproj" />

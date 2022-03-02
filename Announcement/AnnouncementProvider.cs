@@ -12,10 +12,10 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
 
         public async Task<AnnouncementWrapper?> GetAnnouncementWrapperAsync()
         {
-            Requester requester = new();
-            Response<AnnouncementWrapper>? resp =
-                await requester.GetAsync<AnnouncementWrapper>(
-                    $"{Hk4eApi}/common/hk4e_cn/announcement/api/getAnnList?{Query}");
+            Response<AnnouncementWrapper>? resp = 
+                await new Requester().GetAsync<AnnouncementWrapper>(
+                    $"{Hk4eApi}/common/hk4e_cn/announcement/api/getAnnList?{Query}")
+                .ConfigureAwait(false);
             return resp?.Data;
         }
 
@@ -28,7 +28,8 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
             }, useGZipCompression: true);
             Response<ListWrapper<AnnouncementContent>>? resp =
                 await requester.GetAsync<ListWrapper<AnnouncementContent>>(
-                    $"{Hk4eApi}/common/hk4e_cn/announcement/api/getAnnContent?{Query}");
+                    $"{Hk4eApi}/common/hk4e_cn/announcement/api/getAnnContent?{Query}")
+                .ConfigureAwait(false);
             return resp?.Data?.List ?? new();
         }
     }

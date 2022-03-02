@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Request
 {
-    public class RequestInfo
+    public record RequestInfo
     {
         public RequestInfo(string method, string url, Func<Task<HttpResponseMessage>> httpResponseMessage)
         {

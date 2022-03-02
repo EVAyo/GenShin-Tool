@@ -43,13 +43,15 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<JourneyInfo>? resp = await requester.GetAsync<JourneyInfo>
-                ($@"{ApiHk4e}/event/ys_ledger/monthInfo?month={month}&bind_uid={uid}&bind_region={region}&{BBSQueryString}");
+                ($@"{ApiHk4e}/event/ys_ledger/monthInfo?month={month}&bind_uid={uid}&bind_region={region}&{BBSQueryString}")
+                .ConfigureAwait(false);
             return resp?.Data;
         }
 
         public async Task<JourneyInfo?> GetMonthInfoAsync(UserGameRole userGameRole, int month = 0)
         {
-            return await GetMonthInfoAsync(userGameRole.GameUid, userGameRole.Region, month);
+            return await GetMonthInfoAsync(userGameRole.GameUid, userGameRole.Region, month)
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -71,7 +73,8 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<JourneyDetail>? resp = await requester.GetAsync<JourneyDetail>
-                ($@"{ApiHk4e}/event/ys_ledger/monthDetail?page={page}&month={month}&limit=10&type=2&bind_uid={uid}&bind_region={region}&{BBSQueryString}");
+                ($@"{ApiHk4e}/event/ys_ledger/monthDetail?page={page}&month={month}&limit=10&type=2&bind_uid={uid}&bind_region={region}&{BBSQueryString}")
+                .ConfigureAwait(false);
             return resp?.Data;
         }
     }

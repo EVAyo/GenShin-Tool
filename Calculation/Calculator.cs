@@ -40,7 +40,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<Filters>? resp = await requester.GetAsync<Filters>
-                ($"{ApiTakumi}/event/e20200928calculate/v1/item/filter");
+                ($"{ApiTakumi}/event/e20200928calculate/v1/item/filter")
+                .ConfigureAwait(false);
             return resp?.Data;
         }
 
@@ -68,7 +69,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
             {
                 filter.Page = currentPage++;
                 resp = await requester.PostAsync<ListWrapper<Avatar>>
-                    ($"{ApiTakumi}/event/e20200928calculate/v1/avatar/list", filter);
+                    ($"{ApiTakumi}/event/e20200928calculate/v1/avatar/list", filter)
+                    .ConfigureAwait(false);
                 //add to cached list
                 if (resp?.Data?.List is not null)
                 {
@@ -77,7 +79,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
 
                 if (currentPage != 1 && isRandomDelayEnabled)
                 {
-                    await Task.Delay(random.Next(0, 1000));
+                    await Task.Delay(random.Next(0, 1000))
+                        .ConfigureAwait(false);
                 }
             }
             while (resp?.Data?.List?.Count == 20);
@@ -100,7 +103,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<ListWrapper<Skill>>? resp = await requester.GetAsync<ListWrapper<Skill>>
-                ($"{ApiTakumi}/event/e20200928calculate/v1/avatarSkill/list?avatar_id={avatar.Id}&element_attr_id={avatar.ElementAttrId}");
+                ($"{ApiTakumi}/event/e20200928calculate/v1/avatarSkill/list?avatar_id={avatar.Id}&element_attr_id={avatar.ElementAttrId}")
+                .ConfigureAwait(false);
             return resp?.Data?.List ?? new();
         }
 
@@ -127,7 +131,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
             {
                 filter.Page = currentPage++;
                 resp = await requester.PostAsync<ListWrapper<Weapon>>
-                    ($"{ApiTakumi}/event/e20200928calculate/v1/weapon/list", filter);
+                    ($"{ApiTakumi}/event/e20200928calculate/v1/weapon/list", filter)
+                    .ConfigureAwait(false);
                 //add to cached list
                 if (resp?.Data?.List is not null)
                 {
@@ -136,7 +141,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
 
                 if (currentPage != 1 && isRandomDelayEnabled)
                 {
-                    await Task.Delay(random.Next(0, 1000));
+                    await Task.Delay(random.Next(0, 1000))
+                        .ConfigureAwait(false);
                 }
             }
             while (resp?.Data?.List?.Count == 20);
@@ -167,7 +173,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
             {
                 filter.Page = currentPage++;
                 resp = await requester.PostAsync<ListWrapper<Reliquary>>
-                    ($"{ApiTakumi}/event/e20200928calculate/v1/reliquary/list", filter);
+                    ($"{ApiTakumi}/event/e20200928calculate/v1/reliquary/list", filter)
+                    .ConfigureAwait(false);
                 //add to cached list
                 if (resp?.Data?.List is not null)
                 {
@@ -176,7 +183,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
 
                 if (currentPage != 1 && isRandomDelayEnabled)
                 {
-                    await Task.Delay(random.Next(0, 1000));
+                    await Task.Delay(random.Next(0, 1000))
+                        .ConfigureAwait(false);
                 }
             }
             while (resp?.Data?.List?.Count == 20);
@@ -202,7 +210,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<ReliquaryListWrapper>? resp = await requester.GetAsync<ReliquaryListWrapper>
-                ($"{ApiTakumi}/event/e20200928calculate/v1/reliquary/set?reliquary_id={reliquaryId}");
+                ($"{ApiTakumi}/event/e20200928calculate/v1/reliquary/set?reliquary_id={reliquaryId}")
+                .ConfigureAwait(false);
             return resp?.Data?.ReliquaryList ?? new();
         }
 
@@ -287,7 +296,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<Consumption>? resp = await requester.PostAsync<Consumption>
-                ($"{ApiTakumi}/event/e20200928calculate/v2/compute", promotion);
+                ($"{ApiTakumi}/event/e20200928calculate/v2/compute", promotion)
+                .ConfigureAwait(false);
             return resp?.Data;
         }
     }

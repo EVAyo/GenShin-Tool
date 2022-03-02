@@ -28,8 +28,9 @@ namespace DGP.Genshin.MiHoYoAPI.GameRole
                 {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
-            Response<UserGameRoleInfo>? resp = await requester.GetAsync<UserGameRoleInfo>
-                ($"{ApiTakumi}/binding/api/getUserGameRolesByCookie?game_biz=hk4e_cn");
+            Response<UserGameRoleInfo>? resp = await requester
+                .GetAsync<UserGameRoleInfo>($"{ApiTakumi}/binding/api/getUserGameRolesByCookie?game_biz=hk4e_cn")
+                .ConfigureAwait(false);
             return resp?.Data?.List ?? new();
         }
     }

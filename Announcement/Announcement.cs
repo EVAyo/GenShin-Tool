@@ -37,7 +37,7 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
                 }
             }
         }
-        public bool ShouldShowTimePrecent
+        public bool ShouldShowTimePercent
         {
             get => ShouldShowTimeDescription && (TimePercent > 0 && TimePercent < 1);
         }
@@ -49,7 +49,9 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
             {
                 if (timePercent == 0)
                 {
-                    TimeSpan current = DateTime.UtcNow - StartTime;
+                    //UTC+8
+                    DateTime currentTime = DateTime.UtcNow + TimeSpan.FromHours(8);
+                    TimeSpan current = currentTime - StartTime;
                     TimeSpan total = EndTime - StartTime;
                     timePercent = current / total;
                 }

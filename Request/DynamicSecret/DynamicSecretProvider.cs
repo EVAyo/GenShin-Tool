@@ -45,5 +45,4 @@ namespace DGP.Genshin.MiHoYoAPI.Request.DynamicSecret
             return sb.ToString();
         }
     }
-
 }

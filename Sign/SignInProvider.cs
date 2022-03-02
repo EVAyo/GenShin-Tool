@@ -65,7 +65,9 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             string query = $"act_id={ActivityId}&region={role.Region}&uid={role.GameUid}";
-            Response<SignInInfo>? resp = await requester.GetAsync<SignInInfo>($"{ApiTakumi}/event/bbs_sign_reward/info?{query}");
+            Response<SignInInfo>? resp = await requester
+                .GetAsync<SignInInfo>($"{ApiTakumi}/event/bbs_sign_reward/info?{query}")
+                .ConfigureAwait(false);
             return resp?.Data;
         }
 
@@ -85,7 +87,9 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             string query = $"act_id={ActivityId}&region={role.Region}&uid={role.GameUid}";
-            Response<ReSignInfo>? resp = await requester.GetAsync<ReSignInfo>($"{ApiTakumi}/event/bbs_sign_reward/resign_info?{query}");
+            Response<ReSignInfo>? resp = await requester
+                .GetAsync<ReSignInfo>($"{ApiTakumi}/event/bbs_sign_reward/resign_info?{query}")
+                .ConfigureAwait(false);
             return resp?.Data;
         }
 
@@ -94,12 +98,14 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        public async Task<SignInResult?> SignInAsync(UserGameRole role)
+        public async Task<string> SignInAsync(UserGameRole role)
         {
             var data = new { act_id = ActivityId, region = role.Region, uid = role.GameUid };
             Requester requester = SignInRequester;
-            Response<SignInResult>? resp = await requester.PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data);
-            return resp?.Data;
+            Response<SignInResult>? resp = await requester
+                .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data)
+                .ConfigureAwait(false);
+            return resp is null ? "签到失败" : resp.Message ?? "签到成功";
         }
 
         /// <summary>
@@ -107,12 +113,14 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        public async Task<SignInResult?> ReSignAsync(UserGameRole role)
+        public async Task<string> ReSignAsync(UserGameRole role)
         {
             var data = new { act_id = ActivityId, region = role.Region, uid = role.GameUid };
             Requester requester = SignInRequester;
-            Response<SignInResult>? resp = await requester.PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data);
-            return resp?.Data;
+            Response<SignInResult>? resp = await requester
+                .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data)
+                .ConfigureAwait(false);
+            return resp is null ? "签到失败" : resp.Message ?? "签到成功";
         }
 
         /// <summary>
@@ -129,7 +137,9 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                 {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
-            Response<SignInReward>? resp = await requester.GetAsync<SignInReward>($"{ApiTakumi}/event/bbs_sign_reward/home?act_id={ActivityId}");
+            Response<SignInReward>? resp = await requester
+                .GetAsync<SignInReward>($"{ApiTakumi}/event/bbs_sign_reward/home?act_id={ActivityId}")
+                .ConfigureAwait(false);
             return resp?.Data;
         }
     }

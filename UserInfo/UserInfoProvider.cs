@@ -29,7 +29,9 @@ namespace DGP.Genshin.MiHoYoAPI.UserInfo
                 {"Referer",Referer },
                 {"Cookie", cookie }
             });
-            Response<UserInfoWrapper>? resp = await requester.GetAsync<UserInfoWrapper>($"{BaseUrl}/getUserFullInfo?gids=2");
+            Response<UserInfoWrapper>? resp = await requester
+                .GetAsync<UserInfoWrapper>($"{BaseUrl}/getUserFullInfo?gids=2")
+                .ConfigureAwait(false);
             return resp?.Data?.UserInfo;
         }
     }

@@ -15,7 +15,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request.DynamicSecret
         public static async Task<T?> GetWhileUpdateDynamicSecret2Async<T>(this Requester requester, string url) where T : class
         {
             requester.Headers["DS"] = DynamicSecretProvider2.Create(url);
-            Response<T>? resp = await requester.GetAsync<T>(url);
+            Response<T>? resp = await requester.GetAsync<T>(url).ConfigureAwait(false);
             return resp?.Data;
         }
 
@@ -30,7 +30,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request.DynamicSecret
         public static async Task<T?> PostWhileUpdateDynamicSecret2Async<T>(this Requester requester, string url, object data) where T : class
         {
             requester.Headers["DS"] = DynamicSecretProvider2.Create(url, data);
-            Response<T>? resp = await requester.PostAsync<T>(url, data);
+            Response<T>? resp = await requester.PostAsync<T>(url, data).ConfigureAwait(false);
             return resp?.Data;
         }
     }

@@ -8,7 +8,6 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
 {
     public class CardProvider
     {
-        private const string ApiTakumi = @"https://api-takumi.mihoyo.com";
         private const string BBSApi = @"https://bbs-api.mihoyo.com";
         private const string Referer = "https://webstatic.mihoyo.com/app/community-game-records/index.html?bbs_presentation_style=fullscreen";
         private readonly string cookie;
@@ -41,7 +40,8 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             ListWrapper<Card>? resp = await requester.GetWhileUpdateDynamicSecret2Async<ListWrapper<Card>>(
-                $"{BBSApi}/game_record/app/card/wapi/getGameRecordCard?uid={uid}");
+                $"{BBSApi}/game_record/app/card/wapi/getGameRecordCard?uid={uid}")
+                .ConfigureAwait(false);
             return resp?.List ?? new();
         }
     }

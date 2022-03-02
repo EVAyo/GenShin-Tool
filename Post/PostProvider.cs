@@ -34,7 +34,8 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Cookie", cookie }
             });
             Response<ListWrapper<Post>>? resp =
-                await requester.GetAsync<ListWrapper<Post>>($"{PostBaseUrl}/getOfficialRecommendedPosts?gids=2");
+                await requester.GetAsync<ListWrapper<Post>>($"{PostBaseUrl}/getOfficialRecommendedPosts?gids=2")
+                .ConfigureAwait(false);
             return resp?.Data?.List ?? new();
         }
         /// <summary>
@@ -56,7 +57,8 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Cookie", cookie }
             });
             Response<dynamic>? resp =
-                await requester.GetAsync<dynamic>($"{PostBaseUrl}/getPostFull?post_id={postId}&read=1");
+                await requester.GetAsync<dynamic>($"{PostBaseUrl}/getPostFull?post_id={postId}&read=1")
+                .ConfigureAwait(false);
             return resp?.Data;
         }
     }

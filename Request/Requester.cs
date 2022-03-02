@@ -54,7 +54,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         public bool UseAuthToken { get; set; }
         public string? AuthToken { get; set; }
 
-        private async Task<Response<T>?> Request<T>(Func<HttpClient, RequestInfo> requestFunc)
+        private async Task<Response<TResult>?> RequestAsync<TResult>(Func<HttpClient, RequestInfo> requestFunc)
         {
             RequestInfo? info = null;
 
@@ -75,65 +75,65 @@ namespace DGP.Genshin.MiHoYoAPI.Request
 
             try
             {
-                HttpResponseMessage response = await info.RequestAsyncFunc.Invoke();
+                HttpResponseMessage response = await info.RequestAsyncFunc.Invoke().ConfigureAwait(false);
                 HttpContent content = response.Content;
-                string contentString = await content.ReadAsStringAsync();
-                return Json.ToObject<Response<T>>(contentString);
+                string contentString = await content.ReadAsStringAsync().ConfigureAwait(false);
+                return Json.ToObject<Response<TResult>>(contentString);
             }
             catch (Exception ex)
             {
                 string? httpMethod = $"[{info?.Method} {info?.Url[..48]}]";
                 ResponseFailedAction?.Invoke(ex, httpMethod, "failed");
 
-                return new Response<T>
-                {
-                    ReturnCode = (int)KnownReturnCode.InternalFailure,
-                    Message = $"{ex.GetType()}:{ex.Message}"
-                };
+                return Response<TResult>.CreateFail($"{ex.GetType()}:{ex.Message}");
             }
         }
 
         /// <summary>
         /// GET 操作
         /// </summary>
-        /// <typeparam name="T">返回的类类型</typeparam>
+        /// <typeparam name="TResult">返回的类类型</typeparam>
         /// <param name="url">地址</param>
         /// <returns>响应</returns>
-        public async Task<Response<T>?> GetAsync<T>(string? url)
+        public async Task<Response<TResult>?> GetAsync<TResult>(string? url)
         {
             this.Log($"GET {url?.Split('?')[0]}");
-            return url is null ? null : await Request<T>(client =>
-           new RequestInfo("GET", url, () => client.GetAsync(url)));
+            return url is null ? null : await RequestAsync<TResult>(client => 
+            new RequestInfo("GET", url, () => client.GetAsync(url)))
+                .ConfigureAwait(false);
         }
 
         /// <summary>
         /// POST 操作
         /// </summary>
-        /// <typeparam name="T">返回的类类型</typeparam>
+        /// <typeparam name="TResult">返回的类类型</typeparam>
         /// <param name="url">地址</param>
         /// <param name="data">要发送的.NET（匿名）对象</param>
         /// <returns>响应</returns>
-        public async Task<Response<T>?> PostAsync<T>(string? url, object data)
+        public async Task<Response<TResult>?> PostAsync<TResult>(string? url, object data)
         {
             string dataString = Json.Stringify(data);
             this.Log($"POST {url?.Split('?')[0]} with\n{dataString}");
-            return url is null ? null : await Request<T>(client =>
-            new RequestInfo("POST", url, () => client.PostAsync(url, new StringContent(dataString))));
+            return url is null ? null : await RequestAsync<TResult>(client =>
+            new RequestInfo("POST", url, () => client.PostAsync(url, new StringContent(dataString))))
+                .ConfigureAwait(false);
         }
 
         /// <summary>
         /// POST 操作,Content-Type
         /// </summary>
-        /// <typeparam name="T">返回的类类型</typeparam>
+        /// <typeparam name="TResult">返回的类类型</typeparam>
         /// <param name="url">地址</param>
         /// <param name="data">要发送的.NET（匿名）对象</param>
+        /// <param name="contentType">内容类型</param>
         /// <returns>响应</returns>
-        public async Task<Response<T>?> PostWithContentTypeAsync<T>(string? url, object data, string contentType)
+        public async Task<Response<TResult>?> PostAsync<TResult>(string? url, object data, string contentType)
         {
             string dataString = Json.Stringify(data);
             this.Log($"POST {url?.Split('?')[0]} with\n{dataString}");
-            return url is null ? null : await Request<T>(client =>
-            new RequestInfo("POST", url, () => client.PostAsync(url, new StringContent(dataString, Encoding.UTF8, contentType))));
+            return url is null ? null : await RequestAsync<TResult>(client =>
+            new RequestInfo("POST", url, () => client.PostAsync(url, new StringContent(dataString, Encoding.UTF8, contentType))))
+                .ConfigureAwait(false);
         }
     }
 }
