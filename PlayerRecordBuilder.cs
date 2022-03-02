@@ -1,6 +1,7 @@
 ﻿using DGP.Genshin.HutaoAPI.PostModel;
 using DGP.Genshin.MiHoYoAPI.Record.Avatar;
 using DGP.Genshin.MiHoYoAPI.Record.SpiralAbyss;
+using Snap.Data.Utility;
 using Snap.Exception;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,6 @@ namespace DGP.Genshin.HutaoAPI
 {
     internal static class PlayerRecordBuilder
     {
-        /// <summary>
-        /// 表示一个对 <see cref="T"/> 类型的计数器
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        private class CounterOf<T> : Dictionary<int, T> { }
         private record FloorIndexedLevel(int FloorIndex, Level Level);
 
         internal static PlayerRecord BuildPlayerRecord(string uid, DetailedAvatarWrapper detailAvatars, SpiralAbyss spiralAbyss)
@@ -53,20 +49,18 @@ namespace DGP.Genshin.HutaoAPI
         private static List<AvatarReliquarySet> BuildAvatarReliquarySets(List<Reliquary>? reliquaries)
         {
             _ = reliquaries ?? throw new UnexpectedNullException("reliquaries 不应为 null");
-            CounterOf<int> reliquarySetId = new();
+            CounterInt32<int> reliquarySetCounter = new();
             foreach (Reliquary reliquary in reliquaries)
             {
                 if (reliquary.ReliquarySet is not null)
                 {
-                    reliquarySetId[reliquary.ReliquarySet.Id] = reliquarySetId.ContainsKey(reliquary.ReliquarySet.Id)
-                        ? reliquarySetId[reliquary.ReliquarySet.Id] + 1
-                        : 1;
+                    reliquarySetCounter.Increase(reliquary.ReliquarySet.Id);
                 }
             }
             //含有2件套以上的套装
-            return reliquarySetId.Keys.Any(k => k >= 2)
-                ? reliquarySetId.Select(kvp => new AvatarReliquarySet(kvp.Key, kvp.Value)).ToList()
-                : (new());
+            return reliquarySetCounter.Keys.Any(k => k >= 2)
+                ? reliquarySetCounter.Select(kvp => new AvatarReliquarySet(kvp)).ToList()
+                : new();
         }
     }
 }

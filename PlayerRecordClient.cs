@@ -8,6 +8,7 @@ using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Response;
 using Snap.Exception;
 using Snap.Extenion.Enumerable;
+using Snap.Threading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace DGP.Genshin.HutaoAPI
         {
             public string? AccessToken { get; set; }
         }
-        private record AuthToken(string Appid, string Secret);
+        private record Auth(string Appid, string Secret);
         private Requester AuthRequester { get; set; } = new();
 
         /// <summary>
@@ -33,42 +34,52 @@ namespace DGP.Genshin.HutaoAPI
         /// <returns></returns>
         public async Task InitializeAsync()
         {
-            //Please contract us for new token
-            AuthToken token = new("08d9e212-0cb3-4d71-8ed7-003606da7b20", "7ueWgZGn53dDhrm8L5ZRw+YWfOeSWtgQmJWquRgaygw=");
-            Response<Token>? resp = await new Requester().PostWithContentTypeAsync<Token>($"{HutaoAPIHost}/Auth/Login", token, ContentType);
+            //Please contract us for your own token
+            Auth token = new("08d9e212-0cb3-4d71-8ed7-003606da7b20", "7ueWgZGn53dDhrm8L5ZRw+YWfOeSWtgQmJWquRgaygw=");
+            Response<Token>? resp = await new Requester()
+                .PostAsync<Token>($"{HutaoAPIHost}/Auth/Login", token, ContentType)
+                .ConfigureAwait(false);
             AuthRequester = resp?.Data?.AccessToken is not null
                 ? (new() { UseAuthToken = true, AuthToken = resp.Data.AccessToken })
                 : throw new SnapGenshinInternalException("请求胡桃API权限时发生错误");
         }
 
+        [ExecuteOnMainThread]
         public async Task GetAllRecordsAndUploadAsync(string cookie, Func<PlayerRecord, Task<bool>> confirmAsyncFunc, Func<Response, Task> resultAsyncFunc)
         {
             RecordProvider recordProvider = new(cookie);
 
-            List<UserGameRole> userGameRoles = await new UserGameRoleProvider(cookie).GetUserGameRolesAsync();
+            List<UserGameRole> userGameRoles = 
+                await new UserGameRoleProvider(cookie).GetUserGameRolesAsync()
+                .ConfigureAwait(true);
             foreach (UserGameRole role in userGameRoles)
             {
                 _ = role.GameUid ?? throw new UnexpectedNullException("获取uid失败");
                 _ = role.Region ?? throw new UnexpectedNullException("获取server失败");
 
-                PlayerInfo? playerInfo = await recordProvider.GetPlayerInfoAsync(role.GameUid, role.Region);
+                PlayerInfo? playerInfo = await recordProvider.GetPlayerInfoAsync(role.GameUid, role.Region)
+                    .ConfigureAwait(true);
                 _ = playerInfo ?? throw new UnexpectedNullException("获取用户角色统计信息失败");
 
-                DetailedAvatarWrapper? detailAvatars = await recordProvider.GetDetailAvaterInfoAsync(role.GameUid, role.Region, playerInfo);
+                DetailedAvatarWrapper? detailAvatars = await recordProvider.GetDetailAvaterInfoAsync(role.GameUid, role.Region, playerInfo)
+                    .ConfigureAwait(true);
                 _ = detailAvatars ?? throw new UnexpectedNullException("获取用户角色详细信息失败");
 
-                SpiralAbyss? spiralAbyssInfo = await recordProvider.GetSpiralAbyssAsync(role.GameUid, role.Region, SpiralAbyssType.Current);
+                SpiralAbyss? spiralAbyssInfo = await recordProvider.GetSpiralAbyssAsync(role.GameUid, role.Region, SpiralAbyssType.Current)
+                    .ConfigureAwait(true);
                 _ = spiralAbyssInfo ?? throw new UnexpectedNullException("获取用户深境螺旋信息失败");
 
                 PlayerRecord playerRecord = PlayerRecordBuilder.BuildPlayerRecord(role.GameUid, detailAvatars, spiralAbyssInfo);
-                if (await confirmAsyncFunc.Invoke(playerRecord))
+                if (await confirmAsyncFunc.Invoke(playerRecord).ConfigureAwait(true))
                 {
                     Response<string>? resp = null;
-                    if (Response.IsOk(await UploadItemsAsync(detailAvatars)))
+                    if (Response.IsOk(await UploadItemsAsync(detailAvatars).ConfigureAwait(true)))
                     {
-                        resp = await AuthRequester.PostWithContentTypeAsync<string>($"{HutaoAPIHost}/Record/Upload", playerRecord, ContentType);
+                        resp = await AuthRequester.PostAsync<string>($"{HutaoAPIHost}/Record/Upload", playerRecord, ContentType)
+                            .ConfigureAwait(true);
                     }
-                    await resultAsyncFunc.Invoke(resp ?? Response.CreateFail($"{role.GameUid}-记录提交失败。"));
+                    await resultAsyncFunc.Invoke(resp ?? Response.CreateFail($"{role.GameUid}-记录提交失败。"))
+                        .ConfigureAwait(true);
                 }
             }
         }
@@ -77,32 +88,37 @@ namespace DGP.Genshin.HutaoAPI
         public async Task<Overview?> GetOverviewAsync()
         {
             Response<Overview>? resp = await AuthRequester
-                .GetAsync<Overview>($"{HutaoAPIHost}/Statistics/Overview");
+                .GetAsync<Overview>($"{HutaoAPIHost}/Statistics/Overview")
+                .ConfigureAwait(false);
             return resp?.Data;
         }
 
         public async Task<IEnumerable<AvatarParticipation>> GetAvatarParticipationsAsync()
         {
             Response<IEnumerable<AvatarParticipation>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<AvatarParticipation>>($"{HutaoAPIHost}/Statistics/AvatarParticipation");
+                .GetAsync<IEnumerable<AvatarParticipation>>($"{HutaoAPIHost}/Statistics/AvatarParticipation")
+                .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<AvatarParticipation>();
         }
         public async Task<IEnumerable<AvatarReliquaryUsage>> GetAvatarReliquaryUsagesAsync()
         {
             Response<IEnumerable<AvatarReliquaryUsage>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<AvatarReliquaryUsage>>($"{HutaoAPIHost}/Statistics/AvatarReliquaryUsage");
+                .GetAsync<IEnumerable<AvatarReliquaryUsage>>($"{HutaoAPIHost}/Statistics/AvatarReliquaryUsage")
+                .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<AvatarReliquaryUsage>();
         }
         public async Task<IEnumerable<TeamCollocation>> GetTeamCollocationsAsync()
         {
             Response<IEnumerable<TeamCollocation>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<TeamCollocation>>($"{HutaoAPIHost}/Statistics/TeamCollocation");
+                .GetAsync<IEnumerable<TeamCollocation>>($"{HutaoAPIHost}/Statistics/TeamCollocation")
+                .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<TeamCollocation>();
         }
         public async Task<IEnumerable<WeaponUsage>> GetWeaponUsagesAsync()
         {
             Response<IEnumerable<WeaponUsage>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<WeaponUsage>>($"{HutaoAPIHost}/Statistics/WeaponUsage");
+                .GetAsync<IEnumerable<WeaponUsage>>($"{HutaoAPIHost}/Statistics/WeaponUsage")
+                .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<WeaponUsage>();
         }
         #endregion
@@ -128,38 +144,44 @@ namespace DGP.Genshin.HutaoAPI
             GenshinItemWrapper? data = new() { Avatars = avatars, Weapons = weapons, Reliquaries = reliquaries };
 
             return await AuthRequester
-                        .PostWithContentTypeAsync<string>($"{HutaoAPIHost}​/GenshinItems/Upload", data, ContentType);
+                        .PostAsync<string>($"{HutaoAPIHost}​/GenshinItems/Upload", data, ContentType)
+                        .ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<HutaoItem>> GetAvatarMapAsync()
         {
             Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Avatars");
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Avatars")
+                .ConfigureAwait(false);
             return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
         }
         public async Task<IEnumerable<HutaoItem>> GetWeaponMapAsync()
         {
             Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Weapons");
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Weapons")
+                .ConfigureAwait(false);
             return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
         }
         public async Task<IEnumerable<HutaoItem>> GetReliquaryMapAsync()
         {
             Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Reliquaries");
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Reliquaries")
+                .ConfigureAwait(false);
             return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
         }
 
         public async Task<IEnumerable<AvatarConstellationNum>> GetAvatarConstellationsAsync()
         {
             Response<IEnumerable<AvatarConstellationNum>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<AvatarConstellationNum>>($"{HutaoAPIHost}/Statistics/Constellation");
+                .GetAsync<IEnumerable<AvatarConstellationNum>>($"{HutaoAPIHost}/Statistics/Constellation")
+                .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<AvatarConstellationNum>();
         }
         public async Task<IEnumerable<TeamCombination>> GetTeamCombinationsAsync()
         {
             Response<IEnumerable<TeamCombination>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<TeamCombination>>($"{HutaoAPIHost}/Statistics/TeamCombination");
+                .GetAsync<IEnumerable<TeamCombination>>($"{HutaoAPIHost}/Statistics/TeamCombination")
+                .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<TeamCombination>();
         }
         #endregion
