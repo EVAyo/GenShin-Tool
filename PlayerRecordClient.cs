@@ -49,7 +49,7 @@ namespace DGP.Genshin.HutaoAPI
         {
             RecordProvider recordProvider = new(cookie);
 
-            List<UserGameRole> userGameRoles = 
+            List<UserGameRole> userGameRoles =
                 await new UserGameRoleProvider(cookie).GetUserGameRolesAsync()
                 .ConfigureAwait(true);
             foreach (UserGameRole role in userGameRoles)
