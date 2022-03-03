@@ -98,7 +98,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         public async Task<Response<TResult>?> GetAsync<TResult>(string? url)
         {
             this.Log($"GET {url?.Split('?')[0]}");
-            return url is null ? null : await RequestAsync<TResult>(client => 
+            return url is null ? null : await RequestAsync<TResult>(client =>
             new RequestInfo("GET", url, () => client.GetAsync(url)))
                 .ConfigureAwait(false);
         }

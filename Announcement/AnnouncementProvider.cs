@@ -12,7 +12,7 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
 
         public async Task<AnnouncementWrapper?> GetAnnouncementWrapperAsync()
         {
-            Response<AnnouncementWrapper>? resp = 
+            Response<AnnouncementWrapper>? resp =
                 await new Requester().GetAsync<AnnouncementWrapper>(
                     $"{Hk4eApi}/common/hk4e_cn/announcement/api/getAnnList?{Query}")
                 .ConfigureAwait(false);
