@@ -3,7 +3,7 @@ using Snap.Data.Primitive;
 
 namespace DGP.Genshin.MiHoYoAPI.Calculation
 {
-    public abstract class Calculable : Observable
+    public class Calculable : Observable
     {
         private int levelTarget;
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace DGP.Genshin.MiHoYoAPI.Gacha
 {
     /// <summary>
-    /// 表示获取的卡池片段信息
+    /// 表示获取的一页卡池片段信息
     /// </summary>
     public class GachaLog
     {

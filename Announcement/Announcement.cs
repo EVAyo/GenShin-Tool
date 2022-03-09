@@ -24,7 +24,7 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
         {
             get
             {
-                DateTime now = DateTime.UtcNow;
+                DateTime now = DateTime.UtcNow + TimeSpan.FromHours(8);
                 if (StartTime > now)//尚未开始
                 {
                     TimeSpan span = StartTime - now;

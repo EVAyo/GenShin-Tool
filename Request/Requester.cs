@@ -2,7 +2,6 @@
 using Snap.Core.Logging;
 using Snap.Data.Json;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -66,9 +65,9 @@ namespace DGP.Genshin.MiHoYoAPI.Request
                 client.DefaultRequestHeaders.Authorization = new("Bearer", AuthToken);
             }
 
-            foreach (KeyValuePair<string, string> entry in Headers)
+            foreach ((string name, string value) in Headers)
             {
-                client.DefaultRequestHeaders.Add(entry.Key, entry.Value);
+                client.DefaultRequestHeaders.Add(name, value);
             }
 
             info = requestFunc(client);
@@ -82,6 +81,9 @@ namespace DGP.Genshin.MiHoYoAPI.Request
             }
             catch (Exception ex)
             {
+                if (ex is HttpRequestException httpRequestException)
+                {
+                }
                 string? httpMethod = $"[{info?.Method} {info?.Url[..48]}]";
                 ResponseFailedAction?.Invoke(ex, httpMethod, "failed");
 
