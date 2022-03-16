@@ -1,8 +1,8 @@
 ﻿using DGP.Genshin.HutaoAPI.PostModel;
 using DGP.Genshin.MiHoYoAPI.Record.Avatar;
 using DGP.Genshin.MiHoYoAPI.Record.SpiralAbyss;
+using Microsoft;
 using Snap.Data.Utility;
-using Snap.Exception;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +14,7 @@ namespace DGP.Genshin.HutaoAPI
 
         internal static PlayerRecord BuildPlayerRecord(string uid, DetailedAvatarWrapper detailAvatars, SpiralAbyss spiralAbyss)
         {
-            _ = detailAvatars.Avatars ?? throw new UnexpectedNullException("角色信息不应为 null");
+            Requires.NotNull(detailAvatars.Avatars!, nameof(detailAvatars.Avatars));
             List<PlayerAvatar> playerAvatars = detailAvatars.Avatars
                 .Select(avatar => new PlayerAvatar(
                     avatar.Id,
@@ -24,7 +24,7 @@ namespace DGP.Genshin.HutaoAPI
                     BuildAvatarReliquarySets(avatar.Reliquaries)))
                 .ToList();
 
-            _ = spiralAbyss.Floors ?? throw new UnexpectedNullException("层信息不应为 null");
+            Requires.NotNull(spiralAbyss.Floors!, nameof(spiralAbyss.Floors));
             List<PlayerSpiralAbyssLevel> playerSpiralAbyssLevels = spiralAbyss.Floors
                 .SelectMany(f => f.Levels!, (f, level) => new FloorIndexedLevel(f.Index, level))
                 .Select(indexedLevel => new PlayerSpiralAbyssLevel(
@@ -43,12 +43,12 @@ namespace DGP.Genshin.HutaoAPI
         }
         private static AvatarWeapon BuildAvatarWeapon(Weapon? weapon)
         {
-            _ = weapon ?? throw new UnexpectedNullException("weapon 不应为 null");
+            Requires.NotNull(weapon!, nameof(weapon));
             return new(weapon.Id, weapon.Level, weapon.AffixLevel);
         }
         private static List<AvatarReliquarySet> BuildAvatarReliquarySets(List<Reliquary>? reliquaries)
         {
-            _ = reliquaries ?? throw new UnexpectedNullException("reliquaries 不应为 null");
+            Requires.NotNull(reliquaries!, nameof(reliquaries));
             CounterInt32<int> reliquarySetCounter = new();
             foreach (Reliquary reliquary in reliquaries)
             {

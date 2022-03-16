@@ -6,7 +6,7 @@ using DGP.Genshin.MiHoYoAPI.Record.Avatar;
 using DGP.Genshin.MiHoYoAPI.Record.SpiralAbyss;
 using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Response;
-using Snap.Exception;
+using Microsoft;
 using Snap.Extenion.Enumerable;
 using Snap.Threading;
 using System;
@@ -21,7 +21,7 @@ namespace DGP.Genshin.HutaoAPI
         private const string HutaoAPIHost = "https://hutao-api.snapgenshin.com";
         private const string ContentType = "text/json";
 
-        private class Token
+        private record Token
         {
             public string? AccessToken { get; set; }
         }
@@ -39,9 +39,8 @@ namespace DGP.Genshin.HutaoAPI
             Response<Token>? resp = await new Requester()
                 .PostAsync<Token>($"{HutaoAPIHost}/Auth/Login", token, ContentType)
                 .ConfigureAwait(false);
-            AuthRequester = resp?.Data?.AccessToken is not null
-                ? (new() { UseAuthToken = true, AuthToken = resp.Data.AccessToken })
-                : throw new SnapGenshinInternalException("请求胡桃API权限时发生错误");
+            Requires.NotNull(resp?.Data?.AccessToken!, nameof(resp.Data.AccessToken));
+            AuthRequester = new() { UseAuthToken = true, AuthToken = resp.Data.AccessToken };
         }
 
         [ExecuteOnMainThread]
@@ -54,20 +53,20 @@ namespace DGP.Genshin.HutaoAPI
                 .ConfigureAwait(true);
             foreach (UserGameRole role in userGameRoles)
             {
-                _ = role.GameUid ?? throw new UnexpectedNullException("获取uid失败");
-                _ = role.Region ?? throw new UnexpectedNullException("获取server失败");
+                Requires.NotNull(role.GameUid!, nameof(role.GameUid));
+                Requires.NotNull(role.Region!, nameof(role.Region));
 
                 PlayerInfo? playerInfo = await recordProvider.GetPlayerInfoAsync(role.GameUid, role.Region)
                     .ConfigureAwait(true);
-                _ = playerInfo ?? throw new UnexpectedNullException("获取用户角色统计信息失败");
+                Requires.NotNull(playerInfo!, nameof(playerInfo));
 
                 DetailedAvatarWrapper? detailAvatars = await recordProvider.GetDetailAvaterInfoAsync(role.GameUid, role.Region, playerInfo)
                     .ConfigureAwait(true);
-                _ = detailAvatars ?? throw new UnexpectedNullException("获取用户角色详细信息失败");
+                Requires.NotNull(detailAvatars!, nameof(detailAvatars));
 
                 SpiralAbyss? spiralAbyssInfo = await recordProvider.GetSpiralAbyssAsync(role.GameUid, role.Region, SpiralAbyssType.Current)
                     .ConfigureAwait(true);
-                _ = spiralAbyssInfo ?? throw new UnexpectedNullException("获取用户深境螺旋信息失败");
+                Requires.NotNull(spiralAbyssInfo!, nameof(spiralAbyssInfo));
 
                 PlayerRecord playerRecord = PlayerRecordBuilder.BuildPlayerRecord(role.GameUid, detailAvatars, spiralAbyssInfo);
                 if (await confirmAsyncFunc.Invoke(playerRecord).ConfigureAwait(true))
