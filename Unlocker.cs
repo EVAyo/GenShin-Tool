@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft;
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -58,16 +59,8 @@ namespace DGP.Genshin.FPSUnlocking
         /// <param name="targetFPS">目标fps</param>
         public Unlocker(Process gameProcess, int targetFPS)
         {
-            if (!Environment.Is64BitProcess)
-            {
-                throw new InvalidOperationException("无法在32位进程中使用 Unlocker");
-            }
-
-            if (targetFPS < 30 || targetFPS > 2000)
-            {
-                throw new ArgumentOutOfRangeException(nameof(targetFPS));
-            }
-
+            Verify.Operation(Environment.Is64BitProcess, "无法在32位进程中使用 Unlocker");
+            Requires.Range(targetFPS < 30 || targetFPS > 2000,nameof(targetFPS));
             TargetFPS = targetFPS;
             this.gameProcess = gameProcess;
         }
