@@ -24,6 +24,7 @@ from plugins.foods import foods_msg
 from plugins.artifacts import artifacts_msg
 from plugins.artifact_rate import artifact_rate_msg
 from plugins.query_resource_points import inquire_resource_points, inquire_resource_list
+from plugins.char_adv import send_char_adv, send_weapon_adv
 from plugins.mys import mys_msg, promote_command
 
 from defs.inline_query_result_cached_media import InlineQueryResultCachedDocument
@@ -115,6 +116,14 @@ async def process_private_msg(client: Client, message: Message):
         await mys2_msg(client, message)
     if 'hoyolab' in message.text:
         await mihoyo_msg(client, message)
+    for i in ["用什么", "能用啥", "怎么养"]:
+        if i in message.text:
+            await send_char_adv(client, message)
+            break
+    for i in ["能给谁", "给谁用", "要给谁", "谁能用"]:
+        if i in message.text:
+            await send_weapon_adv(client, message)
+            break
     # 账号信息（cookie 过期过快  不推荐启用）
     # if '账号信息' in message.text or '用户信息' in message.text:
     #    await mys_msg(client, message)
@@ -199,6 +208,15 @@ async def process_group_msg(client: Client, message: Message):
         await guess_voice(client, message)
     if text.startswith("抽卡"):
         await gacha_msg(client, message)
+    # 建议
+    for i in ["用什么", "能用啥", "怎么养"]:
+        if i in message.text:
+            await send_char_adv(client, message)
+            break
+    for i in ["能给谁", "给谁用", "要给谁", "谁能用"]:
+        if i in message.text:
+            await send_weapon_adv(client, message)
+            break
     # 处理猜语音游戏
     await process_guess(client, message)
 

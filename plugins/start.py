@@ -2,7 +2,8 @@ from ci import admin_id
 from pyrogram import Client
 from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 
-HELP_MSG_PRE = '<a href="https://git.io/JcbTD">PaimonBot</a> 0.3.8beta By Xtao-Labs\n\n' \
+HELP_MSG_PRE = '<a href="https://gitlab.com/Xtao-Labs/Telegram_PaimonBot">PaimonBot</a> ' \
+               '0.4.0beta By Xtao-Labs\n\n' \
                '🔅 以下是小派蒙我学会了的功能（部分）：\n'
 HELP_MSG = """① [武器/今日武器] 查看今日武器材料和武器
 ② [天赋/今日天赋] 查看今日天赋材料和角色
@@ -36,7 +37,9 @@ HELP_MSG = """① [武器/今日武器] 查看今日武器材料和武器
 (17) [猜语音] 和群友一起玩猜语音小游戏吧！（群聊）
    💠 <code>猜语音</code>
    💠 <code>猜语音 无尽模式</code>
-(18) [米游社/hoyolab] 米游社/hoyolab相关功能
+(18) [怎么养 (角色名)] 输出角色适用武器&圣遗物
+(19) [给谁用 (武器名)] 输出武器适用角色
+(20) [米游社/hoyolab] 米游社/hoyolab相关功能
    💠 <a href="https://telegra.ph/PaimonBot-02-18">点击查看</a>"""
 
 

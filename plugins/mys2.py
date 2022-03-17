@@ -15,6 +15,8 @@ from defs.mihoyo import draw_pic as draw_pic_2
 
 from ci import scheduler, app, admin_id
 from defs.redis_load import redis
+from defs.spiral_abyss import draw_abyss_pic, draw_abyss0_pic
+from defs.spiral_abyss_text import get_user_abyss
 
 SUPERUSERS = [admin_id]
 
@@ -195,26 +197,89 @@ async def mys2_qun_msg(client: Client, message: Message):
     elif "uid" in text:
         try:
             uid = re.findall(r"\d+", text)[0]  # str
+            m = ''.join(re.findall('[\u4e00-\u9fa5]', text))
         except IndexError:
             return await message.reply("uid格式错误！")
-        try:
+        nickname = message.from_user.first_name
+        nickname = nickname if len(nickname) < 10 else (nickname[:10] + "...")
+        if m == "深渊":
             try:
-                nickname = message.from_user.first_name
-                nickname = nickname if len(nickname) < 10 else (nickname[:10] + "...")
-                if is_chinese(uid):
-                    im = await draw_pic(uid, message, nickname=nickname, mode=2)
+                if len(re.findall(r"\d+", text)) == 2:
+                    floor_num = re.findall(r"\d+", text)[1]
+                    im = await draw_abyss_pic(uid, nickname, floor_num)
+                    if not im:
+                        await message.reply("未查找到该用户的深渊信息。")
+                    else:
+                        await message.reply_photo(im)
                 else:
-                    im = await draw_pic_2(uid, message, nickname=nickname, mode=2)
-                if im.find(".") != -1:
-                    await message.reply_photo(im)
-                else:
-                    await message.reply(im)
+                    im = await draw_abyss0_pic(uid, nickname)
+                    if not im:
+                        await message.reply("未查找到该用户的深渊信息。")
+                    else:
+                        await message.reply_photo(im)
+            except TypeError:
+                await message.reply("获取失败，可能是Cookies失效或者未打开米游社角色详情开关。")
+                print("上期深渊数据获取失败（Cookie失效/不公开信息）")
+                traceback.print_exc()
             except Exception as e:
                 await message.reply("获取失败，有可能是数据状态有问题,\n{}\n请检查后台输出。".format(e))
+                print("上期深渊数据获取失败（数据状态问题）")
                 traceback.print_exc()
-        except Exception as e:
-            traceback.print_exc()
-            await message.reply("发生错误 {},请检查后台输出。".format(e))
+        elif m == "上期深渊":
+            try:
+                if len(re.findall(r"\d+", text)) == 2:
+                    floor_num = re.findall(r"\d+", text)[1]
+                    im = await draw_abyss_pic(uid, nickname, floor_num, None, 2, "2")
+                    if not im:
+                        await message.reply("未查找到该用户的深渊信息。")
+                    else:
+                        await message.reply_photo(im)
+                else:
+                    im = await draw_abyss0_pic(uid, nickname, None, 2, "2")
+                    if not im:
+                        await message.reply("未查找到该用户的深渊信息。")
+                    else:
+                        await message.reply_photo(im)
+            except TypeError:
+                await message.reply("获取失败，可能是Cookies失效或者未打开米游社角色详情开关。")
+                print("上期深渊数据获取失败（Cookie失效/不公开信息）")
+                traceback.print_exc()
+            except Exception as e:
+                await message.reply("获取失败，有可能是数据状态有问题,\n{}\n请检查后台输出。".format(e))
+                print("上期深渊数据获取失败（数据状态问题）")
+                traceback.print_exc()
+        elif m == "文本深渊":
+            try:
+                im = await get_user_abyss(uid, 2, "2")
+                if not im:
+                    await message.reply("未查找到该用户的深渊信息。")
+                else:
+                    await message.reply(im)
+            except TypeError:
+                await message.reply("获取失败，可能是Cookies失效或者未打开米游社角色详情开关。")
+                print("上期深渊数据获取失败（Cookie失效/不公开信息）")
+                traceback.print_exc()
+            except Exception as e:
+                await message.reply("获取失败，有可能是数据状态有问题,\n{}\n请检查后台输出。".format(e))
+                print("上期深渊数据获取失败（数据状态问题）")
+                traceback.print_exc()
+        else:
+            try:
+                try:
+                    if is_chinese(uid):
+                        im = await draw_pic(uid, message, nickname=nickname, mode=2)
+                    else:
+                        im = await draw_pic_2(uid, message, nickname=nickname, mode=2)
+                    if im.find(".") != -1:
+                        await message.reply_photo(im)
+                    else:
+                        await message.reply(im)
+                except Exception as e:
+                    await message.reply("获取失败，有可能是数据状态有问题,\n{}\n请检查后台输出。".format(e))
+                    traceback.print_exc()
+            except Exception as e:
+                traceback.print_exc()
+                await message.reply("发生错误 {},请检查后台输出。".format(e))
     elif "查询" in text:
         try:
             at = message.reply_to_message
@@ -227,7 +292,68 @@ async def mys2_qun_msg(client: Client, message: Message):
                 uid = await selectDB(message.from_user.id)
             nickname = nickname if len(nickname) < 10 else (nickname[:10] + "...")
             if uid:
-                if "词云" in text:
+                if "深渊" in text and "上期" not in text and "文本" not in text:
+                    try:
+                        if len(re.findall(r"\d+", text)) == 1:
+                            floor_num = re.findall(r"\d+", text)[0]
+                            im = await draw_abyss_pic(uid[0], nickname, floor_num, None, uid[1])
+                            if not im:
+                                await message.reply("未查找到该用户的深渊信息。")
+                            else:
+                                await message.reply_photo(im)
+                        else:
+                            im = await draw_abyss0_pic(uid[0], nickname, None, uid[1])
+                            if not im:
+                                await message.reply("未查找到该用户的深渊信息。")
+                            else:
+                                await message.reply_photo(im)
+                    except TypeError:
+                        await message.reply("获取失败，可能是Cookies失效或者未打开米游社角色详情开关。")
+                        print("上期深渊数据获取失败（Cookie失效/不公开信息）")
+                        traceback.print_exc()
+                    except Exception as e:
+                        await message.reply("获取失败，有可能是数据状态有问题,\n{}\n请检查后台输出。".format(e))
+                        print("上期深渊数据获取失败（数据状态问题）")
+                        traceback.print_exc()
+                elif "深渊" in text and "文本" not in text:
+                    try:
+                        if len(re.findall(r"\d+", text)) == 1:
+                            floor_num = re.findall(r"\d+", text)[0]
+                            im = await draw_abyss_pic(uid[0], nickname, floor_num, None, uid[1], "2")
+                            if not im:
+                                await message.reply("未查找到该用户的深渊信息。")
+                            else:
+                                await message.reply_photo(im)
+                        else:
+                            im = await draw_abyss0_pic(uid[0], nickname, None, uid[1], "2")
+                            if not im:
+                                await message.reply("未查找到该用户的深渊信息。")
+                            else:
+                                await message.reply_photo(im)
+                    except TypeError:
+                        await message.reply("获取失败，可能是Cookies失效或者未打开米游社角色详情开关。")
+                        print("上期深渊数据获取失败（Cookie失效/不公开信息）")
+                        traceback.print_exc()
+                    except Exception as e:
+                        await message.reply("获取失败，有可能是数据状态有问题,\n{}\n请检查后台输出。".format(e))
+                        print("上期深渊数据获取失败（数据状态问题）")
+                        traceback.print_exc()
+                elif "深渊" in text:
+                    try:
+                        im = await get_user_abyss(uid[0], uid[1], "2")
+                        if not im:
+                            await message.reply("未查找到该用户的深渊信息。")
+                        else:
+                            await message.reply(im)
+                    except TypeError:
+                        await message.reply("获取失败，可能是Cookies失效或者未打开米游社角色详情开关。")
+                        print("上期深渊数据获取失败（Cookie失效/不公开信息）")
+                        traceback.print_exc()
+                    except Exception as e:
+                        await message.reply("获取失败，有可能是数据状态有问题,\n{}\n请检查后台输出。".format(e))
+                        print("上期深渊数据获取失败（数据状态问题）")
+                        traceback.print_exc()
+                elif "词云" in text:
                     try:
                         im = await draw_wordcloud(uid[0], message, uid[1])
                         if im.find(".jpg") != -1:
@@ -300,7 +426,8 @@ async def push():
             if i['gid'] == "on":
                 await app.send_message(int(i['qid']), i['message'])
             else:
-                await app.send_message(int(i['gid']), f"[NOTICE {i['qid']}](tg://user?id={i['qid']})" + "\n" + i['message'])
+                await app.send_message(int(i['gid']),
+                                       f"[NOTICE {i['qid']}](tg://user?id={i['qid']})" + "\n" + i['message'])
     else:
         pass
 

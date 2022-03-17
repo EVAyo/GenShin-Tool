@@ -9,10 +9,17 @@ import traceback
 from shutil import copyfile
 
 import requests
+from httpx import AsyncClient
+
 from ci import client
 from defs.mysbbs import MihoyoBbs
 
 mhyVersion = "2.11.1"
+
+
+def regex_func(value, patter):
+    c_pattern = re.compile(r"account_id={}".format(patter))
+    return c_pattern.search(value) is not None
 
 
 async def cookiesDB(uid, Cookies, qid):
@@ -406,29 +413,28 @@ def functionRegex(value, patter):
 
 
 def cacheDB(uid, mode=1, mys=None):
-    use = ''
     conn = sqlite3.connect('ID_DATA.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS CookiesCache
-        (UID TEXT PRIMARY KEY,
-        MYSID         TEXT,
-        Cookies       TEXT);''')
-    if mode == 2:
-        cursor = c.execute("SELECT *  FROM CookiesCache WHERE MYSID = ?", (uid,))
-        c_data = cursor.fetchall()
-    else:
+            (UID TEXT PRIMARY KEY,
+            MYSID         TEXT,
+            Cookies       TEXT);''')
+
+    if mode == 1:
         if mys:
             cursor = c.execute("SELECT *  FROM CookiesCache WHERE MYSID = ?", (mys,))
-            c_data = cursor.fetchall()
         else:
             cursor = c.execute("SELECT *  FROM CookiesCache WHERE UID = ?", (uid,))
-            c_data = cursor.fetchall()
+    else:
+        cursor = c.execute("SELECT *  FROM CookiesCache WHERE MYSID = ?", (uid,))
+    c_data = cursor.fetchall()
 
     if len(c_data) == 0:
         if mode == 2:
-            conn.create_function("REGEXP", 2, functionRegex)
+            conn.create_function("REGEXP", 2, regex_func)
             cursor = c.execute("SELECT *  FROM NewCookiesTable WHERE REGEXP(Cookies, ?)", (uid,))
             d_data = cursor.fetchall()
+
         else:
             cursor = c.execute("SELECT *  FROM NewCookiesTable WHERE UID = ?", (uid,))
             d_data = cursor.fetchall()
@@ -438,33 +444,33 @@ def cacheDB(uid, mode=1, mys=None):
                 use = d_data[0][1]
                 if mode == 1:
                     c.execute("INSERT OR IGNORE INTO CookiesCache (Cookies,UID) \
-                            VALUES (?, ?)", (use, uid))
+                                VALUES (?, ?)", (use, uid))
                 elif mode == 2:
                     c.execute("INSERT OR IGNORE INTO CookiesCache (Cookies,MYSID) \
-                            VALUES (?, ?)", (use, uid))
+                                VALUES (?, ?)", (use, uid))
             else:
-                cookiesrow = c.execute("SELECT * FROM NewCookiesTable WHERE Extra IS NULL ORDER BY RANDOM() LIMIT 1")
-                e_data = cookiesrow.fetchall()
+                cookies_row = c.execute("SELECT * FROM NewCookiesTable WHERE Extra IS NULL ORDER BY RANDOM() LIMIT 1")
+                e_data = cookies_row.fetchall()
                 if len(e_data) != 0:
                     if mode == 1:
                         c.execute("INSERT OR IGNORE INTO CookiesCache (Cookies,UID) \
-                                VALUES (?, ?)", (e_data[0][1], uid))
+                                    VALUES (?, ?)", (e_data[0][1], uid))
                     elif mode == 2:
                         c.execute("INSERT OR IGNORE INTO CookiesCache (Cookies,MYSID) \
-                                VALUES (?, ?)", (e_data[0][1], uid))
+                                    VALUES (?, ?)", (e_data[0][1], uid))
                     use = e_data[0][1]
                 else:
                     return "没有可以使用的Cookies！"
         else:
-            cookiesrow = c.execute("SELECT * FROM NewCookiesTable WHERE Extra IS NULL ORDER BY RANDOM() LIMIT 1")
-            e_data = cookiesrow.fetchall()
+            cookies_row = c.execute("SELECT * FROM NewCookiesTable WHERE Extra IS NULL ORDER BY RANDOM() LIMIT 1")
+            e_data = cookies_row.fetchall()
             if len(e_data) != 0:
                 if mode == 1:
                     c.execute("INSERT OR IGNORE INTO CookiesCache (Cookies,UID) \
-                            VALUES (?, ?)", (e_data[0][1], uid))
+                                VALUES (?, ?)", (e_data[0][1], uid))
                 elif mode == 2:
                     c.execute("INSERT OR IGNORE INTO CookiesCache (Cookies,MYSID) \
-                            VALUES (?, ?)", (e_data[0][1], uid))
+                                VALUES (?, ?)", (e_data[0][1], uid))
                 use = e_data[0][1]
             else:
                 return "没有可以使用的Cookies！"
@@ -607,4 +613,64 @@ async def GetInfo(Uid, ck, ServerID="cn_gf01"):
             print("米游社基础信息读取新Api失败！")
     except Exception as e:
         print("米游社基础信息读取老Api失败！")
+        print(e.with_traceback)
+
+
+async def get_spiral_abyss_info(uid, ck, schedule_type="1", server_id="cn_gf01"):
+    if uid[0] == '5':
+        server_id = "cn_qd01"
+    try:
+        async with AsyncClient() as c:
+            req = await c.get(
+                url="https://api-takumi.mihoyo.com/game_record/app/genshin/api/spiralAbyss",
+                headers={
+                    'DS': DSGet("role_id=" + uid + "&schedule_type=" + schedule_type + "&server=" + server_id),
+                    'Origin': 'https://webstatic.mihoyo.com',
+                    'Cookie': ck,
+                    'x-rpc-app_version': mhyVersion,
+                    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS '
+                                  'X) AppleWebKit/605.1.15 (KHTML, like Gecko) miHoYoBBS/2.11.1',
+                    'x-rpc-client_type': '5',
+                    'Referer': 'https://webstatic.mihoyo.com/'
+                },
+                params={
+                    "schedule_type": schedule_type,
+                    "role_id": uid,
+                    "server": server_id
+                }
+            )
+            data = json.loads(req.text)
+        return data
+    except requests.exceptions.SSLError:
+        try:
+            async with AsyncClient() as c:
+                req = await c.get(
+                    url="https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/spiralAbyss",
+                    headers={
+                        'DS': DSGet(
+                            "role_id=" + uid + "&schedule_type=" + schedule_type + "&server=" + server_id),
+                        'Origin': 'https://webstatic.mihoyo.com',
+                        'Cookie': ck,
+                        'x-rpc-app_version': mhyVersion,
+                        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 '
+                                      '(KHTML, like Gecko) miHoYoBBS/2.11.1',
+                        'x-rpc-client_type': '5',
+                        'Referer': 'https://webstatic.mihoyo.com/'
+                    },
+                    params={
+                        "role_id": uid,
+                        "server": server_id,
+                        "bbs_presentation_style": "fullscreen",
+                        "bbs_auth_required": "true",
+                        "utm_source": "bbs",
+                        "utm_medium": "mys",
+                        "utm_campaign": "icon"
+                    }
+                )
+            data = json.loads(req.text)
+            return data
+        except json.decoder.JSONDecodeError:
+            print("深渊信息读取新Api失败！")
+    except Exception as e:
+        print("深渊信息读取老Api失败！")
         print(e.with_traceback)
