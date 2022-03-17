@@ -34,8 +34,9 @@ async def zb_msg(client: Client, message: Message):
             msg = await message.reply_photo(photo=f"{getcwd()}{sep}assets{sep}images{sep}zb.png", quote=True)
             # 缓存 file_id
             redis.set("zb", "2.5")
-            redis.set("zb_file_id", msg.document.file_id)
+            redis.set("zb_file_id", msg.photo.file_id)
         else:
-            await message.reply_photo(photo=redis.get('zb_file_id').decode(), quote=True)
+            file_id = redis.get("zb_file_id").decode()
+            await message.reply_photo(photo=file_id, quote=True)
     else:
         await message.reply_photo(photo=f'{getcwd()}{sep}assets{sep}images{sep}zb.png', quote=True)
