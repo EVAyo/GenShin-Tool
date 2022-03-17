@@ -189,7 +189,7 @@ async def get_user_abyss(uid, mode=2, date="1"):  # 深境螺旋
     # 获取数据
     udata = GenshinUserData(**raw_char_data["data"])
     aby = GenshinAbyss(**raw_data["data"])
-    breakpoint()
+
     if not aby.floors:  # 没打
         return ""
     rettext = f"<b>第{aby.schedule_id}期深境螺旋信息</b>\n\n" \
