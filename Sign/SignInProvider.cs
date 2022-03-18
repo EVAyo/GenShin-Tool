@@ -2,6 +2,7 @@
 using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
 using DGP.Genshin.MiHoYoAPI.Response;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Sign
@@ -53,7 +54,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        public async Task<SignInInfo?> GetSignInInfoAsync(UserGameRole role)
+        public async Task<SignInInfo?> GetSignInInfoAsync(UserGameRole role, CancellationToken cancellationToken = default)
         {
             Requester requester = new(new RequestOptions
             {
@@ -66,7 +67,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
             });
             string query = $"act_id={ActivityId}&region={role.Region}&uid={role.GameUid}";
             Response<SignInInfo>? resp = await requester
-                .GetAsync<SignInInfo>($"{ApiTakumi}/event/bbs_sign_reward/info?{query}")
+                .GetAsync<SignInInfo>($"{ApiTakumi}/event/bbs_sign_reward/info?{query}", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data;
         }
@@ -76,7 +77,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        public async Task<ReSignInfo?> GetReSignInfoAsync(UserGameRole role)
+        public async Task<ReSignInfo?> GetReSignInfoAsync(UserGameRole role, CancellationToken cancellationToken = default)
         {
             Requester requester = new(new RequestOptions
             {
@@ -88,7 +89,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
             });
             string query = $"act_id={ActivityId}&region={role.Region}&uid={role.GameUid}";
             Response<ReSignInfo>? resp = await requester
-                .GetAsync<ReSignInfo>($"{ApiTakumi}/event/bbs_sign_reward/resign_info?{query}")
+                .GetAsync<ReSignInfo>($"{ApiTakumi}/event/bbs_sign_reward/resign_info?{query}", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data;
         }
@@ -98,12 +99,12 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        public async Task<string> SignInAsync(UserGameRole role)
+        public async Task<string> SignInAsync(UserGameRole role, CancellationToken cancellationToken = default)
         {
             var data = new { act_id = ActivityId, region = role.Region, uid = role.GameUid };
             Requester requester = SignInRequester;
             Response<SignInResult>? resp = await requester
-                .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data)
+                .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data, cancellationToken)
                 .ConfigureAwait(false);
             return resp is null ? "签到失败" : resp.Message ?? "签到成功";
         }
@@ -113,12 +114,12 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        public async Task<string> ReSignAsync(UserGameRole role)
+        public async Task<string> ReSignAsync(UserGameRole role, CancellationToken cancellationToken = default)
         {
             var data = new { act_id = ActivityId, region = role.Region, uid = role.GameUid };
             Requester requester = SignInRequester;
             Response<SignInResult>? resp = await requester
-                .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data)
+                .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data, cancellationToken)
                 .ConfigureAwait(false);
             return resp is null ? "签到失败" : resp.Message ?? "签到成功";
         }
@@ -127,7 +128,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         /// 获取签到奖励
         /// </summary>
         /// <returns></returns>
-        public async Task<SignInReward?> GetSignInRewardAsync()
+        public async Task<SignInReward?> GetSignInRewardAsync(CancellationToken cancellationToken = default)
         {
             Requester requester = new(new RequestOptions
             {
@@ -138,7 +139,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<SignInReward>? resp = await requester
-                .GetAsync<SignInReward>($"{ApiTakumi}/event/bbs_sign_reward/home?act_id={ActivityId}")
+                .GetAsync<SignInReward>($"{ApiTakumi}/event/bbs_sign_reward/home?act_id={ActivityId}", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data;
         }

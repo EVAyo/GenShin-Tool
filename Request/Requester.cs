@@ -19,7 +19,11 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         // HttpClient is intended to be instantiated once per application, rather than per-use.
         private static readonly Lazy<HttpClient> LazyHttpClient = new(() => new() { Timeout = Timeout.InfiniteTimeSpan });
         private static readonly Lazy<HttpClient> LazyGZipCompressionHttpClient = new(() =>
-        { return new(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip }) { Timeout = Timeout.InfiniteTimeSpan }; });
+        {
+            return new(new HttpClientHandler
+            { AutomaticDecompression = DecompressionMethods.GZip })
+            { Timeout = Timeout.InfiniteTimeSpan };
+        });
 
         public static Action<Exception, string, string>? ResponseFailedAction { get; set; }
         public RequestOptions Headers { get; set; } = new RequestOptions();
@@ -53,7 +57,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         public bool UseAuthToken { get; set; }
         public string? AuthToken { get; set; }
 
-        private async Task<Response<TResult>?> RequestAsync<TResult>(Func<HttpClient, RequestInfo> requestFunc)
+        private async Task<Response<TResult>?> RequestAsync<TResult>(Func<HttpClient, RequestInfo> requestFunc, CancellationToken cancellationToken = default)
         {
             RequestInfo? info = null;
 
@@ -76,18 +80,15 @@ namespace DGP.Genshin.MiHoYoAPI.Request
             {
                 HttpResponseMessage response = await info.RequestAsyncFunc.Invoke().ConfigureAwait(false);
                 HttpContent content = response.Content;
-                string contentString = await content.ReadAsStringAsync().ConfigureAwait(false);
+                string contentString = await content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                 return Json.ToObject<Response<TResult>>(contentString);
             }
             catch (Exception ex)
             {
-                if (ex is HttpRequestException httpRequestException)
-                {
-                }
-                string? httpMethod = $"[{info?.Method} {info?.Url[..48]}]";
+                string? httpMethod = $"[{info?.Method} {info?.Url}]";
                 ResponseFailedAction?.Invoke(ex, httpMethod, "failed");
 
-                return Response<TResult>.CreateFail($"{ex.GetType()}:{ex.Message}");
+                return Response<TResult>.CreateFail($"{ex.Message}");
             }
         }
 
@@ -97,11 +98,13 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         /// <typeparam name="TResult">返回的类类型</typeparam>
         /// <param name="url">地址</param>
         /// <returns>响应</returns>
-        public async Task<Response<TResult>?> GetAsync<TResult>(string? url)
+        public async Task<Response<TResult>?> GetAsync<TResult>(string? url, CancellationToken cancellationToken = default)
         {
             this.Log($"GET {url?.Split('?')[0]}");
             return url is null ? null : await RequestAsync<TResult>(client =>
-            new RequestInfo("GET", url, () => client.GetAsync(url)))
+            new RequestInfo("GET", url,
+            () => client.GetAsync(url, cancellationToken)),
+            cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -112,12 +115,14 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         /// <param name="url">地址</param>
         /// <param name="data">要发送的.NET（匿名）对象</param>
         /// <returns>响应</returns>
-        public async Task<Response<TResult>?> PostAsync<TResult>(string? url, object data)
+        public async Task<Response<TResult>?> PostAsync<TResult>(string? url, object data, CancellationToken cancellationToken = default)
         {
             string dataString = Json.Stringify(data);
             this.Log($"POST {url?.Split('?')[0]} with\n{dataString}");
             return url is null ? null : await RequestAsync<TResult>(client =>
-            new RequestInfo("POST", url, () => client.PostAsync(url, new StringContent(dataString))))
+            new RequestInfo("POST", url,
+            () => client.PostAsync(url, new StringContent(dataString), cancellationToken)),
+            cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -129,12 +134,14 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         /// <param name="data">要发送的.NET（匿名）对象</param>
         /// <param name="contentType">内容类型</param>
         /// <returns>响应</returns>
-        public async Task<Response<TResult>?> PostAsync<TResult>(string? url, object data, string contentType)
+        public async Task<Response<TResult>?> PostAsync<TResult>(string? url, object data, string contentType, CancellationToken cancellationToken = default)
         {
             string dataString = Json.Stringify(data);
             this.Log($"POST {url?.Split('?')[0]} with\n{dataString}");
             return url is null ? null : await RequestAsync<TResult>(client =>
-            new RequestInfo("POST", url, () => client.PostAsync(url, new StringContent(dataString, Encoding.UTF8, contentType))))
+            new RequestInfo("POST", url,
+            () => client.PostAsync(url, new StringContent(dataString, Encoding.UTF8, contentType), cancellationToken)),
+            cancellationToken)
                 .ConfigureAwait(false);
         }
     }

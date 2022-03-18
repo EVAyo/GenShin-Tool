@@ -1,6 +1,7 @@
 ﻿using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Response;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Blackboard
@@ -8,7 +9,7 @@ namespace DGP.Genshin.MiHoYoAPI.Blackboard
     public class BlackboardProvider
     {
         private const string ApiStatic = @"https://api-static.mihoyo.com";
-        public async Task<List<BlackboardEvent>> GetBlackboardEventsAsync()
+        public async Task<List<BlackboardEvent>> GetBlackboardEventsAsync(CancellationToken cancellationToken = default)
         {
             Requester requester = new();
             Response<ListWrapper<BlackboardEvent>>? resp =

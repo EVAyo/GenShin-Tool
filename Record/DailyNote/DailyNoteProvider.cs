@@ -1,14 +1,13 @@
 ﻿using DGP.Genshin.MiHoYoAPI.GameRole;
 using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
-using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
 {
     public class DailyNoteProvider
     {
-        private const string ApiTakumi = @"https://api-takumi.mihoyo.com";
         private const string ApiTakumiRecord = @"https://api-takumi-record.mihoyo.com/game_record/app/genshin/api";
         private const string Referer = @"https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6";
 
@@ -34,32 +33,18 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// <param name="server"></param>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public async Task<DailyNote?> GetDailyNoteAsync(string server, string uid)
+        public async Task<DailyNote?> GetDailyNoteAsync(string server, string uid, CancellationToken cancellationToken = default)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<DailyNote>(
-                $"{ApiTakumiRecord}/dailyNote?server={server}&role_id={uid}")
+                $"{ApiTakumiRecord}/dailyNote?server={server}&role_id={uid}", cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<DailyNote?> GetDailyNoteAsync(UserGameRole role)
+        public async Task<DailyNote?> GetDailyNoteAsync(UserGameRole role, CancellationToken cancellationToken = default)
         {
             return role?.Region is null || role.GameUid is null
                 ? null
-                : await GetDailyNoteAsync(role.Region, role.GameUid)
-                .ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// 开关实时便笺
-        /// </summary>
-        /// <param name="isPublic">开关状态</param>
-        /// <returns>empty object</returns>
-        [Obsolete("该接口已经停止使用")]
-        public async Task<object?> ChangeDailyNoteDataSwitchAsync(bool isPublic)
-        {
-            var data = new { is_public = isPublic, switch_id = "3", game_id = "2" };
-            return await requester.PostWhileUpdateDynamicSecret2Async<object>(
-                $"{ApiTakumi}/game_record/app/card/wapi/changeDataSwitch", data)
+                : await GetDailyNoteAsync(role.Region, role.GameUid, cancellationToken)
                 .ConfigureAwait(false);
         }
     }

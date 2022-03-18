@@ -2,6 +2,7 @@
 using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
 using DGP.Genshin.MiHoYoAPI.Response;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Post
@@ -20,7 +21,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
         /// 获取推荐的帖子列表
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Post>> GetOfficialRecommendedPostsAsync()
+        public async Task<List<Post>> GetOfficialRecommendedPostsAsync(CancellationToken cancellationToken = default)
         {
             Requester requester = new(new RequestOptions
             {
@@ -34,7 +35,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Cookie", cookie }
             });
             Response<ListWrapper<Post>>? resp =
-                await requester.GetAsync<ListWrapper<Post>>($"{PostBaseUrl}/getOfficialRecommendedPosts?gids=2")
+                await requester.GetAsync<ListWrapper<Post>>($"{PostBaseUrl}/getOfficialRecommendedPosts?gids=2", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data?.List ?? new();
         }
@@ -43,7 +44,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
         /// </summary>
         /// <param name="postId"></param>
         /// <returns></returns>
-        public async Task<dynamic?> GetPostFullAsync(string postId)
+        public async Task<dynamic?> GetPostFullAsync(string postId, CancellationToken cancellationToken = default)
         {
             Requester requester = new(new RequestOptions
             {
@@ -57,7 +58,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Cookie", cookie }
             });
             Response<dynamic>? resp =
-                await requester.GetAsync<dynamic>($"{PostBaseUrl}/getPostFull?post_id={postId}&read=1")
+                await requester.GetAsync<dynamic>($"{PostBaseUrl}/getPostFull?post_id={postId}&read=1", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data;
         }

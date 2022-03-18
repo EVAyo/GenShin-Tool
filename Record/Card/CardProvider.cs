@@ -2,6 +2,7 @@
 using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
 using DGP.Genshin.MiHoYoAPI.Response;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record.Card
@@ -27,7 +28,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
         /// </summary>
         /// <param name="uid">米游社uid，可以是别人的uid</param>
         /// <returns></returns>
-        public async Task<List<Card>> GetGameRecordCardAsync(string uid)
+        public async Task<List<Card>> GetGameRecordCardAsync(string uid, CancellationToken cancellationToken = default)
         {
             Requester requester = new(new RequestOptions
             {
@@ -40,7 +41,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             ListWrapper<Card>? resp = await requester.GetWhileUpdateDynamicSecret2Async<ListWrapper<Card>>(
-                $"{BBSApi}/game_record/app/card/wapi/getGameRecordCard?uid={uid}")
+                $"{BBSApi}/game_record/app/card/wapi/getGameRecordCard?uid={uid}", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.List ?? new();
         }

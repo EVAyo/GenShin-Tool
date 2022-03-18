@@ -1,5 +1,6 @@
 ﻿using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Response;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Mission
@@ -18,7 +19,7 @@ namespace DGP.Genshin.MiHoYoAPI.Mission
         /// 获取米游币任务
         /// </summary>
         /// <returns></returns>
-        public async Task<MissionWrapper?> GetMissionsAsync()
+        public async Task<MissionWrapper?> GetMissionsAsync(CancellationToken cancellationToken = default)
         {
             Requester requester = new(new RequestOptions
             {
@@ -29,7 +30,7 @@ namespace DGP.Genshin.MiHoYoAPI.Mission
                 {"x_Request_with",RequestOptions.Hyperion }
             });
             Response<MissionWrapper>? resp =
-                await requester.GetAsync<MissionWrapper>($"{ApiTakumi}/apihub/wapi/getMissions?point_sn=myb")
+                await requester.GetAsync<MissionWrapper>($"{ApiTakumi}/apihub/wapi/getMissions?point_sn=myb", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data;
         }

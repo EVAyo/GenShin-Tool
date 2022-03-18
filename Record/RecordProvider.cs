@@ -1,10 +1,11 @@
 ﻿using DGP.Genshin.MiHoYoAPI.Record.Avatar;
 using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Request.DynamicSecret;
-using Snap.Exception;
+using Microsoft;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Record
@@ -61,10 +62,10 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="uid"></param>
         /// <param name="server"></param>
         /// <returns></returns>
-        public async Task<PlayerInfo?> GetPlayerInfoAsync(string uid, string server)
+        public async Task<PlayerInfo?> GetPlayerInfoAsync(string uid, string server, CancellationToken cancellationToken = default)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<PlayerInfo>(
-                $@"{ApiTakumiRecord}/index?server={server}&role_id={uid}")
+                $@"{ApiTakumiRecord}/index?server={server}&role_id={uid}", cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -75,16 +76,16 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="server"></param>
         /// <param name="type">1：当期，2：上期</param>
         /// <returns></returns>
-        public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, int type)
+        public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, int type, CancellationToken cancellationToken = default)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<SpiralAbyss.SpiralAbyss>(
-                $@"{ApiTakumiRecord}/spiralAbyss?schedule_type={type}&server={server}&role_id={uid}")
+                $@"{ApiTakumiRecord}/spiralAbyss?schedule_type={type}&server={server}&role_id={uid}", cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, SpiralAbyssType type)
+        public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, SpiralAbyssType type, CancellationToken cancellationToken = default)
         {
-            return await GetSpiralAbyssAsync(uid, server, (int)type)
+            return await GetSpiralAbyssAsync(uid, server, (int)type, cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -94,10 +95,10 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="uid"></param>
         /// <param name="server"></param>
         /// <returns></returns>
-        public async Task<object?> GetActivitiesAsync(string uid, string server)
+        public async Task<object?> GetActivitiesAsync(string uid, string server, CancellationToken cancellationToken = default)
         {
             return await requester.GetWhileUpdateDynamicSecret2Async<object>(
-                $@"{ApiTakumiRecord}/activities?server={server}&role_id={uid}")
+                $@"{ApiTakumiRecord}/activities?server={server}&role_id={uid}", cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -109,17 +110,19 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="playerInfo">玩家的基础信息</param>
         /// <returns></returns>
         [SuppressMessage("", "IDE0037")]
-        public async Task<DetailedAvatarWrapper?> GetDetailAvaterInfoAsync(string uid, string server, PlayerInfo playerInfo)
+        public async Task<DetailedAvatarWrapper?> GetDetailAvaterInfoAsync(string uid, string server, PlayerInfo playerInfo, CancellationToken cancellationToken = default)
         {
             List<Avatar.Avatar>? avatars = playerInfo.Avatars;
+            Requires.NotNull(avatars!, nameof(avatars));
+
             var data = new
             {
-                character_ids = avatars?.Select(x => x.Id) ?? throw new UnexpectedNullException("avatars 不应为 null"),
+                character_ids = avatars.Select(x => x.Id),
                 role_id = uid,
                 server = server
             };
             return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarWrapper>(
-                $@"{ApiTakumiRecord}/character", data)
+                $@"{ApiTakumiRecord}/character", data, cancellationToken)
                 .ConfigureAwait(false);
         }
     }

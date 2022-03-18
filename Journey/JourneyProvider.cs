@@ -1,6 +1,7 @@
 ﻿using DGP.Genshin.MiHoYoAPI.GameRole;
 using DGP.Genshin.MiHoYoAPI.Request;
 using DGP.Genshin.MiHoYoAPI.Response;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Journey
@@ -28,7 +29,7 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
         /// <param name="region"></param>
         /// <param name="month">0为起始请求</param>
         /// <returns></returns>
-        public async Task<JourneyInfo?> GetMonthInfoAsync(string? uid, string? region, int month = 0)
+        public async Task<JourneyInfo?> GetMonthInfoAsync(string? uid, string? region, int month = 0, CancellationToken cancellationToken = default)
         {
             if (uid == null || region == null)
             {
@@ -43,14 +44,14 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<JourneyInfo>? resp = await requester.GetAsync<JourneyInfo>
-                ($@"{ApiHk4e}/event/ys_ledger/monthInfo?month={month}&bind_uid={uid}&bind_region={region}&{BBSQueryString}")
+                ($@"{ApiHk4e}/event/ys_ledger/monthInfo?month={month}&bind_uid={uid}&bind_region={region}&{BBSQueryString}", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data;
         }
 
-        public async Task<JourneyInfo?> GetMonthInfoAsync(UserGameRole userGameRole, int month = 0)
+        public async Task<JourneyInfo?> GetMonthInfoAsync(UserGameRole userGameRole, int month = 0, CancellationToken cancellationToken = default)
         {
-            return await GetMonthInfoAsync(userGameRole.GameUid, userGameRole.Region, month)
+            return await GetMonthInfoAsync(userGameRole.GameUid, userGameRole.Region, month, cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -63,7 +64,7 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
         /// <param name="type">1：原石，2：摩拉</param>
         /// <param name="page">请求的页码</param>
         /// <returns>当返回列表的数量不足10个时应停止请求</returns>
-        public async Task<JourneyDetail?> GetMonthDetailAsync(string uid, string region, int month, int type, int page = 1)
+        public async Task<JourneyDetail?> GetMonthDetailAsync(string uid, string region, int month, int type, int page = 1, CancellationToken cancellationToken = default)
         {
             Requester requester = new(new RequestOptions
             {
@@ -73,7 +74,7 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<JourneyDetail>? resp = await requester.GetAsync<JourneyDetail>
-                ($@"{ApiHk4e}/event/ys_ledger/monthDetail?page={page}&month={month}&limit=10&type=2&bind_uid={uid}&bind_region={region}&{BBSQueryString}")
+                ($@"{ApiHk4e}/event/ys_ledger/monthDetail?page={page}&month={month}&limit=10&type=2&bind_uid={uid}&bind_region={region}&{BBSQueryString}", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data;
         }

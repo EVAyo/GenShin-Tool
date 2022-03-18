@@ -28,11 +28,19 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
                 if (StartTime > now)//尚未开始
                 {
                     TimeSpan span = StartTime - now;
+                    if (span.TotalDays <= 1)
+                    {
+                        return $"{(int)span.TotalHours} 小时后开始";
+                    }
                     return $"{(int)span.TotalDays} 天后开始";
                 }
                 else
                 {
                     TimeSpan span = EndTime - now;
+                    if (span.TotalDays <= 1)
+                    {
+                        return $"{(int)span.TotalHours} 小时后结束";
+                    }
                     return $"{(int)span.TotalDays} 天后结束";
                 }
             }
