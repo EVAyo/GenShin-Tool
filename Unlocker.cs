@@ -15,6 +15,8 @@ namespace DGP.Genshin.FPSUnlocking
     /// </summary>
     public class Unlocker
     {
+        private const string UnityPlayerDllName = "UnityPlayer.dll";
+
         /// <summary>
         /// 设置fps位的偏移量
         /// </summary>
@@ -196,7 +198,7 @@ namespace DGP.Genshin.FPSUnlocking
             TimeSpan timeLimit = TimeSpan.FromMilliseconds(findModuleTimeMillisecondsLimit);
 
             //gameProcess 实际上可能为 null
-            while ((module = FindModule(gameProcess.Id, "UnityPlayer.dll")) is null)
+            while ((module = FindModule(gameProcess.Id, UnityPlayerDllName)) is null)
             {
                 if (watch.Elapsed > timeLimit)
                 {
