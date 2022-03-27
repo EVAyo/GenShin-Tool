@@ -46,7 +46,7 @@ namespace DGP.Genshin.FPSUnlocking
         /// </summary>
         private byte[] TargetFPSBytes
         {
-            get => BitConverter.GetBytes(TargetFPS);
+            get => BitConverter.GetBytes(this.TargetFPS);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace DGP.Genshin.FPSUnlocking
         {
             Verify.Operation(Environment.Is64BitProcess, "无法在32位进程中使用 Unlocker");
             Requires.Range(targetFPS >= 30 || targetFPS <= 2000, nameof(targetFPS));
-            TargetFPS = targetFPS;
+            this.TargetFPS = targetFPS;
             this.gameProcess = gameProcess;
         }
 
@@ -76,10 +76,10 @@ namespace DGP.Genshin.FPSUnlocking
         /// <returns>解锁的结果</returns>
         public async Task<UnlockResult> StartProcessAndUnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondLimit = 10000, int adjustFpsMillisecondsDelay = 2000)
         {
-            bool result = gameProcess.Start();
+            bool result = this.gameProcess.Start();
             if (result)
             {
-                return await UnlockAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondLimit, adjustFpsMillisecondsDelay)
+                return await this.UnlockAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondLimit, adjustFpsMillisecondsDelay)
                     .ConfigureAwait(false);
             }
             else
@@ -109,24 +109,24 @@ namespace DGP.Genshin.FPSUnlocking
         /// <returns>解锁的结果</returns>
         public async Task<UnlockResult> UnlockAsync(int findModuleMillisecondsDelay = 100, int findModuleTimeMillisecondsLimit = 10000, int adjustFpsMillisecondsDelay = 2000)
         {
-            if (isInvalid)
+            if (this.isInvalid)
             {
                 return UnlockResult.UnlockerInvalid;
             }
-            if (gameProcess.HasExited)
+            if (this.gameProcess.HasExited)
             {
                 return UnlockResult.ProcessHasExited;
             }
 
             MODULEENTRY32? module;
-            module = await FindModuleContinuouslyAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondsLimit)
+            module = await this.FindModuleContinuouslyAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondsLimit)
                 .ConfigureAwait(false);
 
             if (module is null)
             {
                 return UnlockResult.ModuleSearchTimeExceed;
             }
-            if (gameProcess.HasExited)
+            if (this.gameProcess.HasExited)
             {
                 return UnlockResult.ProcessHasExited;
             }
@@ -134,7 +134,7 @@ namespace DGP.Genshin.FPSUnlocking
             MODULEENTRY32 unityPlayer = module.Value;
             byte[] image = new byte[unityPlayer.modBaseSize];
             // Read UnityPlayer.dll
-            bool readOk = ReadProcessMemory(gameProcess.Handle, unityPlayer.modBaseAddr, image, unityPlayer.modBaseSize, out _);
+            bool readOk = ReadProcessMemory(this.gameProcess.Handle, unityPlayer.modBaseAddr, image, unityPlayer.modBaseSize, out _);
 
             if (!readOk)
             {
@@ -144,25 +144,25 @@ namespace DGP.Genshin.FPSUnlocking
             // Find FPS offset
             // 7F 0F              jg   0x11
             // 8B 05 ? ? ? ?      mov eax, dword ptr[rip+?]
-            uint? adr = SearchPattern(image, new byte[] { 0x7F, 0x0F, 0x8B, 0x05, 0x2A, 0x2A, 0x2A, 0x2A });
+            uint? adr = this.SearchPattern(image, new byte[] { 0x7F, 0x0F, 0x8B, 0x05, 0x2A, 0x2A, 0x2A, 0x2A });
 
             if (adr is null)
             {
                 return UnlockResult.NoMatchedPatternFound;
             }
 
-            CalculateFPSOffset(unityPlayer, image, adr.Value);
+            this.CalculateFPSOffset(unityPlayer, image, adr.Value);
 
             while (true)
             {
-                if (!gameProcess.HasExited && fpsOffset != UIntPtr.Zero)
+                if (!this.gameProcess.HasExited && this.fpsOffset != UIntPtr.Zero)
                 {
-                    WriteProcessMemory(gameProcess.Handle, fpsOffset, TargetFPSBytes, sizeof(int), out _);
+                    WriteProcessMemory(this.gameProcess.Handle, this.fpsOffset, this.TargetFPSBytes, sizeof(int), out _);
                 }
                 else
                 {
-                    isInvalid = true;
-                    fpsOffset = UIntPtr.Zero;
+                    this.isInvalid = true;
+                    this.fpsOffset = UIntPtr.Zero;
                     return UnlockResult.Ok;
                 }
                 await Task.Delay(adjustFpsMillisecondsDelay)
@@ -181,7 +181,7 @@ namespace DGP.Genshin.FPSUnlocking
             uint rip = adr + 2;
             uint rel = BitConverter.ToUInt32(image, Convert.ToInt32(rip + 2));
             uint ofs = rip + rel + 6;
-            fpsOffset = (UIntPtr)((long)unityPlayer.modBaseAddr + ofs);
+            this.fpsOffset = (UIntPtr)((long)unityPlayer.modBaseAddr + ofs);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace DGP.Genshin.FPSUnlocking
             TimeSpan timeLimit = TimeSpan.FromMilliseconds(findModuleTimeMillisecondsLimit);
 
             //gameProcess 实际上可能为 null
-            while ((module = FindModule(gameProcess.Id, UnityPlayerDllName)) is null)
+            while ((module = this.FindModule(this.gameProcess.Id, UnityPlayerDllName)) is null)
             {
                 if (watch.Elapsed > timeLimit)
                 {
