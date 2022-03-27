@@ -15,7 +15,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
 
         public DailyNoteProvider(string cookie)
         {
-            requester = new(new RequestOptions
+            this.requester = new(new RequestOptions
             {
                 {"Accept", RequestOptions.Json },
                 {"x-rpc-app_version", DynamicSecretProvider2.AppVersion },
@@ -35,7 +35,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         /// <returns></returns>
         public async Task<DailyNote?> GetDailyNoteAsync(string server, string uid, CancellationToken cancellationToken = default)
         {
-            return await requester.GetWhileUpdateDynamicSecret2Async<DailyNote>(
+            return await this.requester.GetWhileUpdateDynamicSecret2Async<DailyNote>(
                 $"{ApiTakumiRecord}/dailyNote?server={server}&role_id={uid}", cancellationToken)
                 .ConfigureAwait(false);
         }
@@ -44,7 +44,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         {
             return role?.Region is null || role.GameUid is null
                 ? null
-                : await GetDailyNoteAsync(role.Region, role.GameUid, cancellationToken)
+                : await this.GetDailyNoteAsync(role.Region, role.GameUid, cancellationToken)
                 .ConfigureAwait(false);
         }
     }

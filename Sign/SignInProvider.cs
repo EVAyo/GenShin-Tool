@@ -43,7 +43,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                     {"Accept", RequestOptions.Json },
                     {"x-rpc-client_type", "5" },
                     {"Referer", Referer },
-                    {"Cookie", cookie },
+                    {"Cookie", this.cookie },
                     {"X-Requested-With", RequestOptions.Hyperion }
                 });
             }
@@ -62,7 +62,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                 {"User-Agent",RequestOptions.CommonUA2101 },
                 {"x-rpc-device_id", RequestOptions.DeviceId },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             string query = $"act_id={ActivityId}&region={role.Region}&uid={role.GameUid}";
@@ -84,7 +84,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                 {"Accept", RequestOptions.Json },
                 {"User-Agent",RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             string query = $"act_id={ActivityId}&region={role.Region}&uid={role.GameUid}";
@@ -102,7 +102,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         public async Task<string> SignInAsync(UserGameRole role, CancellationToken cancellationToken = default)
         {
             var data = new { act_id = ActivityId, region = role.Region, uid = role.GameUid };
-            Requester requester = SignInRequester;
+            Requester requester = this.SignInRequester;
             Response<SignInResult>? resp = await requester
                 .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data, cancellationToken)
                 .ConfigureAwait(false);
@@ -117,7 +117,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         public async Task<string> ReSignAsync(UserGameRole role, CancellationToken cancellationToken = default)
         {
             var data = new { act_id = ActivityId, region = role.Region, uid = role.GameUid };
-            Requester requester = SignInRequester;
+            Requester requester = this.SignInRequester;
             Response<SignInResult>? resp = await requester
                 .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data, cancellationToken)
                 .ConfigureAwait(false);
@@ -135,7 +135,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<SignInReward>? resp = await requester

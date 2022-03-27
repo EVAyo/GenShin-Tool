@@ -39,7 +39,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         /// <param name="headers">请求头</param>
         public Requester(RequestOptions headers)
         {
-            Headers = headers;
+            this.Headers = headers;
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         /// <param name="headers">请求头</param>
         public Requester(RequestOptions headers, bool useGZipCompression)
         {
-            Headers = headers;
-            UseGZipCompression = useGZipCompression;
+            this.Headers = headers;
+            this.UseGZipCompression = useGZipCompression;
         }
 
 
@@ -61,15 +61,15 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         {
             RequestInfo? info = null;
 
-            HttpClient client = UseGZipCompression ? LazyGZipCompressionHttpClient.Value : LazyHttpClient.Value;
+            HttpClient client = this.UseGZipCompression ? LazyGZipCompressionHttpClient.Value : LazyHttpClient.Value;
             client.DefaultRequestHeaders.Clear();
 
-            if (UseAuthToken)
+            if (this.UseAuthToken)
             {
-                client.DefaultRequestHeaders.Authorization = new("Bearer", AuthToken);
+                client.DefaultRequestHeaders.Authorization = new("Bearer", this.AuthToken);
             }
 
-            foreach ((string name, string value) in Headers)
+            foreach ((string name, string value) in this.Headers)
             {
                 client.DefaultRequestHeaders.Add(name, value);
             }
@@ -101,7 +101,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         public async Task<Response<TResult>?> GetAsync<TResult>(string? url, CancellationToken cancellationToken = default)
         {
             this.Log($"GET {url?.Split('?')[0]}");
-            return url is null ? null : await RequestAsync<TResult>(client =>
+            return url is null ? null : await this.RequestAsync<TResult>(client =>
             new RequestInfo("GET", url,
             () => client.GetAsync(url, cancellationToken)),
             cancellationToken)
@@ -119,7 +119,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         {
             string dataString = Json.Stringify(data);
             this.Log($"POST {url?.Split('?')[0]} with\n{dataString}");
-            return url is null ? null : await RequestAsync<TResult>(client =>
+            return url is null ? null : await this.RequestAsync<TResult>(client =>
             new RequestInfo("POST", url,
             () => client.PostAsync(url, new StringContent(dataString), cancellationToken)),
             cancellationToken)
@@ -138,7 +138,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         {
             string dataString = Json.Stringify(data);
             this.Log($"POST {url?.Split('?')[0]} with\n{dataString}");
-            return url is null ? null : await RequestAsync<TResult>(client =>
+            return url is null ? null : await this.RequestAsync<TResult>(client =>
             new RequestInfo("POST", url,
             () => client.PostAsync(url, new StringContent(dataString, Encoding.UTF8, contentType), cancellationToken)),
             cancellationToken)

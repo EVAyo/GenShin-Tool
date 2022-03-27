@@ -16,9 +16,9 @@ namespace DGP.Genshin.MiHoYoAPI.Record.SpiralAbyss
         {
             get
             {
-                if (Timestamp is not null)
+                if (this.Timestamp is not null)
                 {
-                    DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(int.Parse(Timestamp));
+                    DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(int.Parse(this.Timestamp));
                     return dto.ToLocalTime().DateTime;
                 }
                 return null;

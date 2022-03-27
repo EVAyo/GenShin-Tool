@@ -23,9 +23,9 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         {
             get
             {
-                if (ResinRecoveryTime is not null)
+                if (this.ResinRecoveryTime is not null)
                 {
-                    DateTime tt = DateTime.Now.AddSeconds(int.Parse(ResinRecoveryTime));
+                    DateTime tt = DateTime.Now.AddSeconds(int.Parse(this.ResinRecoveryTime));
                     int totalDays = (tt - DateTime.Today).Days;
                     string day = totalDays switch
                     {
@@ -57,9 +57,9 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         {
             get
             {
-                return IsExtraTaskRewardReceived
+                return this.IsExtraTaskRewardReceived
 ? "已领取「每日委托」奖励"
-: FinishedTaskNum == TotalTaskNum
+: this.FinishedTaskNum == this.TotalTaskNum
 ? "「每日委托」奖励待领取"
 : "今日完成委托次数不足";
             }
@@ -72,7 +72,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
 
         public int ResinDiscountUsedNum
         {
-            get => ResinDiscountNumLimit - RemainResinDiscountNum;
+            get => this.ResinDiscountNumLimit - this.RemainResinDiscountNum;
         }
 
         /// <summary>
@@ -109,9 +109,9 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         {
             get
             {
-                if (HomeCoinRecoveryTime is not null)
+                if (this.HomeCoinRecoveryTime is not null)
                 {
-                    DateTime tt = DateTime.Now.AddSeconds(int.Parse(HomeCoinRecoveryTime));
+                    DateTime tt = DateTime.Now.AddSeconds(int.Parse(this.HomeCoinRecoveryTime));
                     int totalDays = (tt - DateTime.Today).Days;
                     string day = totalDays switch
                     {

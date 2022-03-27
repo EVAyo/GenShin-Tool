@@ -37,7 +37,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<Filters>? resp = await requester.GetAsync<Filters>
@@ -61,7 +61,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             List<Avatar> avatars = new();
@@ -100,7 +100,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<ListWrapper<Skill>>? resp = await requester.GetAsync<ListWrapper<Skill>>
@@ -123,7 +123,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             List<Weapon> weapons = new();
@@ -165,7 +165,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             List<Reliquary> reliquaries = new();
@@ -207,7 +207,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<ReliquaryListWrapper>? resp = await requester.GetAsync<ReliquaryListWrapper>
@@ -232,7 +232,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             List<Avatar> avatars = new();
@@ -273,7 +273,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<AvatarDetailData>? resp = await requester.GetAsync<AvatarDetailData>
@@ -295,7 +295,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<Consumption>? resp = await requester.PostAsync<Consumption>

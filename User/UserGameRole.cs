@@ -15,7 +15,7 @@ namespace DGP.Genshin.MiHoYoAPI.GameRole
 
         public override string ToString()
         {
-            return $"{Nickname} | Lv.{Level} | {RegionName}";
+            return $"{this.Nickname} | Lv.{this.Level} | {this.RegionName}";
         }
     }
 }

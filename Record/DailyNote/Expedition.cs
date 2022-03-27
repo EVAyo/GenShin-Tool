@@ -25,13 +25,13 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         {
             get
             {
-                if (Status == "Finished")
+                if (this.Status == "Finished")
                 {
                     return "已完成";
                 }
-                if (RemainedTime is not null)
+                if (this.RemainedTime is not null)
                 {
-                    TimeSpan ts = new(0, 0, int.Parse(RemainedTime));
+                    TimeSpan ts = new(0, 0, int.Parse(this.RemainedTime));
                     return ts.Days > 0 ? $"{ts.Days}天{ts.Hours}时{ts.Minutes}分" : $"{ts.Hours}时{ts.Minutes}分";
                 }
                 return null;

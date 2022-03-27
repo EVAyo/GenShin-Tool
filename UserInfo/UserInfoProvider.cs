@@ -28,7 +28,7 @@ namespace DGP.Genshin.MiHoYoAPI.UserInfo
                 {"Accept", RequestOptions.Json },
                 {"x-rpc-client_type", "4" },
                 {"Referer",Referer },
-                {"Cookie", cookie }
+                {"Cookie", this.cookie }
             });
             Response<UserInfoWrapper>? resp = await requester
                 .GetAsync<UserInfoWrapper>($"{BaseUrl}/getUserFullInfo?gids=2", cancellationToken)

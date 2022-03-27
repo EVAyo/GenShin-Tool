@@ -25,8 +25,8 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
         {
             get
             {
-                Debug.Assert(Id is not null);
-                return long.Parse(Id);
+                Debug.Assert(this.Id is not null);
+                return long.Parse(this.Id);
             }
         }
     }

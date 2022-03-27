@@ -16,9 +16,9 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         [JsonProperty("level_current")] public int LevelCurrent { get; set; } = 1;
         public int LevelTarget
         {
-            get => levelTarget;
+            get => this.levelTarget;
 
-            set => Set(ref levelTarget, value);
+            set => this.Set(ref this.levelTarget, value);
         }
         [JsonProperty("max_level")] public int MaxLevel { get; set; }
 

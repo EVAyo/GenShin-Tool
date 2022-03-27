@@ -37,7 +37,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record.Card
                 {"User-Agent",RequestOptions.CommonUA2161 },
                 {"x_rpc_client_type", "5" },
                 {"Referer", Referer },
-                {"Cookie", cookie },
+                {"Cookie", this.cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             ListWrapper<Card>? resp = await requester.GetWhileUpdateDynamicSecret2Async<ListWrapper<Card>>(
