@@ -6,8 +6,8 @@ namespace DGP.Genshin.HutaoAPI.PostModel
     {
         public AvatarReliquarySet(int id, int count)
         {
-            Id = id;
-            Count = count;
+            this.Id = id;
+            this.Count = count;
         }
 
         public AvatarReliquarySet(KeyValuePair<int, int> kvp) : this(kvp.Key, kvp.Value) { }

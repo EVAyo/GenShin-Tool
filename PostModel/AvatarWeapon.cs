@@ -4,9 +4,9 @@
     {
         public AvatarWeapon(int id, int level, int affixLevel)
         {
-            Id = id;
-            Level = level;
-            AffixLevel = affixLevel;
+            this.Id = id;
+            this.Level = level;
+            this.AffixLevel = affixLevel;
         }
 
         public int Id { get; set; }

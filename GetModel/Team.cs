@@ -10,12 +10,12 @@ namespace DGP.Genshin.HutaoAPI.GetModel
 
         public IEnumerable<int> GetUp()
         {
-            return UpHalf.Split(',').Select(x => int.Parse(x));
+            return this.UpHalf.Split(',').Select(x => int.Parse(x));
         }
 
         public IEnumerable<int> GetDown()
         {
-            return DownHalf.Split(',').Select(x => int.Parse(x));
+            return this.DownHalf.Split(',').Select(x => int.Parse(x));
         }
     }
 }

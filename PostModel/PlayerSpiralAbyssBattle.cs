@@ -6,8 +6,8 @@ namespace DGP.Genshin.HutaoAPI.PostModel
     {
         public PlayerSpiralAbyssBattle(int battleIndex, List<int> avatarIds)
         {
-            BattleIndex = battleIndex;
-            AvatarIds = avatarIds;
+            this.BattleIndex = battleIndex;
+            this.AvatarIds = avatarIds;
         }
 
         public int BattleIndex { get; set; }
