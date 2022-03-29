@@ -481,7 +481,6 @@ def cacheDB(uid, mode=1, mys=None):
                 c.execute("UPDATE CookiesCache SET UID = ? WHERE MYSID=?", (uid, mys))
             except:
                 c.execute("UPDATE CookiesCache SET MYSID = ? WHERE UID=?", (mys, uid))
-
     conn.commit()
     conn.close()
     return use
@@ -585,7 +584,27 @@ async def GetInfo(Uid, ck, ServerID="cn_gf01"):
         ServerID = "cn_qd01"
     try:
         req = await client.get(
-                url="https://api-takumi.mihoyo.com/game_record/app/genshin/api/index?role_id=" + Uid + "&server=" + ServerID,
+            url="https://api-takumi.mihoyo.com/game_record/app/genshin/api/index",
+            headers={
+                'DS': DSGet("role_id=" + Uid + "&server=" + ServerID),
+                'x-rpc-app_version': mhyVersion,
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 ('
+                              'KHTML, like Gecko) miHoYoBBS/2.11.1',
+                'x-rpc-client_type': '5',
+                'Referer': 'https://webstatic.mihoyo.com/',
+                "Cookie": ck},
+            params={
+                "role_id": Uid,
+                "server": ServerID
+            }
+        )
+        data = json.loads(req.text)
+        # print(data)
+        return data
+    except requests.exceptions.SSLError:
+        try:
+            req = await client.get(
+                url="https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/index?role_id=" + Uid + "&server=" + ServerID,
                 headers={
                     'DS': DSGet("role_id=" + Uid + "&server=" + ServerID),
                     'x-rpc-app_version': mhyVersion,
@@ -593,20 +612,6 @@ async def GetInfo(Uid, ck, ServerID="cn_gf01"):
                     'x-rpc-client_type': '5',
                     'Referer': 'https://webstatic.mihoyo.com/',
                     "Cookie": ck})
-        data = json.loads(req.text)
-        # print(data)
-        return data
-    except requests.exceptions.SSLError:
-        try:
-            req = await client.get(
-                    url="https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/index?role_id=" + Uid + "&server=" + ServerID,
-                    headers={
-                        'DS': DSGet("role_id=" + Uid + "&server=" + ServerID),
-                        'x-rpc-app_version': mhyVersion,
-                        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) miHoYoBBS/2.11.1',
-                        'x-rpc-client_type': '5',
-                        'Referer': 'https://webstatic.mihoyo.com/',
-                        "Cookie": ck})
             data = json.loads(req.text)
             return data
         except json.decoder.JSONDecodeError:

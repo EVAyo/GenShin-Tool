@@ -10,7 +10,7 @@ from pyrogram.types import Message
 
 from defs.db import deal_ck, selectDB, OpenPush, CheckDB, connectDB, deletecache
 from defs.event import generate_event
-from defs.mys2 import award, sign, daily, draw_pic, draw_wordcloud
+from defs.mys2 import award, sign, daily, draw_pic, draw_wordcloud, draw_info_pic
 from defs.mihoyo import draw_pic as draw_pic_2
 
 from ci import scheduler, app, admin_id
@@ -183,6 +183,19 @@ async def mys2_qun_msg(client: Client, message: Message):
             traceback.print_exc()
             im = "没有找到绑定信息。"
         await message.reply(im)
+    elif "当前信息" in text:
+        try:
+            uid = await selectDB(message.from_user.id, mode="uid")
+            uid = uid[0]
+            im = await draw_info_pic(uid)
+            if not im:
+                await message.reply("未查找到该用户的当前信息。")
+            else:
+                await message.reply_photo(im)
+        except Exception as e:
+            traceback.print_exc()
+            im = "没有找到绑定信息。"
+            await message.reply(im)
     elif "绑定uid" in text:
         uid = text.replace("绑定uid", "")  # str
         if is_chinese(uid):

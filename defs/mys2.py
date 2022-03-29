@@ -1,3 +1,4 @@
+import json
 import math
 import os
 import random
@@ -5,13 +6,17 @@ import sqlite3
 import threading
 import time
 import urllib
+from io import BytesIO
+from typing import Optional, Tuple
+
 import numpy as np
+from httpx import get
 from wordcloud import WordCloud
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from pyrogram.types import Message
 
 from defs.db import GetAward, MysSign, GetSignInfo, GetSignList, GetDaily, cacheDB, GetMysInfo, \
-    errorDB, GetCharacter, GetInfo, GetSpiralAbyssInfo, MybSign
+    errorDB, GetCharacter, GetInfo, GetSpiralAbyssInfo, MybSign, get_spiral_abyss_info
 from defs.event import ys_font
 
 WEAPON_PATH = os.path.join("assets", 'weapon')
@@ -20,6 +25,7 @@ CHAR_DONE_PATH = os.path.join("assets", 'char_done')
 BG2_PATH = os.path.join("assets", "bg2")
 CHAR_PATH = os.path.join("assets", "characters")
 CHAR_IMG_PATH = os.path.join("assets", 'char_img')
+CHAR_NAMECARD_PATH = os.path.join("assets", 'char_namecard')
 REL_PATH = os.path.join("assets", "reliquaries")
 avatar_json = {
     "Albedo": "阿贝多",
@@ -93,6 +99,15 @@ UID：{}
 ==============
 原石收入组成：
 {}=============='''
+
+
+def genshin_font(size):
+    return ImageFont.truetype(f"assets{os.sep}fonts{os.sep}yuan_shen.ttf", size=size, encoding="utf-8")
+
+
+def get_char_img_pic(url: str):
+    with open(os.path.join(CHAR_IMG_PATH, url.split(os.sep)[-1]), 'wb') as f:
+        f.write(get(url).content)
 
 
 async def award(uid):
@@ -962,3 +977,377 @@ async def draw_wordcloud(uid, message: Message, mode=2):
         except:
             pass
     return f"temp{os.sep}cx.jpg"
+
+
+class GetCookies:
+    def __init__(self) -> None:
+        self.useable_cookies: Optional[str] = None
+        self.uid: Optional[str] = None
+        self.mode: Optional[int] = None
+        self.raw_abyss_data: Optional[json] = None
+        self.raw_data: Optional[json] = None
+        self.nickname: Optional[int] = None
+        self.schedule_type: Optional[str] = None
+
+    async def get_useable_cookies(self, uid: str, mode: int = 2, schedule_type: str = "1"):
+        self.uid = uid
+        self.schedule_type = schedule_type
+        while True:
+            self.useable_cookies = cacheDB(uid, mode - 1)
+            if self.useable_cookies == '':
+                return "绑定记录不存在。"
+            elif self.useable_cookies == "没有可以使用的Cookies！":
+                return "没有可以使用的Cookies！"
+            if mode == 3:
+                await self.get_mihoyo_bbs_data()
+            else:
+                await self.get_uid_data()
+
+            msg = await self.check_cookies_useable()
+            if isinstance(msg, str):
+                return msg
+            elif isinstance(msg, bool):
+                if msg:
+                    return True
+
+    async def get_mihoyo_bbs_data(self):
+        mys_data = await GetMysInfo(self.uid, self.useable_cookies)
+        for i in mys_data['data']['list']:
+            if i['game_id'] != 2:
+                mys_data['data']['list'].remove(i)
+        self.uid = mys_data['data']['list'][0]['game_role_id']
+        self.nickname = mys_data['data']['list'][0]['nickname']
+        self.raw_data = await GetInfo(self.uid, self.useable_cookies)
+        self.raw_abyss_data = await get_spiral_abyss_info(self.uid, self.useable_cookies, self.schedule_type)
+
+    async def get_uid_data(self):
+        self.raw_abyss_data = await get_spiral_abyss_info(self.uid, self.useable_cookies, self.schedule_type)
+        self.raw_data = await GetInfo(self.uid, self.useable_cookies)
+
+    async def check_cookies_useable(self):
+        if self.raw_data:
+            if self.raw_data["retcode"] != 0:
+                if self.raw_data["retcode"] == 10001:
+                    errorDB(self.useable_cookies, "error")
+                    return False
+                elif self.raw_data["retcode"] == 10101:
+                    errorDB(self.useable_cookies, "limit30")
+                    return False
+                elif self.raw_data["retcode"] == 10102:
+                    return "当前查询id已经设置了隐私，无法查询！"
+                else:
+                    return (
+                            "Api报错，返回内容为：\r\n"
+                            + str(self.raw_data) + "\r\n出现这种情况可能的UID输入错误 or 不存在"
+                    )
+            else:
+                return True
+        else:
+            return "没有可以使用的Cookies！"
+
+
+class CustomizeImage:
+    def __init__(self, image: str, based_w: int, based_h: int) -> None:
+
+        self.bg_img = self.get_image(image, based_w, based_h)
+        self.bg_color = self.get_bg_color(self.bg_img)
+        self.text_color = self.get_text_color(self.bg_color)
+        self.highlight_color = self.get_highlight_color(self.bg_color)
+        self.char_color = self.get_char_color(self.bg_color)
+        self.bg_detail_color = self.get_bg_detail_color(self.bg_color)
+        self.char_high_color = self.get_char_high_color(self.bg_color)
+
+    def get_image(self, image: str, based_w: int, based_h: int) -> Image:
+        # 获取背景图片
+        bg2_path = os.path.join(BG_PATH, random.choice([x for x in os.listdir(BG_PATH)
+                                                        if os.path.isfile(os.path.join(BG_PATH, x))]))
+
+        if image:
+            image_data = image.group(2)
+            edit_bg = Image.open(BytesIO(get(image_data).content))
+        else:
+            edit_bg = Image.open(bg2_path)
+
+        # 确定图片的长宽
+        based_scale = '%.3f' % (based_w / based_h)
+
+        w, h = edit_bg.size
+        scale_f = '%.3f' % (w / h)
+        new_w = math.ceil(based_h * float(scale_f))
+        new_h = math.ceil(based_w / float(scale_f))
+        if scale_f > based_scale:
+            bg_img2 = edit_bg.resize((new_w, based_h), Image.ANTIALIAS)
+        else:
+            bg_img2 = edit_bg.resize((based_w, new_h), Image.ANTIALIAS)
+        bg_img = bg_img2.crop((0, 0, based_w, based_h))
+
+        return bg_img
+
+    def get_bg_color(self, edit_bg: Image) -> Tuple[int, int, int]:
+        # 获取背景主色
+        color = 8
+        q = edit_bg.quantize(colors=color, method=2)
+        bg_color = None
+        based_light = 195
+        temp = 9999
+        for i in range(0, color):
+            bg = tuple(q.getpalette()[i * 3:(i * 3) + 3])
+            light_value = bg[0] * 0.3 + bg[1] * 0.6 + bg[2] * 0.1
+            if abs(light_value - based_light) < temp:
+                bg_color = bg
+                temp = abs(light_value - based_light)
+            # if max(*bg) < 240 and min(*bg) > 20:
+            #    bg_color = bg
+        return bg_color
+
+    def get_text_color(self, bg_color: Tuple[int, int, int]) -> Tuple[int, int, int]:
+        # 通过背景主色（bg_color）确定文字主色
+        r = 125
+        if max(*bg_color) > 255 - r:
+            r *= -1
+        text_color = (math.floor(bg_color[0] + r if bg_color[0] + r <= 255 else 255),
+                      math.floor(bg_color[1] + r if bg_color[1] + r <= 255 else 255),
+                      math.floor(bg_color[2] + r if bg_color[2] + r <= 255 else 255))
+        return text_color
+
+    def get_char_color(self, bg_color: Tuple[int, int, int]) -> Tuple[int, int, int]:
+        r = 140
+        if max(*bg_color) > 255 - r:
+            r *= -1
+        char_color = (math.floor(bg_color[0] + 5 if bg_color[0] + r <= 255 else 255),
+                      math.floor(bg_color[1] + 5 if bg_color[1] + r <= 255 else 255),
+                      math.floor(bg_color[2] + 5 if bg_color[2] + r <= 255 else 255))
+        return char_color
+
+    def get_char_high_color(self, bg_color: Tuple[int, int, int]) -> Tuple[int, int, int]:
+        r = 140
+        d = 20
+        if max(*bg_color) > 255 - r:
+            r *= -1
+        char_color = (math.floor(bg_color[0] + d if bg_color[0] + r <= 255 else 255),
+                      math.floor(bg_color[1] + d if bg_color[1] + r <= 255 else 255),
+                      math.floor(bg_color[2] + d if bg_color[2] + r <= 255 else 255))
+        return char_color
+
+    def get_bg_detail_color(self, bg_color: Tuple[int, int, int]) -> Tuple[int, int, int]:
+        r = 140
+        if max(*bg_color) > 255 - r:
+            r *= -1
+        bg_detail_color = (math.floor(bg_color[0] - 20 if bg_color[0] + r <= 255 else 255),
+                           math.floor(bg_color[1] - 20 if bg_color[1] + r <= 255 else 255),
+                           math.floor(bg_color[2] - 20 if bg_color[2] + r <= 255 else 255))
+        return bg_detail_color
+
+    def get_highlight_color(self, color: Tuple[int, int, int]) -> Tuple[int, int, int]:
+        red_color = color[0]
+        green_color = color[1]
+        blue_color = color[2]
+
+        highlight_color = {}
+        highlight_color["red"] = red_color - 127 if red_color > 127 else 127
+        highlight_color["green"] = green_color - 127 if green_color > 127 else 127
+        highlight_color["blue"] = blue_color - 127 if blue_color > 127 else 127
+
+        max_color = max(highlight_color.values())
+        name = "red"
+        for _highlight_color in highlight_color:
+            if highlight_color[_highlight_color] == max_color:
+                name = str(_highlight_color)
+
+        if name == "red":
+            return red_color, highlight_color["green"], highlight_color["blue"]
+        elif name == "green":
+            return highlight_color["red"], green_color, highlight_color["blue"]
+        elif name == "blue":
+            return highlight_color["red"], highlight_color["green"], blue_color
+        else:
+            return 0, 0, 0  # Error
+
+
+async def draw_info_pic(uid: str, image=None) -> str:
+    def seconds2hours(seconds: int) -> str:
+        m, s = divmod(int(seconds), 60)
+        h, m = divmod(m, 60)
+        return "%02d:%02d:%02d" % (h, m, s)
+
+    # 获取Cookies
+    data_def = GetCookies()
+    retcode = await data_def.get_useable_cookies(uid)
+    if not retcode:
+        return retcode
+    raw_data = data_def.raw_data
+    char_data = raw_data["data"]["avatars"]
+    # 获取数据
+    award_data = await GetAward(uid)
+    daily_data = await GetDaily(uid)
+    daily_data = daily_data["data"]
+    nickname = award_data['data']['nickname']
+
+    # 获取背景图片各项参数
+    based_w = 900
+    based_h = 1380
+    image_def = CustomizeImage(image, based_w, based_h)
+    bg_img = image_def.bg_img
+    bg_color = image_def.bg_color
+    text_color = image_def.text_color
+    highlight_color = image_def.highlight_color
+    char_color = image_def.char_color
+
+    # 确定texture2D路径
+    info1_path = os.path.join(BG2_PATH, "info_1.png")
+    info2_path = os.path.join(BG2_PATH, "info_2.png")
+    info3_path = os.path.join(BG2_PATH, "info_3.png")
+
+    avatar_bg_path = os.path.join(BG2_PATH, "avatar_bg.png")
+    avatar_fg_path = os.path.join(BG2_PATH, "avatar_fg.png")
+
+    all_mask_path = os.path.join(BG2_PATH, "All_Mask.png")
+
+    # 转换遮罩的颜色、大小匹配，并paste上去
+    all_mask = Image.open(all_mask_path).resize(bg_img.size, Image.ANTIALIAS)
+    all_mask_img = Image.new("RGBA", (based_w, based_h), bg_color)
+    bg_img.paste(all_mask_img, (0, 0), all_mask)
+
+    # 操作图片
+    info1 = Image.open(info1_path)
+    info2 = Image.open(info2_path)
+    info3 = Image.open(info3_path)
+    avatar_bg = Image.open(avatar_bg_path)
+    avatar_fg = Image.open(avatar_fg_path)
+
+    avatar_bg_color = Image.new("RGBA", (316, 100), bg_color)
+    bg_img.paste(avatar_bg_color, (113, 98), avatar_bg)
+    bg_img.paste(avatar_fg, (114, 95), avatar_fg)
+
+    info1_color = Image.new("RGBA", (900, 1300), bg_color)
+    bg_img.paste(info1_color, (0, 0), info1)
+
+    info2_color = Image.new("RGBA", (900, 1300), text_color)
+    bg_img.paste(info2_color, (0, 0), info2)
+
+    bg_img.paste(info3, (0, 0), info3)
+
+    text_draw = ImageDraw.Draw(bg_img)
+
+    # 用户信息
+    text_draw.text((220, 137), f"{nickname}", text_color, genshin_font(32), anchor="lm")
+    text_draw.text((235, 170), 'UID ' + f"{uid}", text_color, genshin_font(14), anchor="lm")
+
+    # 本日原石/摩拉
+    text_draw.text((675, 148),
+                   f"{award_data['data']['day_data']['current_primogems']}/{award_data['data']['day_data']['last_primogems']}",
+                   text_color, genshin_font(28), anchor="lm")
+    text_draw.text((675, 212),
+                   f"{award_data['data']['day_data']['current_mora']}\n{award_data['data']['day_data']['last_mora']}",
+                   text_color, genshin_font(28), anchor="lm")
+
+    # 本月/上月原石
+    text_draw.text((722, 287), f"{award_data['data']['month_data']['current_primogems']}", text_color, genshin_font(21),
+                   anchor="lm")
+    text_draw.text((722, 323), f"{award_data['data']['month_data']['last_primogems']}", text_color, genshin_font(21),
+                   anchor="lm")
+
+    # 本月/上月摩拉
+    text_draw.text((722, 359), f"{award_data['data']['month_data']['current_mora']}", text_color, genshin_font(21),
+                   anchor="lm")
+    text_draw.text((722, 395), f"{award_data['data']['month_data']['last_mora']}", text_color, genshin_font(21),
+                   anchor="lm")
+
+    # 收入比例
+    for index, i in enumerate(award_data['data']['month_data']['group_by']):
+        text_draw.text((681, 445 + index * 32), f"{str(i['num'])}({str(i['percent'])}%)", text_color, genshin_font(21),
+                       anchor="lm")
+
+    # 基本四项
+    text_draw.text((390, 314), f"{daily_data['current_resin']}/{daily_data['max_resin']}", text_color, genshin_font(26),
+                   anchor="lm")
+    text_draw.text((390, 408), f'{daily_data["current_home_coin"]}/{daily_data["max_home_coin"]}', text_color,
+                   genshin_font(26), anchor="lm")
+    text_draw.text((390, 503), f"{daily_data['finished_task_num']}/{daily_data['total_task_num']}", text_color,
+                   genshin_font(26), anchor="lm")
+    text_draw.text((390, 597),
+                   f"{str(daily_data['resin_discount_num_limit'] - daily_data['remain_resin_discount_num'])}/{daily_data['resin_discount_num_limit']}",
+                   text_color, genshin_font(26), anchor="lm")
+
+    # 树脂恢复时间计算
+    resin_recovery_time = seconds2hours(
+        daily_data['resin_recovery_time'])
+    next_resin_rec_time = seconds2hours(
+        8 * 60 - ((daily_data['max_resin'] - daily_data['current_resin']) * 8 * 60 - int(
+            daily_data['resin_recovery_time'])))
+    text_draw.text((268, 305), f" {next_resin_rec_time}", text_color, genshin_font(18), anchor="lm")
+
+    text_draw.text((170, 331), f"预计                  后全部恢复", text_color, genshin_font(18), anchor="lm")
+    text_draw.text((208, 331), f"{resin_recovery_time}", highlight_color, genshin_font(18), anchor="lm")
+
+    # 洞天宝钱时间计算
+    coin_rec_time = seconds2hours(int(daily_data["home_coin_recovery_time"]))
+
+    if daily_data["home_coin_recovery_time"] == "0":
+        text_draw.text((170, 425), f"已满", text_color, genshin_font(18), anchor="lm")
+    else:
+        coin_add_speed = math.ceil((daily_data["max_home_coin"] - daily_data["current_home_coin"]) / (
+                int(daily_data["home_coin_recovery_time"]) / 60 / 60))
+        text_draw.text((270, 399), f"约{coin_add_speed}/h", text_color, genshin_font(18), anchor="lm")
+        text_draw.text((170, 425), f"预计                  后达到上限", text_color, genshin_font(18), anchor="lm")
+        text_draw.text((208, 425), f"{coin_rec_time}", highlight_color, genshin_font(18), anchor="lm")
+
+    if daily_data['is_extra_task_reward_received']:
+        daily_task_status = "「每日委托」奖励已领取"
+    else:
+        daily_task_status = "「每日委托」奖励未领取"
+
+    # 详细信息
+    text_draw.text((170, 518), f"{daily_task_status}", text_color, genshin_font(18), anchor="lm")
+    text_draw.text((170, 614), f"本周剩余消耗减半次数", text_color, genshin_font(18), anchor="lm")
+
+    # 派遣图片准备
+    char_bg_path = os.path.join(BG2_PATH, "char_bg.png")
+
+    char_bg = Image.open(char_bg_path)
+    charset_mask = Image.new("RGBA", (900, 130), char_color)
+
+    # 派遣
+    for index, i in enumerate(daily_data["expeditions"]):
+        for j in char_data:
+            if i["avatar_side_icon"].split("_")[-1] == j["image"].split("_")[-1]:
+                name = j["name"]
+        if not os.path.exists(
+                os.path.join(CHAR_IMG_PATH, f"UI_AvatarIcon_{i['avatar_side_icon'].split('_')[-1][:-4]}@2x.png")):
+            get_char_img_pic(
+                f"https://upload-bbs.mihoyo.com/game_record/genshin/character_image/UI_AvatarIcon_{i['avatar_side_icon'].split('_')[-1][:-4]}@2x.png")
+        # char_stand_img = os.path.join(CHAR_IMG_PATH, f"UI_AvatarIcon_{i['avatar_side_icon'].split('_')[-1][:-4]}@2x.png")
+        # char_stand = Image.open(char_stand_img)
+        # char_stand_mask = Image.open(os.path.join(TEXT_PATH, "stand_mask.png"))
+
+        # charpic_temp = Image.new("RGBA", (900, 130))
+        # charpic_temp.paste(char_stand, (395, -99), char_stand_mask)
+        charpic = Image.new("RGBA", (900, 130))
+        char_icon = Image.open(BytesIO(get(i['avatar_side_icon']).content))
+
+        char_namecard_img = Image.open(os.path.join(CHAR_NAMECARD_PATH, str(name + ".png")))
+        char_namecard_img = char_namecard_img.resize((591, 81), Image.ANTIALIAS)
+        char_namecard_img.putalpha(char_namecard_img.getchannel('A').point(lambda i: i * 0.8 if i > 0 else 0))
+
+        char_icon_scale = char_icon.resize((140, 140), Image.ANTIALIAS)
+        charpic.paste(charset_mask, (0, 0), char_bg)
+        charpic.paste(char_icon_scale, (63, -26), char_icon_scale)
+        charpic.paste(char_namecard_img, (247, 24), char_namecard_img)
+
+        charpic_draw = ImageDraw.Draw(charpic)
+
+        if i['status'] == 'Finished':
+            charpic_draw.text((200, 65), f"探索完成", text_color, genshin_font(24), anchor="lm")
+        else:
+            remained_timed: str = seconds2hours(i['remained_time'])
+            charpic_draw.text((200, 65), f"剩余时间 {remained_timed}", text_color, genshin_font(24), anchor="lm")
+
+        bg_img.paste(charpic, (-15, 748 + 115 * index), charpic)
+
+    end_pic = Image.open(os.path.join(BG2_PATH, "abyss_3.png"))
+    bg_img.paste(end_pic, (0, 1340), end_pic)
+
+    # 转换之后发送
+    bg_img = bg_img.convert('RGB')
+    bg_img.save(f"temp{os.sep}info.jpg", format='JPEG', subsampling=0, quality=90)
+    return f"temp{os.sep}info.jpg"
