@@ -1,9 +1,10 @@
 from ci import admin_id
 from pyrogram import Client
-from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, \
+    ReplyKeyboardRemove
 
 HELP_MSG_PRE = '<a href="https://gitlab.com/Xtao-Labs/Telegram_PaimonBot">PaimonBot</a> ' \
-               '0.4.1beta By Xtao-Labs\n\n' \
+               '0.4.2beta By Xtao-Labs\n\n' \
                '🔅 以下是小派蒙我学会了的功能（部分）：\n'
 HELP_MSG = """① [武器/今日武器] 查看今日武器材料和武器
 ② [天赋/今日天赋] 查看今日天赋材料和角色
@@ -43,9 +44,22 @@ HELP_MSG = """① [武器/今日武器] 查看今日武器材料和武器
    💠 <a href="https://telegra.ph/PaimonBot-02-18">点击查看</a>"""
 
 
-async def welcome_command(client: Client, message: Message):
+async def welcome_command(_: Client, message: Message):
     # 发送欢迎消息
-    await message.reply('你好！我是原神小助手 - 派蒙 。', quote=True)
+    await message.reply("你好！我是原神小助手 - 派蒙 。\n\n"
+                        "以下是我认识的部分关键词哦，您也可以发送 /help 命令查看完整列表 ~", quote=True,
+                        reply_markup=ReplyKeyboardMarkup(
+                            [["今日武器", "今日天赋", "活动列表"],
+                             ["周本", "运势", "黄历"],
+                             ["米游社签到", "米游社当前信息", "米游社每月统计"],
+                             ["hoyolab签到", "hoyolab当前状态", "hoyolab每月统计"]]
+                        ))
+
+
+async def cancel_command(_: Client, message: Message):
+    # 发送清空状态信息
+    await message.reply("已清空所有玄学状态 ~", quote=True,
+                        reply_markup=ReplyKeyboardRemove())
 
 
 async def ping_command(client: Client, message: Message):

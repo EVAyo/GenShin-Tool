@@ -100,6 +100,19 @@ async def mys2_msg(client: Client, message: Message):
             traceback.print_exc()
             im = "没有找到绑定信息。"
         await message.reply(im, quote=True)
+    elif "当前信息" in text:
+        try:
+            uid = await selectDB(message.from_user.id, mode="uid")
+            uid = uid[0]
+            im = await draw_info_pic(uid)
+            if not im:
+                await message.reply("未查找到该用户的当前信息。", quote=True)
+            else:
+                await message.reply_photo(im, quote=True)
+        except Exception as e:
+            traceback.print_exc()
+            im = "没有找到绑定信息。"
+            await message.reply(im)
     elif "绑定uid" in text:
         uid = text.replace("绑定uid", "")  # str
         if is_chinese(uid):

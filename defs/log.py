@@ -11,7 +11,7 @@ channel_id = config.get("basic", "channel_id", fallback=channel_id)
 
 
 async def log(client: Client, message: Message, mode):
-    if not channel_id == 0:
+    if not channel_id:
         chat = message.chat
         cid = chat.id
         uid = message.from_user.id

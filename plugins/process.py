@@ -13,7 +13,7 @@ from plugins.gacha import gacha_msg
 from plugins.guess_voice import guess_voice, process_guess
 from plugins.mys2 import mys2_msg, mys2_qun_msg
 from plugins.mihoyo import mihoyo_msg, mihoyo_qun_msg
-from plugins.start import welcome_command, ping_command, help_command, leave_command, help_callback
+from plugins.start import welcome_command, ping_command, help_command, leave_command, help_callback, cancel_command
 from plugins.almanac import almanac_msg
 from plugins.challenge import tf_msg, wq_msg, zb_msg
 from plugins.character import character_msg, mz_msg
@@ -45,6 +45,9 @@ async def process_private_msg(client: Client, message: Message):
         await ping_command(client, message)
     if msg_list[0] == '/leave':
         await leave_command(client, message)
+    # 清空状态
+    if msg_list[0] == '/cancel':
+        await cancel_command(client, message)
     # 黄历
     if '黄历' in message.text:
         await almanac_msg(client, message)

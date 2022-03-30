@@ -367,6 +367,9 @@ async def draw_pic(uid, message: Message, nickname="1", mode=2, role_level=None)
 
     # 记录数据
     raw_data = raw_data['data']
+    # 临时修复 璃月层岩巨渊
+    raw_data["world_explorations"] = raw_data["world_explorations"][-6:]
+
     char_data = raw_data["avatars"]
 
     char_datas = []
