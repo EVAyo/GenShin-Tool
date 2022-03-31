@@ -23,7 +23,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <param name="cookie"></param>
         public RecordProvider(string cookie)
         {
-            this.requester = new(new()
+            requester = new(new()
             {
                 { "Accept", RequestOptions.Json },
                 { "x-rpc-app_version", DynamicSecretProvider2.AppVersion },
@@ -64,7 +64,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <returns></returns>
         public async Task<PlayerInfo?> GetPlayerInfoAsync(string uid, string server, CancellationToken cancellationToken = default)
         {
-            return await this.requester.GetWhileUpdateDynamicSecret2Async<PlayerInfo>(
+            return await requester.GetWhileUpdateDynamicSecret2Async<PlayerInfo>(
                 $@"{ApiTakumiRecord}/index?server={server}&role_id={uid}", cancellationToken)
                 .ConfigureAwait(false);
         }
@@ -78,14 +78,14 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <returns></returns>
         public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, int type, CancellationToken cancellationToken = default)
         {
-            return await this.requester.GetWhileUpdateDynamicSecret2Async<SpiralAbyss.SpiralAbyss>(
+            return await requester.GetWhileUpdateDynamicSecret2Async<SpiralAbyss.SpiralAbyss>(
                 $@"{ApiTakumiRecord}/spiralAbyss?schedule_type={type}&server={server}&role_id={uid}", cancellationToken)
                 .ConfigureAwait(false);
         }
 
         public async Task<SpiralAbyss.SpiralAbyss?> GetSpiralAbyssAsync(string uid, string server, SpiralAbyssType type, CancellationToken cancellationToken = default)
         {
-            return await this.GetSpiralAbyssAsync(uid, server, (int)type, cancellationToken)
+            return await GetSpiralAbyssAsync(uid, server, (int)type, cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -97,7 +97,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         /// <returns></returns>
         public async Task<object?> GetActivitiesAsync(string uid, string server, CancellationToken cancellationToken = default)
         {
-            return await this.requester.GetWhileUpdateDynamicSecret2Async<object>(
+            return await requester.GetWhileUpdateDynamicSecret2Async<object>(
                 $@"{ApiTakumiRecord}/activities?server={server}&role_id={uid}", cancellationToken)
                 .ConfigureAwait(false);
         }
@@ -121,7 +121,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
                 role_id = uid,
                 server = server
             };
-            return await this.requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarWrapper>(
+            return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarWrapper>(
                 $@"{ApiTakumiRecord}/character", data, cancellationToken)
                 .ConfigureAwait(false);
         }

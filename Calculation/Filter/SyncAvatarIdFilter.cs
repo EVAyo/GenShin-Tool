@@ -9,8 +9,8 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation.Filter
     {
         public SyncAvatarIdFilter(string uid, string region)
         {
-            this.Uid = uid;
-            this.Region = region;
+            Uid = uid;
+            Region = region;
         }
 
         [JsonProperty("uid")] public string Uid { get; set; }

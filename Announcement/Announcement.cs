@@ -17,7 +17,7 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
         public ICommand? OpenAnnouncementUICommand { get; set; }
         public bool ShouldShowTimeDescription
         {
-            get => this.Type == 1;
+            get => Type == 1;
         }
 
         public string TimeDescription
@@ -25,9 +25,9 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
             get
             {
                 DateTime now = DateTime.UtcNow + TimeSpan.FromHours(8);
-                if (this.StartTime > now)//尚未开始
+                if (StartTime > now)//尚未开始
                 {
-                    TimeSpan span = this.StartTime - now;
+                    TimeSpan span = StartTime - now;
                     if (span.TotalDays <= 1)
                     {
                         return $"{(int)span.TotalHours} 小时后开始";
@@ -36,7 +36,7 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
                 }
                 else
                 {
-                    TimeSpan span = this.EndTime - now;
+                    TimeSpan span = EndTime - now;
                     if (span.TotalDays <= 1)
                     {
                         return $"{(int)span.TotalHours} 小时后结束";
@@ -47,7 +47,7 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
         }
         public bool ShouldShowTimePercent
         {
-            get => this.ShouldShowTimeDescription && (this.TimePercent > 0 && this.TimePercent < 1);
+            get => ShouldShowTimeDescription && (TimePercent > 0 && TimePercent < 1);
         }
 
         private double timePercent;
@@ -55,15 +55,15 @@ namespace DGP.Genshin.MiHoYoAPI.Announcement
         {
             get
             {
-                if (this.timePercent == 0)
+                if (timePercent == 0)
                 {
                     //UTC+8
                     DateTime currentTime = DateTime.UtcNow + TimeSpan.FromHours(8);
-                    TimeSpan current = currentTime - this.StartTime;
-                    TimeSpan total = this.EndTime - this.StartTime;
-                    this.timePercent = current / total;
+                    TimeSpan current = currentTime - StartTime;
+                    TimeSpan total = EndTime - StartTime;
+                    timePercent = current / total;
                 }
-                return this.timePercent;
+                return timePercent;
             }
         }
         #endregion

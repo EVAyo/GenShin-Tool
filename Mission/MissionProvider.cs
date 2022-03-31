@@ -26,7 +26,7 @@ namespace DGP.Genshin.MiHoYoAPI.Mission
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer",Referer },
-                {"Cookie", this.cookie },
+                {"Cookie", cookie },
                 {"x_Request_with",RequestOptions.Hyperion }
             });
             Response<MissionWrapper>? resp =

@@ -11,15 +11,15 @@
         }
         public FetchProgress(string? type, int page)
         {
-            this.Type = type;
-            this.Page = page;
+            Type = type;
+            Page = page;
         }
 
         public string? Type { get; set; }
         public int Page { get; set; }
         public override string ToString()
         {
-            return $"{this.Type} 第 {this.Page} 页";
+            return $"{Type} 第 {Page} 页";
         }
     }
 }

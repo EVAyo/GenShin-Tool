@@ -18,7 +18,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         [JsonProperty("is_sign")] public bool IsSign { get; set; }
         public bool IsNotSign
         {
-            get => !this.IsSign;
+            get => !IsSign;
         }
 
         [JsonProperty("is_sub")] public bool IsSub { get; set; }

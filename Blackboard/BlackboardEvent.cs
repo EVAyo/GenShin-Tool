@@ -36,9 +36,9 @@ namespace DGP.Genshin.MiHoYoAPI.Blackboard
         {
             get
             {
-                if (this.StartTime is not null)
+                if (StartTime is not null)
                 {
-                    DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(int.Parse(this.StartTime));
+                    DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(int.Parse(StartTime));
                     return dto.ToLocalTime().DateTime;
                 }
                 return null;
@@ -48,9 +48,9 @@ namespace DGP.Genshin.MiHoYoAPI.Blackboard
         {
             get
             {
-                if (this.EndTime is not null)
+                if (EndTime is not null)
                 {
-                    DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(int.Parse(this.EndTime));
+                    DateTimeOffset dto = DateTimeOffset.FromUnixTimeSeconds(int.Parse(EndTime));
                     return dto.ToLocalTime().DateTime;
                 }
                 return null;

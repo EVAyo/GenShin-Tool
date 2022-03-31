@@ -30,7 +30,6 @@
     <ProjectReference Include="..\Common\Snap.Data.Json\Snap.Data.Json.csproj" />
     <ProjectReference Include="..\Common\Snap.Data.Primitive\Snap.Data.Primitive.csproj" />
     <ProjectReference Include="..\Common\Snap.Data.Utility\Snap.Data.Utility.csproj" />
-    <ProjectReference Include="..\Common\Snap.Exception\Snap.Exception.csproj" />
   </ItemGroup>
 
 </Project>

@@ -17,7 +17,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         [JsonProperty("icon")] public string? Icon { get; set; }
         [JsonProperty("num")] public double Num { get; set; }
         [JsonProperty("wiki_url")] public string? WikiUrl { get; set; }
-        public bool IsCompleted { get => this.isCompleted; set => this.Set(ref this.isCompleted, value); }
+        public bool IsCompleted { get => isCompleted; set => Set(ref isCompleted, value); }
 
         private bool? isTodaysMaterial;
         [JsonIgnore]
@@ -25,13 +25,13 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         {
             get
             {
-                if (this.isTodaysMaterial == null)
+                if (isTodaysMaterial == null)
                 {
                     DateTime day = DateTime.UtcNow + TimeSpan.FromHours(4);
                     DayOfWeek currntDayOfWeek = day.DayOfWeek;
-                    this.isTodaysMaterial = this.DetermineIsTodaysMaterial(this.Id, currntDayOfWeek);
+                    isTodaysMaterial = DetermineIsTodaysMaterial(Id, currntDayOfWeek);
                 }
-                return this.isTodaysMaterial.Value;
+                return isTodaysMaterial.Value;
             }
         }
 

@@ -15,7 +15,7 @@ namespace DGP.Genshin.MiHoYoAPI.Response
 
         public override string ToString()
         {
-            return $"状态：{this.ReturnCode} | 信息：{this.Message}";
+            return $"状态：{ReturnCode} | 信息：{Message}";
         }
 
         public static bool IsOk(Response? response)

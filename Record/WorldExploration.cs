@@ -22,17 +22,17 @@ namespace DGP.Genshin.MiHoYoAPI.Record
         #region Snap Genshin Extensions
         public double ExplorationPercentageBy10
         {
-            get => this.ExplorationPercentage / 10.0;
+            get => ExplorationPercentage / 10.0;
         }
 
         public bool IsReputation
         {
-            get => this.Type == "Reputation";
+            get => Type == "Reputation";
         }
 
         public string ConvertedType
         {
-            get => this.IsReputation ? "声望等级" : "供奉等级";
+            get => IsReputation ? "声望等级" : "供奉等级";
         }
         #endregion
     }

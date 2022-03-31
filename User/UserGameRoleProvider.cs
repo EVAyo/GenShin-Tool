@@ -26,7 +26,7 @@ namespace DGP.Genshin.MiHoYoAPI.GameRole
             {
                 {"Accept", RequestOptions.Json },
                 {"User-Agent", RequestOptions.CommonUA2101 },
-                {"Cookie", this.cookie },
+                {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<UserGameRoleInfo>? resp = await requester

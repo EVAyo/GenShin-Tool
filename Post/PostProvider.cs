@@ -32,7 +32,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Accept", RequestOptions.Json },
                 {"x-rpc-client_type", "4" },
                 {"Referer",Referer },
-                {"Cookie", this.cookie }
+                {"Cookie", cookie }
             });
             Response<ListWrapper<Post>>? resp =
                 await requester.GetAsync<ListWrapper<Post>>($"{PostBaseUrl}/getOfficialRecommendedPosts?gids=2", cancellationToken)
@@ -55,7 +55,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 {"Accept", RequestOptions.Json },
                 {"x-rpc-client_type", "4" },
                 {"Referer",Referer },
-                {"Cookie", this.cookie }
+                {"Cookie", cookie }
             });
             Response<dynamic>? resp =
                 await requester.GetAsync<dynamic>($"{PostBaseUrl}/getPostFull?post_id={postId}&read=1", cancellationToken)

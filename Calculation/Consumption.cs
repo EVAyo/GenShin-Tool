@@ -14,30 +14,30 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         [JsonProperty("avatar_consume")]
         public List<ConsumeItem>? AvatarConsume
         {
-            get => this.avatarConsume;
+            get => avatarConsume;
 
-            set => this.Set(ref this.avatarConsume, value);
+            set => Set(ref avatarConsume, value);
         }
         [JsonProperty("avatar_skill_consume")]
         public List<ConsumeItem>? AvatarSkillConsume
         {
-            get => this.avatarSkillConsume;
+            get => avatarSkillConsume;
 
-            set => this.Set(ref this.avatarSkillConsume, value);
+            set => Set(ref avatarSkillConsume, value);
         }
         [JsonProperty("weapon_consume")]
         public List<ConsumeItem>? WeaponConsume
         {
-            get => this.weaponConsume;
+            get => weaponConsume;
 
-            set => this.Set(ref this.weaponConsume, value);
+            set => Set(ref weaponConsume, value);
         }
         [JsonProperty("reliquary_consume")]
         public List<ReliquaryConsumeItem>? ReliquaryConsume
         {
-            get => this.reliquaryConsume;
+            get => reliquaryConsume;
 
-            set => this.Set(ref this.reliquaryConsume, value);
+            set => Set(ref reliquaryConsume, value);
         }
     }
 }

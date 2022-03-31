@@ -40,7 +40,7 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
             {
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer",Referer },
-                {"Cookie", this.cookie },
+                {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<JourneyInfo>? resp = await requester.GetAsync<JourneyInfo>
@@ -51,7 +51,7 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
 
         public async Task<JourneyInfo?> GetMonthInfoAsync(UserGameRole userGameRole, int month = 0, CancellationToken cancellationToken = default)
         {
-            return await this.GetMonthInfoAsync(userGameRole.GameUid, userGameRole.Region, month, cancellationToken)
+            return await GetMonthInfoAsync(userGameRole.GameUid, userGameRole.Region, month, cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -70,7 +70,7 @@ namespace DGP.Genshin.MiHoYoAPI.Journey
             {
                 {"User-Agent", RequestOptions.CommonUA2101 },
                 {"Referer",Referer },
-                {"Cookie", this.cookie },
+                {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
             });
             Response<JourneyDetail>? resp = await requester.GetAsync<JourneyDetail>
