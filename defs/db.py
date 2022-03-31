@@ -679,3 +679,28 @@ async def get_spiral_abyss_info(uid, ck, schedule_type="1", server_id="cn_gf01")
     except Exception as e:
         print("深渊信息读取老Api失败！")
         print(e.with_traceback)
+
+
+async def get_calculate_info(uid, char_id, ck, name, server_id="cn_gf01"):
+    if uid[0] == '5':
+        server_id = "cn_qd01"
+    url = "https://api-takumi.mihoyo.com/event/e20200928calculate/v1/sync/avatar/detail"
+    req = await client.get(
+        url=url,
+        headers={
+            'DS': DSGet("uid={}&avatar_id={}&region={}".format(uid, char_id, server_id)),
+            'x-rpc-app_version': mhyVersion,
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 ('
+                          'KHTML, like Gecko) miHoYoBBS/2.11.1',
+            'x-rpc-client_type': '5',
+            'Referer': 'https://webstatic.mihoyo.com/',
+            "Cookie": ck},
+        params={
+            "avatar_id": char_id,
+            "uid": uid,
+            "region": server_id
+        }
+    )
+    data = req.json()
+    data.update({"name": name})
+    return data
