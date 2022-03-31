@@ -4,7 +4,7 @@ from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineK
     ReplyKeyboardRemove
 
 HELP_MSG_PRE = '<a href="https://gitlab.com/Xtao-Labs/Telegram_PaimonBot">PaimonBot</a> ' \
-               '0.4.2beta By Xtao-Labs\n\n' \
+               '0.4.3beta By Xtao-Labs\n\n' \
                '🔅 以下是小派蒙我学会了的功能（部分）：\n'
 HELP_MSG = """① [武器/今日武器] 查看今日武器材料和武器
 ② [天赋/今日天赋] 查看今日天赋材料和角色

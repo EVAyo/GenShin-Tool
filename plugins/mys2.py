@@ -104,7 +104,7 @@ async def mys2_msg(client: Client, message: Message):
         try:
             uid = await selectDB(message.from_user.id, mode="uid")
             uid = uid[0]
-            im = await draw_info_pic(uid)
+            im = await draw_info_pic(uid, message)
             if not im:
                 await message.reply("未查找到该用户的当前信息。", quote=True)
             else:
@@ -200,7 +200,7 @@ async def mys2_qun_msg(client: Client, message: Message):
         try:
             uid = await selectDB(message.from_user.id, mode="uid")
             uid = uid[0]
-            im = await draw_info_pic(uid)
+            im = await draw_info_pic(uid, message)
             if not im:
                 await message.reply("未查找到该用户的当前信息。")
             else:

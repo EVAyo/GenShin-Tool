@@ -16,7 +16,7 @@ from wordcloud import WordCloud
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from pyrogram.types import Message
 
-from ci import client
+from ci import app
 from defs.db import GetAward, MysSign, GetSignInfo, GetSignList, GetDaily, cacheDB, GetMysInfo, \
     errorDB, GetCharacter, GetInfo, GetSpiralAbyssInfo, MybSign, get_spiral_abyss_info, get_calculate_info
 from defs.event import ys_font
@@ -429,7 +429,8 @@ async def draw_pic(uid, message: Message, nickname="1", mode=2, role_level=None)
     panle3_path = os.path.join(BG2_PATH, "panle_3.png")
 
     avatar_bg_path = os.path.join(BG2_PATH, "avatar_bg.png")
-    avatar_fg_path = os.path.join(BG2_PATH, "avatar_fg.png")
+    # 头像
+    avatar_fg_path = await get_tg_avatar(message)
 
     all_mask_path = os.path.join(BG2_PATH, "All_Mask.png")
 
@@ -1233,7 +1234,7 @@ class CustomizeImage:
             return 0, 0, 0  # Error
 
 
-async def draw_info_pic(uid: str, image=None) -> str:
+async def draw_info_pic(uid: str, message: Message, image=None) -> str:
     def seconds2hours(seconds: int) -> str:
         m, s = divmod(int(seconds), 60)
         h, m = divmod(m, 60)
@@ -1268,7 +1269,7 @@ async def draw_info_pic(uid: str, image=None) -> str:
     info3_path = os.path.join(BG2_PATH, "info_3.png")
 
     avatar_bg_path = os.path.join(BG2_PATH, "avatar_bg.png")
-    avatar_fg_path = os.path.join(BG2_PATH, "avatar_fg.png")
+    avatar_fg_path = await get_tg_avatar(message)
 
     all_mask_path = os.path.join(BG2_PATH, "All_Mask.png")
 
@@ -1420,3 +1421,26 @@ async def draw_info_pic(uid: str, image=None) -> str:
     bg_img = bg_img.convert('RGB')
     bg_img.save(f"temp{os.sep}info.jpg", format='JPEG', subsampling=0, quality=90)
     return f"temp{os.sep}info.jpg"
+
+
+async def get_tg_avatar(message: Message) -> str:
+    avatar_fg_path = await app.get_profile_photos(message.from_user.id, limit=1)
+    if avatar_fg_path:
+        avatar_fg_path = await app.download_media(avatar_fg_path[0].file_id)
+        photo = Image.open(avatar_fg_path)
+        mask = Image.open(os.path.join(BG2_PATH, "avatar_mask.png"))
+        mask_size = mask.size
+        photo_size = photo.size
+        scale = photo_size[1] / mask_size[1]
+        photo = photo.resize((int(photo_size[0] / scale), int(photo_size[1] / scale)), Image.LANCZOS)
+        mask1 = Image.new("RGBA", mask.size)
+        mask1.paste(photo, mask=mask)
+        mask1.save(f"temp{os.sep}avatar.png")
+        try:
+            os.remove(avatar_fg_path)
+        except:
+            pass
+        avatar_fg_path = f"temp{os.sep}avatar.png"
+    else:
+        avatar_fg_path = os.path.join(BG2_PATH, "avatar_fg.png")
+    return avatar_fg_path
