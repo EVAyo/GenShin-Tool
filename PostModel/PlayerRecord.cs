@@ -6,9 +6,9 @@ namespace DGP.Genshin.HutaoAPI.PostModel
     {
         public PlayerRecord(string uid, List<PlayerAvatar> playerAvatars, List<PlayerSpiralAbyssLevel> playerSpiralAbyssesLevels)
         {
-            this.Uid = uid;
-            this.PlayerAvatars = playerAvatars;
-            this.PlayerSpiralAbyssesLevels = playerSpiralAbyssesLevels;
+            Uid = uid;
+            PlayerAvatars = playerAvatars;
+            PlayerSpiralAbyssesLevels = playerSpiralAbyssesLevels;
         }
 
         public string Uid { get; set; }

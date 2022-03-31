@@ -6,11 +6,11 @@ namespace DGP.Genshin.HutaoAPI.PostModel
     {
         public PlayerAvatar(int id, int level, int activedConstellationNum, AvatarWeapon weapon, List<AvatarReliquarySet> reliquarySets)
         {
-            this.Id = id;
-            this.Level = level;
-            this.ActivedConstellationNum = activedConstellationNum;
-            this.Weapon = weapon;
-            this.ReliquarySets = reliquarySets;
+            Id = id;
+            Level = level;
+            ActivedConstellationNum = activedConstellationNum;
+            Weapon = weapon;
+            ReliquarySets = reliquarySets;
         }
 
         public int Id { get; set; }

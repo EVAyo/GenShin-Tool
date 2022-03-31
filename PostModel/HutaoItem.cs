@@ -12,9 +12,9 @@
 
         public HutaoItem(int id, string? name, string? url)
         {
-            this.Id = id;
-            this.Name = name;
-            this.Url = url;
+            Id = id;
+            Name = name;
+            Url = url;
         }
 
         public int Id { get; set; }

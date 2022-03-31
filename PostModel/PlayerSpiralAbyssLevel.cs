@@ -6,10 +6,10 @@ namespace DGP.Genshin.HutaoAPI.PostModel
     {
         public PlayerSpiralAbyssLevel(int floorIndex, int levelIndex, int star, List<PlayerSpiralAbyssBattle> battles)
         {
-            this.FloorIndex = floorIndex;
-            this.LevelIndex = levelIndex;
-            this.Star = star;
-            this.Battles = battles;
+            FloorIndex = floorIndex;
+            LevelIndex = levelIndex;
+            Star = star;
+            Battles = battles;
         }
 
         public int FloorIndex { get; set; }
