@@ -1,5 +1,4 @@
 import time
-import datetime
 import os
 from re import findall
 from bs4 import BeautifulSoup
@@ -19,7 +18,7 @@ def generate_event():
     raw_data = get(
         "https://hk4e-api.mihoyo.com/common/hk4e_cn/announcement/api/getAnnList?game=hk4e&game_biz=hk4e_cn&lang=zh-cn"
         "&bundle_id=hk4e_cn&platform=pc&region=cn_gf01&level=55&uid=100000000").json()
-    now_time = datetime.datetime.now().strftime('%Y-%m-%d')
+    # now_time = datetime.datetime.now().strftime('%Y-%m-%d')
     # raw_time_data = get(
     #     "https://api-takumi.mihoyo.com/event/bbs_activity_calendar/getActList?"
     #     "time={}&game_biz=ys_cn&page=1&tag_id=0".format(now_time)).json()
@@ -42,8 +41,16 @@ def generate_event():
                         k["time_data"] = time_data
                     elif value.text == "〓活动时间〓":
                         time_data = content_bs.find_all("p")[index + 1].text
-                        time_data = time_data.replace("</t>", "")[16:]
-                        k["time_data"] = time_data
+                        if "<t class=" in time_data:
+                            time_datas = []
+                            for s in time_data.split(" ~ "):
+                                if "<t class=" in s:
+                                    time_datas.append(findall("<[a-zA-Z]+.*?>([\s\S]*?)</[a-zA-Z]*?>", s)[0])
+                                else:
+                                    time_datas.append(s)
+                            k["time_data"] = "——".join(time_datas)
+                        else:
+                            k["time_data"] = time_data
                     elif value.text == "〓祈愿介绍〓":
                         start_time = content_bs.find_all("tr")[1].td.find_all("p")[0].text
                         if "<t class=" in start_time:
@@ -52,7 +59,7 @@ def generate_event():
                                            content_bs.find_all("tr")[1].td.find_all("p")[2].text)[0]
                         if "<t class=" in end_time:
                             end_time = findall("<[a-zA-Z]+.*?>([\s\S]*?)</[a-zA-Z]*?>", end_time)[0]
-                        time_data = start_time + "~" + end_time
+                        time_data = start_time + "——" + end_time
                         k["time_data"] = time_data
 
         if "冒险助力礼包" in k["title"] or "纪行" in k["title"]:

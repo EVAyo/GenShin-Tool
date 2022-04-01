@@ -80,6 +80,7 @@ daily_im = '''
 每日委托：{}/{} 奖励{}领取
 周本减半：{}/{}
 洞天宝钱：{}
+参量质变仪：{}
 探索派遣：
 总数/完成/上限：{}/{}/{}
 {}'''
@@ -243,11 +244,18 @@ async def daily(mode="push", uid=None):
                     coin_add_speed = math.ceil((dailydata["max_home_coin"] - dailydata["current_home_coin"]) / (
                             int(dailydata["home_coin_recovery_time"]) / 60 / 60))
                     coin += f'（{coin_rec_time} 约{coin_add_speed}/h）'
+                if dailydata["transformer"]["recovery_time"]["reached"]:
+                    transformer_status = "可用"
+                else:
+                    transformer_time = dailydata["transformer"]["recovery_time"]
+                    transformer_status = "还剩{}天{}小时{}分钟可用".format(
+                        transformer_time["Day"], transformer_time["Hour"], transformer_time["Minute"])
 
                 expedition_data = "\n".join(expedition_info)
                 send_mes = daily_im.format(tip, current_resin, max_resin, rec_time, finished_task_num, total_task_num,
                                            is_extra_got, used_resin_discount_num,
-                                           resin_discount_num_limit, coin, current_expedition_num,
+                                           resin_discount_num_limit, coin, transformer_status,
+                                           current_expedition_num,
                                            finished_expedition_num, max_expedition_num, expedition_data)
 
                 temp_list.append(
@@ -1255,7 +1263,7 @@ async def draw_info_pic(uid: str, message: Message, image=None) -> str:
 
     # 获取背景图片各项参数
     based_w = 900
-    based_h = 1380
+    based_h = 1480
     image_def = CustomizeImage(image, based_w, based_h)
     bg_img = image_def.bg_img
     bg_color = image_def.bg_color
@@ -1289,10 +1297,10 @@ async def draw_info_pic(uid: str, message: Message, image=None) -> str:
     bg_img.paste(avatar_bg_color, (113, 98), avatar_bg)
     bg_img.paste(avatar_fg, (114, 95), avatar_fg)
 
-    info1_color = Image.new("RGBA", (900, 1300), bg_color)
+    info1_color = Image.new("RGBA", (900, 1400), bg_color)
     bg_img.paste(info1_color, (0, 0), info1)
 
-    info2_color = Image.new("RGBA", (900, 1300), text_color)
+    info2_color = Image.new("RGBA", (900, 1400), text_color)
     bg_img.paste(info2_color, (0, 0), info2)
 
     bg_img.paste(info3, (0, 0), info3)
@@ -1324,8 +1332,10 @@ async def draw_info_pic(uid: str, message: Message, image=None) -> str:
                    anchor="lm")
 
     # 收入比例
-    for index, i in enumerate(award_data['data']['month_data']['group_by']):
-        text_draw.text((681, 445 + index * 32), f"{str(i['num'])}({str(i['percent'])}%)", text_color, genshin_font(21),
+    group_by = award_data['data']['month_data']['group_by']
+    group_by.sort(key=lambda x: (-x['action_id']))
+    for index, i in enumerate(group_by):
+        text_draw.text((681, 447 + index * 42), f"{str(i['num'])}({str(i['percent'])}%)", text_color, genshin_font(21),
                        anchor="lm")
 
     # 基本四项
@@ -1339,27 +1349,41 @@ async def draw_info_pic(uid: str, message: Message, image=None) -> str:
                    f"{str(daily_data['resin_discount_num_limit'] - daily_data['remain_resin_discount_num'])}/{daily_data['resin_discount_num_limit']}",
                    text_color, genshin_font(26), anchor="lm")
 
-    # 树脂恢复时间计算
-    resin_recovery_time = seconds2hours(
-        daily_data['resin_recovery_time'])
-    next_resin_rec_time = seconds2hours(
-        8 * 60 - ((daily_data['max_resin'] - daily_data['current_resin']) * 8 * 60 - int(
-            daily_data['resin_recovery_time'])))
-    text_draw.text((268, 305), f" {next_resin_rec_time}", text_color, genshin_font(18), anchor="lm")
+    # 参量质变仪
+    if daily_data['transformer']['recovery_time']['reached']:
+        transformer_status = "已处于可用状态"
+        text_draw.text((170, 707), f"{transformer_status}", highlight_color, genshin_font(18), anchor="lm")
+    else:
+        transformer_time = daily_data['transformer']['recovery_time']
+        transformer_status = "还剩{}天{}小时{}分钟可用".format(transformer_time['Day'], transformer_time['Hour'],
+                                                      transformer_time['Minute'])
+        text_draw.text((170, 707), f"{transformer_status}", text_color, genshin_font(18), anchor="lm")
 
-    text_draw.text((170, 331), f"预计                  后全部恢复", text_color, genshin_font(18), anchor="lm")
-    text_draw.text((208, 331), f"{resin_recovery_time}", highlight_color, genshin_font(18), anchor="lm")
+    # 树脂恢复时间计算
+        # 树脂恢复时间计算
+        if int(daily_data['resin_recovery_time']) <= 0:
+            text_draw.text((170, 331), f"已全部恢复", text_color, genshin_font(18), anchor="lm")
+        else:
+            resin_recovery_time = seconds2hours(
+                daily_data['resin_recovery_time'])
+            next_resin_rec_time = seconds2hours(
+                8 * 60 - ((daily_data['max_resin'] - daily_data['current_resin']) * 8 * 60 - int(
+                    daily_data['resin_recovery_time'])))
+            text_draw.text((268, 305), f" {next_resin_rec_time}", text_color, genshin_font(18), anchor="lm")
+
+            text_draw.text((170, 331), f"预计                后全部恢复", text_color, genshin_font(18), anchor="lm")
+            text_draw.text((208, 331), f"{resin_recovery_time}", highlight_color, genshin_font(18), anchor="lm")
 
     # 洞天宝钱时间计算
     coin_rec_time = seconds2hours(int(daily_data["home_coin_recovery_time"]))
 
-    if daily_data["home_coin_recovery_time"] == "0":
-        text_draw.text((170, 425), f"已满", text_color, genshin_font(18), anchor="lm")
+    if int(daily_data["home_coin_recovery_time"]) <= 0:
+        text_draw.text((170, 425), f"已达到上限", text_color, genshin_font(18), anchor="lm")
     else:
         coin_add_speed = math.ceil((daily_data["max_home_coin"] - daily_data["current_home_coin"]) / (
-                int(daily_data["home_coin_recovery_time"]) / 60 / 60))
+                    int(daily_data["home_coin_recovery_time"]) / 60 / 60))
         text_draw.text((270, 399), f"约{coin_add_speed}/h", text_color, genshin_font(18), anchor="lm")
-        text_draw.text((170, 425), f"预计                  后达到上限", text_color, genshin_font(18), anchor="lm")
+        text_draw.text((170, 425), f"预计                 后达到上限", text_color, genshin_font(18), anchor="lm")
         text_draw.text((208, 425), f"{coin_rec_time}", highlight_color, genshin_font(18), anchor="lm")
 
     if daily_data['is_extra_task_reward_received']:
@@ -1412,10 +1436,10 @@ async def draw_info_pic(uid: str, message: Message, image=None) -> str:
             remained_timed: str = seconds2hours(i['remained_time'])
             charpic_draw.text((200, 65), f"剩余时间 {remained_timed}", text_color, genshin_font(24), anchor="lm")
 
-        bg_img.paste(charpic, (-15, 748 + 115 * index), charpic)
+        bg_img.paste(charpic, (-15, 848 + 115 * index), charpic)
 
     end_pic = Image.open(os.path.join(BG2_PATH, "abyss_3.png"))
-    bg_img.paste(end_pic, (0, 1340), end_pic)
+    bg_img.paste(end_pic, (0, 1440), end_pic)
 
     # 转换之后发送
     bg_img = bg_img.convert('RGB')

@@ -96,7 +96,7 @@ async def get_character(name: str):
                 return f"派蒙这里没找到 <code>{name}</code> ，可能是派蒙的错，可能是你输入的名字不正确哦。", None
             else:
                 return f"派蒙这里没找到 <code>{name}</code> ，你是要搜索 <code>{correct_result[0]}</code> 吗", None
-    result = f"<b>{nick_name} {'★' * int(data['rarity'])}</b>\n" \
+    result = f"<b>{data['name']} {'★' * int(data['rarity'])}</b>\n" \
              f"<b>命之座：</b>{data['constellation']}\n" \
              f"<b>所属：</b>{data['affiliation']}\n" \
              f"<b>突破加成：</b>{data['substat']}\n" \

@@ -30,7 +30,7 @@ async def weapon_adv(name):
         im = '，'.join(char_list)
         im = im + " 可能会用到【{}】".format(weapon_name)
     else:
-        im = " 没有角色能使用【{}】".format(weapon_name)
+        im = " 没有角色能使用【{}】".format(weapon_name if weapon_name else name)
     return im
 
 
