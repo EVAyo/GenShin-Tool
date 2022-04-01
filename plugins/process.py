@@ -13,6 +13,7 @@ from plugins.gacha import gacha_msg
 from plugins.guess_voice import guess_voice, process_guess
 from plugins.mys2 import mys2_msg, mys2_qun_msg
 from plugins.mihoyo import mihoyo_msg, mihoyo_qun_msg
+from plugins.pokedex import pokedex_msg, strategy_msg
 from plugins.start import welcome_command, ping_command, help_command, leave_command, help_callback, cancel_command
 from plugins.almanac import almanac_msg
 from plugins.challenge import tf_msg, wq_msg, zb_msg
@@ -79,6 +80,12 @@ async def process_private_msg(client: Client, message: Message):
     if '角色资料' in message.text or '角色简介' in message.text or '角色查询' in message.text:
         await character_msg(client, message)
         await log(client, message, '查询角色资料')
+    if "图鉴" in message.text:
+        await pokedex_msg(client, message)
+        await log(client, message, '查询图鉴')
+    if "攻略" in message.text:
+        await strategy_msg(client, message)
+        await log(client, message, '查询攻略')
     # # 原魔查询
     if '原魔查询' in message.text:
         await enemies_msg(client, message)
@@ -167,6 +174,14 @@ async def process_group_msg(client: Client, message: Message):
     if text.startswith('角色资料') or text.startswith('角色简介') or text.startswith('角色查询'):
         await character_msg(client, message)
         await log(client, message, '查询角色资料')
+    # 图鉴
+    if text.startswith("图鉴"):
+        await pokedex_msg(client, message)
+        await log(client, message, "查询图鉴")
+    # 攻略
+    if text.startswith("攻略"):
+        await strategy_msg(client, message)
+        await log(client, message, "查询攻略")
     # # 原魔查询
     if text.startswith('原魔查询'):
         await enemies_msg(client, message)
