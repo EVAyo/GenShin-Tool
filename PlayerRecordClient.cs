@@ -17,29 +17,29 @@ using System.Threading.Tasks;
 
 namespace DGP.Genshin.HutaoAPI
 {
+    /// <summary>
+    /// 玩家记录客户端
+    /// </summary>
     public class PlayerRecordClient
     {
         private const string HutaoAPIHost = "https://hutao-api.snapgenshin.com";
         private const string ContentType = "text/json";
 
-        private record Token
-        {
-            public string? AccessToken { get; set; }
-        }
-        private record Auth(string Appid, string Secret);
         private Requester AuthRequester { get; set; } = new();
 
         /// <summary>
         /// 登录获取token
         /// </summary>
-        /// <returns></returns>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>任务</returns>
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
-            //Please contract us for your own token
+            // Please contract us for your own token
             Auth token = new("08d9e212-0cb3-4d71-8ed7-003606da7b20", "7ueWgZGn53dDhrm8L5ZRw+YWfOeSWtgQmJWquRgaygw=");
             Response<Token>? resp = await new Requester()
                 .PostAsync<Token>($"{HutaoAPIHost}/Auth/Login", token, ContentType, cancellationToken)
                 .ConfigureAwait(false);
+
             Requires.NotNull(resp?.Data?.AccessToken!, nameof(resp.Data.AccessToken));
             AuthRequester = new() { UseAuthToken = true, AuthToken = resp.Data.AccessToken };
         }
@@ -57,15 +57,18 @@ namespace DGP.Genshin.HutaoAPI
                 Requires.NotNull(role.GameUid!, nameof(role.GameUid));
                 Requires.NotNull(role.Region!, nameof(role.Region));
 
-                PlayerInfo? playerInfo = await recordProvider.GetPlayerInfoAsync(role.GameUid, role.Region, cancellationToken)
+                PlayerInfo? playerInfo = await recordProvider
+                    .GetPlayerInfoAsync(role.GameUid, role.Region, cancellationToken)
                     .ConfigureAwait(true);
                 Requires.NotNull(playerInfo!, nameof(playerInfo));
 
-                DetailedAvatarWrapper? detailAvatars = await recordProvider.GetDetailAvaterInfoAsync(role.GameUid, role.Region, playerInfo, cancellationToken)
+                DetailedAvatarWrapper? detailAvatars = await recordProvider
+                    .GetDetailAvaterInfoAsync(role.GameUid, role.Region, playerInfo, cancellationToken)
                     .ConfigureAwait(true);
                 Requires.NotNull(detailAvatars!, nameof(detailAvatars));
 
-                SpiralAbyss? spiralAbyssInfo = await recordProvider.GetSpiralAbyssAsync(role.GameUid, role.Region, SpiralAbyssType.Current, cancellationToken)
+                SpiralAbyss? spiralAbyssInfo = await recordProvider
+                    .GetSpiralAbyssAsync(role.GameUid, role.Region, SpiralAbyssType.Current, cancellationToken)
                     .ConfigureAwait(true);
                 Requires.NotNull(spiralAbyssInfo!, nameof(spiralAbyssInfo));
 
@@ -78,6 +81,7 @@ namespace DGP.Genshin.HutaoAPI
                         resp = await AuthRequester.PostAsync<string>($"{HutaoAPIHost}/Record/Upload", playerRecord, ContentType, cancellationToken)
                             .ConfigureAwait(true);
                     }
+
                     await resultAsyncFunc.Invoke(resp ?? Response.CreateFail($"{role.GameUid}-记录提交失败。"))
                         .ConfigureAwait(true);
                 }
@@ -185,5 +189,9 @@ namespace DGP.Genshin.HutaoAPI
             return resp?.Data ?? Enumerable.Empty<TeamCombination>();
         }
         #endregion
+
+        private record Auth(string Appid, string Secret);
+
+        private record Token(string? AccessToken);
     }
 }
