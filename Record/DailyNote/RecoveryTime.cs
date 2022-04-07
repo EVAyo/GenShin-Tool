@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Snap.Data.Utility.Extension;
 using System.Text;
 
 namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
@@ -53,28 +54,13 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
                 }
                 else
                 {
-                    StringBuilder sb = new();
-                    if (Day > 0)
-                    {
-                        sb.Append($"{Day}天");
-                    }
-
-                    if (Hour > 0)
-                    {
-                        sb.Append($"{Hour}时");
-                    }
-
-                    if (Minute > 0)
-                    {
-                        sb.Append($"{Minute}分");
-                    }
-
-                    if (Second > 0)
-                    {
-                        sb.Append($"{Second}秒");
-                    }
-
-                    return sb.Append("后可再次使用").ToString();
+                    return new StringBuilder()
+                        .AppendIf(Day > 0, $"{Day}天")
+                        .AppendIf(Hour > 0, $"{Hour}时")
+                        .AppendIf(Minute > 0, $"{Minute}分")
+                        .AppendIf(Second > 0, $"{Second}秒")
+                        .Append("后可再次使用")
+                        .ToString();
                 }
             }
         }
