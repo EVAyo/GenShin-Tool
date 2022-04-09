@@ -3,10 +3,12 @@ import random
 import re
 import sqlite3
 import traceback
+from genshin import ChineseClient
+
 from typing import Union
 
-from pyrogram import Client
-from pyrogram.types import Message
+from pyrogram import Client, ContinuePropagation, filters
+from pyrogram.types import Message, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 
 from defs.db import deal_ck, selectDB, OpenPush, CheckDB, connectDB, deletecache
 from defs.event import generate_event
@@ -19,11 +21,54 @@ from defs.spiral_abyss import draw_abyss_pic, draw_abyss0_pic
 from defs.spiral_abyss_text import get_user_abyss
 
 SUPERUSERS = [admin_id]
-
+Cookie_Right_Text = """
+Cookie 有效，请在 30 秒内选择您要绑定的账号：
+"""
+Bind_Right_Text = """
+账号绑定成功，欢迎使用！
+"""
+No_Account_Text = """
+暂无账号信息，请先前往 APP 绑定账号！
+"""
 
 def is_chinese(x: Union[int, str]) -> bool:
     """Recognizes whether the server/uid is chinese."""
     return str(x).startswith(("1", "2", "5"))
+
+
+async def choose_account(message: Message, results: list,
+                         client: Union[ChineseClient] = None):
+    # 选择账号
+    if results:
+        keyboard = []
+        data = {}
+        for i in results:
+            data[str(i.uid)] = i
+            keyboard.append(KeyboardButton(text=f"{i.uid} - {i.nickname} - lv.{i.level}"))
+        msg = await message.reply(Cookie_Right_Text,
+                                  reply_to_message_id=message.message_id,
+                                  reply_markup=ReplyKeyboardMarkup([keyboard]))
+        try:
+            ask = await app.listen(message.from_user.id, filters=filters.text, timeout=30)  # noqa
+        except asyncio.TimeoutError:
+            await msg.delete()
+            await message.reply("您的操作超时，请重试。", reply_markup=ReplyKeyboardRemove())
+            raise ContinuePropagation
+        except Exception as e:
+            await msg.delete()
+            await message.reply(f"出现错误：{e}", reply_markup=ReplyKeyboardRemove())
+            raise ContinuePropagation
+        try:
+            data = data[ask.text.split(" - ")[0]]
+        except (AttributeError, IndexError, KeyError):
+            await ask.reply("您的操作错误，请重试。", quote=True)
+            raise ContinuePropagation
+        except Exception as e:
+            await ask.reply_text(f"出现错误：{e}", quote=True)
+            raise ContinuePropagation
+        # 写入数据
+        await connectDB(message.from_user.id, data.uid)
+        await connectDB(message.from_user.id, None, client.hoyolab_uid)
 
 
 async def mys2_msg(client: Client, message: Message):
@@ -36,13 +81,19 @@ async def mys2_msg(client: Client, message: Message):
                 return await message.reply_text("获取 Cookie 请参考：[link](https://github.com/Womsxd/AutoMihoyoBBS/"
                                                 "#%E8%8E%B7%E5%8F%96%E7%B1%B3%E6%B8%B8%E7%A4%BEcookie)", quote=True)
             await deal_ck(mes, userid)
-            await message.reply(f'添加Cookies成功！\n'
+            # 开始绑定 uid
+            client_ = ChineseClient()
+            client_.set_cookies(mes)
+            results = await client_.genshin_accounts()
+            await client_.close()
+            await choose_account(message, results, client_)
+            await message.reply(f'<code>=============</code>\n'
+                                f'添加Cookies成功！\n'
                                 f'Cookies属于个人重要信息，如果你是在不知情的情况下添加，'
                                 f'请马上修改米游社账户密码，保护个人隐私！\n'
-                                f'<code>=============</code>\n'
-                                f'如果需要【开启自动签到】和【开启推送】还需要使用命令 '
-                                f'<code>米游社绑定uid</code>绑定你的uid。\n'
-                                f'例如：<code>米游社绑定uid123456789</code>。')
+                                f'<code>=============</code>', reply_markup=ReplyKeyboardRemove(), quote=True)
+        except ContinuePropagation:
+            raise ContinuePropagation
         except Exception as e:
             traceback.print_exc()
             await message.reply(f'校验失败！请输入正确的Cookies！获取 Cookie 请参考：'

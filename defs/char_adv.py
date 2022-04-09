@@ -17,18 +17,22 @@ async def weapon_adv(name):
     ws = wb.active
 
     weapon_name = ""
-    char_list = []
+    weapons = {}
     for c in range(2, 5):
         for r in range(2, 300):
             if ws.cell(r, c).value:
                 # if all(i in ws.cell(r,c).value for i in name):
                 if name in ws.cell(r, c).value:
                     weapon_name = ws.cell(r, c).value
-                    char_list.append(ws.cell(2 + ((r - 2) // 5) * 5, 1).value)
+                    weapon = weapons.get(weapon_name, [])
+                    weapon.append(ws.cell(2 + ((r - 2) // 5) * 5, 1).value)
+                    weapons[weapon_name] = weapon
 
-    if char_list:
-        im = '，'.join(char_list)
-        im = im + " 可能会用到【{}】".format(weapon_name)
+    if weapons:
+        im = []
+        for k, v in weapons.items():
+            im.append(f'{"、".join(v)}可能会用到【{k}】')
+        im = '\n'.join(im)
     else:
         im = " 没有角色能使用【{}】".format(weapon_name if weapon_name else name)
     return im
