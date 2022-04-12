@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DGP.Genshin.MiHoYoAPI.Calculation
 {
+    /// <summary>
+    /// 养成计算器
+    /// </summary>
     public class Calculator
     {
         private const string ApiTakumi = @"https://api-takumi.mihoyo.com";

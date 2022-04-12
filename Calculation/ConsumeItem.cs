@@ -1,5 +1,4 @@
-﻿using Microsoft;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Snap.Data.Primitive;
 using System;
 
@@ -12,6 +11,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
     {
         private bool? isTodaysMaterial;
         private bool isCompleted = false;
+        private double num;
 
         /// <summary>
         /// Id
@@ -35,7 +35,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
         /// 数量
         /// </summary>
         [JsonProperty("num")]
-        public double Num { get; set; }
+        public double Num { get => num; set => Set(ref num, value); }
 
         /// <summary>
         /// WikiUrl
@@ -83,7 +83,6 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
 
         private bool DetermineIsTodaysMaterial(int id, DayOfWeek currntDayOfWeek)
         {
-            Requires.Defined(currntDayOfWeek, nameof(currntDayOfWeek));
             return currntDayOfWeek switch
             {
                 DayOfWeek.Monday or DayOfWeek.Thursday => id switch
