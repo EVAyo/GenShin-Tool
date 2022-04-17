@@ -28,7 +28,7 @@ namespace DGP.Genshin.HutaoAPI
         private Requester AuthRequester { get; set; } = new();
 
         /// <summary>
-        /// 登录获取token
+        /// 异步登录获取token
         /// </summary>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>任务</returns>
@@ -44,6 +44,14 @@ namespace DGP.Genshin.HutaoAPI
             AuthRequester = new() { UseAuthToken = true, AuthToken = resp.Data.AccessToken };
         }
 
+        /// <summary>
+        /// 异步获取所有记录并上传到数据库
+        /// </summary>
+        /// <param name="cookie">cookie</param>
+        /// <param name="confirmAsyncFunc">异步确认委托</param>
+        /// <param name="resultAsyncFunc">结果确认委托</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>任务</returns>
         [ExecuteOnMainThread]
         public async Task GetAllRecordsAndUploadAsync(string cookie, Func<PlayerRecord, Task<bool>> confirmAsyncFunc, Func<Response, Task> resultAsyncFunc, CancellationToken cancellationToken = default)
         {
@@ -88,7 +96,11 @@ namespace DGP.Genshin.HutaoAPI
             }
         }
 
-        #region V1 API
+        /// <summary>
+        /// 异步获取总览数据
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>总览信息</returns>
         public async Task<Overview?> GetOverviewAsync(CancellationToken cancellationToken = default)
         {
             Response<Overview>? resp = await AuthRequester
@@ -97,6 +109,11 @@ namespace DGP.Genshin.HutaoAPI
             return resp?.Data;
         }
 
+        /// <summary>
+        /// 异步获取角色出场率
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>角色出场率</returns>
         public async Task<IEnumerable<AvatarParticipation>> GetAvatarParticipationsAsync(CancellationToken cancellationToken = default)
         {
             Response<IEnumerable<AvatarParticipation>>? resp = await AuthRequester
@@ -104,6 +121,12 @@ namespace DGP.Genshin.HutaoAPI
                 .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<AvatarParticipation>();
         }
+
+        /// <summary>
+        /// 异步获取角色圣遗物搭配
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>角色圣遗物搭配</returns>
         public async Task<IEnumerable<AvatarReliquaryUsage>> GetAvatarReliquaryUsagesAsync(CancellationToken cancellationToken = default)
         {
             Response<IEnumerable<AvatarReliquaryUsage>>? resp = await AuthRequester
@@ -111,6 +134,12 @@ namespace DGP.Genshin.HutaoAPI
                 .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<AvatarReliquaryUsage>();
         }
+
+        /// <summary>
+        /// 异步获取角色搭配数据
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>角色搭配数据</returns>
         public async Task<IEnumerable<TeamCollocation>> GetTeamCollocationsAsync(CancellationToken cancellationToken = default)
         {
             Response<IEnumerable<TeamCollocation>>? resp = await AuthRequester
@@ -118,6 +147,12 @@ namespace DGP.Genshin.HutaoAPI
                 .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<TeamCollocation>();
         }
+
+        /// <summary>
+        /// 异步获取角色武器搭配数据
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>角色武器搭配数据</returns>
         public async Task<IEnumerable<WeaponUsage>> GetWeaponUsagesAsync(CancellationToken cancellationToken = default)
         {
             Response<IEnumerable<WeaponUsage>>? resp = await AuthRequester
@@ -125,10 +160,93 @@ namespace DGP.Genshin.HutaoAPI
                 .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<WeaponUsage>();
         }
-        #endregion
 
-        #region V2 API
-        public async Task<Response<string>?> UploadItemsAsync(DetailedAvatarWrapper detailedAvatar, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 异步获取角色图片列表
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>角色图片列表</returns>
+        public async Task<IEnumerable<HutaoItem>> GetAvatarMapAsync(CancellationToken cancellationToken = default)
+        {
+            Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Avatars", cancellationToken)
+                .ConfigureAwait(false);
+            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
+        }
+
+        /// <summary>
+        /// 异步获取武器图片列表
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>武器图片列表</returns>
+        public async Task<IEnumerable<HutaoItem>> GetWeaponMapAsync(CancellationToken cancellationToken = default)
+        {
+            Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Weapons", cancellationToken)
+                .ConfigureAwait(false);
+            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
+        }
+
+        /// <summary>
+        /// 异步获取圣遗物图片列表
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>圣遗物图片列表</returns>
+        public async Task<IEnumerable<HutaoItem>> GetReliquaryMapAsync(CancellationToken cancellationToken = default)
+        {
+            Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Reliquaries", cancellationToken)
+                .ConfigureAwait(false);
+            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
+        }
+
+        /// <summary>
+        /// 异步获取角色命座信息
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>角色图片列表</returns>
+        public async Task<IEnumerable<AvatarConstellationNum>> GetAvatarConstellationsAsync(CancellationToken cancellationToken = default)
+        {
+            Response<IEnumerable<AvatarConstellationNum>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<AvatarConstellationNum>>($"{HutaoAPIHost}/Statistics/Constellation", cancellationToken)
+                .ConfigureAwait(false);
+            return resp?.Data ?? Enumerable.Empty<AvatarConstellationNum>();
+        }
+
+        /// <summary>
+        /// 异步获取队伍出场次数
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>队伍出场列表</returns>
+        public async Task<IEnumerable<TeamCombination>> GetTeamCombinationsAsync(CancellationToken cancellationToken = default)
+        {
+            Response<IEnumerable<TeamCombination>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<TeamCombination>>($"{HutaoAPIHost}/Statistics/TeamCombination", cancellationToken)
+                .ConfigureAwait(false);
+            return resp?.Data ?? Enumerable.Empty<TeamCombination>();
+        }
+
+        /// <summary>
+        /// 检查对应的uid当前是否上传了数据
+        /// </summary>
+        /// <param name="uid">uid</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>当前是否上传了数据</returns>
+        public async Task<bool> CheckPeriodRecordUploadedAsync(string uid, CancellationToken cancellationToken = default)
+        {
+            Response<UploadInfo>? resp = await AuthRequester
+                .GetAsync<UploadInfo>($"{HutaoAPIHost}/Record/CheckRecord/{uid}", cancellationToken)
+                .ConfigureAwait(false);
+            return resp?.Data is not null && resp.Data.PeriodUploaded;
+        }
+
+        /// <summary>
+        /// 异步上传物品所有物品
+        /// </summary>
+        /// <param name="detailedAvatar">角色详细信息</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>响应</returns>
+        private async Task<Response<string>?> UploadItemsAsync(DetailedAvatarWrapper detailedAvatar, CancellationToken cancellationToken = default)
         {
             IEnumerable<HutaoItem>? avatars = detailedAvatar.Avatars?
                 .Select(avatar => new HutaoItem(avatar.Id, avatar.Name, avatar.Icon))
@@ -151,44 +269,6 @@ namespace DGP.Genshin.HutaoAPI
                         .PostAsync<string>($"{HutaoAPIHost}​/GenshinItems/Upload", data, ContentType, cancellationToken)
                         .ConfigureAwait(false);
         }
-
-        public async Task<IEnumerable<HutaoItem>> GetAvatarMapAsync(CancellationToken cancellationToken = default)
-        {
-            Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Avatars", cancellationToken)
-                .ConfigureAwait(false);
-            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
-        }
-        public async Task<IEnumerable<HutaoItem>> GetWeaponMapAsync(CancellationToken cancellationToken = default)
-        {
-            Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Weapons", cancellationToken)
-                .ConfigureAwait(false);
-            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
-        }
-        public async Task<IEnumerable<HutaoItem>> GetReliquaryMapAsync(CancellationToken cancellationToken = default)
-        {
-            Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Reliquaries", cancellationToken)
-                .ConfigureAwait(false);
-            return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
-        }
-
-        public async Task<IEnumerable<AvatarConstellationNum>> GetAvatarConstellationsAsync(CancellationToken cancellationToken = default)
-        {
-            Response<IEnumerable<AvatarConstellationNum>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<AvatarConstellationNum>>($"{HutaoAPIHost}/Statistics/Constellation", cancellationToken)
-                .ConfigureAwait(false);
-            return resp?.Data ?? Enumerable.Empty<AvatarConstellationNum>();
-        }
-        public async Task<IEnumerable<TeamCombination>> GetTeamCombinationsAsync(CancellationToken cancellationToken = default)
-        {
-            Response<IEnumerable<TeamCombination>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<TeamCombination>>($"{HutaoAPIHost}/Statistics/TeamCombination", cancellationToken)
-                .ConfigureAwait(false);
-            return resp?.Data ?? Enumerable.Empty<TeamCombination>();
-        }
-        #endregion
 
         private record Auth(string Appid, string Secret);
 
