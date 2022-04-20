@@ -22,7 +22,9 @@ namespace DGP.Genshin.HutaoAPI
     /// </summary>
     public class PlayerRecordClient
     {
+        // auth.snapgenshin.com
         private const string HutaoAPIHost = "https://hutao-api.snapgenshin.com";
+        private const string AuthAPIHost = "https://auth.snapgenshin.com";
         private const string ContentType = "text/json";
 
         private Requester AuthRequester { get; set; } = new();
@@ -37,7 +39,7 @@ namespace DGP.Genshin.HutaoAPI
             // Please contract us for your own token
             Auth token = new("08d9e212-0cb3-4d71-8ed7-003606da7b20", "7ueWgZGn53dDhrm8L5ZRw+YWfOeSWtgQmJWquRgaygw=");
             Response<Token>? resp = await new Requester()
-                .PostAsync<Token>($"{HutaoAPIHost}/Auth/Login", token, ContentType, cancellationToken)
+                .PostAsync<Token>($"{AuthAPIHost}/Auth/Login", token, ContentType, cancellationToken)
                 .ConfigureAwait(false);
 
             Requires.NotNull(resp?.Data?.AccessToken!, nameof(resp.Data.AccessToken));

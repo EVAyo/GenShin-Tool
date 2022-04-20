@@ -1,4 +1,4 @@
-# 胡桃 API Clien
+# 胡桃 API Client
 本仓库包含了与 胡桃API 交互需要的代码
 # 胡桃 API
 由 DGP Studio 开发部署的一套 **深渊数据统计 API**  
