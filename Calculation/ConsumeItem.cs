@@ -94,6 +94,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                     >= 114001 and <= 114004 => true, // 高塔孤王
                     >= 114013 and <= 114016 => true, // 孤云寒林
                     >= 114025 and <= 114028 => true, // 远海夷地
+
                     _ => false,
                 },
                 DayOfWeek.Tuesday or DayOfWeek.Friday => id switch
@@ -105,6 +106,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                     >= 114005 and <= 114008 => true,
                     >= 114017 and <= 114020 => true,
                     >= 114029 and <= 114032 => true,
+
                     _ => false,
                 },
                 DayOfWeek.Wednesday or DayOfWeek.Saturday => id switch
@@ -116,6 +118,7 @@ namespace DGP.Genshin.MiHoYoAPI.Calculation
                     >= 114009 and <= 114012 => true,
                     >= 114021 and <= 114024 => true,
                     >= 114033 and <= 114036 => true,
+
                     _ => false,
                 },
                 _ => false,
