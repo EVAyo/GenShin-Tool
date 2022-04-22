@@ -8,7 +8,16 @@ namespace DGP.Genshin.MiHoYoAPI.Gacha
     /// </summary>
     public class UIGF
     {
-        [JsonProperty("info")] public UIGFInfo? Info { get; set; }
-        [JsonProperty("list")] public IEnumerable<UIGFItem?>? List { get; set; }
+        /// <summary>
+        /// 信息
+        /// </summary>
+        [JsonProperty("info")]
+        public UIGFInfo? Info { get; set; }
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        [JsonProperty("list")]
+        public IEnumerable<UIGFItem?>? List { get; set; }
     }
 }
