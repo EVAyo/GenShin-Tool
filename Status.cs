@@ -20,7 +20,7 @@ namespace DGP.Genshin.MiHoYoAPI
         {
             // Credit @HolographicHat
             Response<StatusData>? response = await new Requester().GetAsync<StatusData>($"{Hk4eApi}/event/bluepost/ping");
-            return response?.Data != null;
+            return response != null && response.Data != null;
         }
 
         /// <summary>
