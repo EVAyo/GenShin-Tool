@@ -54,47 +54,49 @@ for h, t in hwnd_title.items():
     if t == "原神":
         hwnd=h
         break
+
+app = QApplication(sys.argv)
 imgB = cv2.imread('./image/B.png')
 hash1 = aHash(imgB)
-app = QApplication(sys.argv)
-print("请点击开始游戏。")
 while 1:
     screen = QApplication.primaryScreen()
     abc = screen.grabWindow(hwnd).toImage()
+    # img.save("screenshot1.jpg")
+    # # print('ok')
+    # img1 = cv2.imread("screenshot1.jpg")
     s = abc.bits().asstring(abc.width() * abc.height() * abc.depth() // 8)
     img1 = np.frombuffer(s, dtype=np.uint8).reshape((abc.height(), abc.width(), abc.depth() // 8))
-    w,a,s,d= img1[395:395+180,395:395+180],img1[557:557+180,227:227+180],img1[722:722+180,393:393+180],img1[557:557+180,563:563+180]
-    i,j,k,l=img1[395:395+180,1343:1343+180],img1[557:557+180,1180:1180+180],img1[722:722+180,1343:1343+180],img1[557:557+180,1513:1513+180]
-    try:
-        imgs = manyimgs(1, ([w,a],[s,d],[i,j],[k,l]))
-    except:
-        print('程序出错！请确保原神在前台，不要最小化!')
-        break
-    m = 14
-    if cmpHash(hash1, aHash(w)) < m:
+    w,a,s,d= img1[332:468, 338:474],img1[472:608,198:334],img1[612:748,338:474],img1[472:608,470:610]
+    i,j,k,l=img1[332:468,1128:1264],img1[472:608,985:1125],img1[612:748,1128:1264],img1[472:608,1270:1406]
+    imgs = manyimgs(1, ([w,a],[s,d],[i,j],[k,l]))
+    # 展示多个
+    cv2.imshow("mutil_pic", imgs)
+    m=17
+    if cmpHash(hash1,aHash(w))<m:
         pg.press("w")
-        print('w', cmpHash(hash1, aHash(w)))
-    if cmpHash(hash1, aHash(s)) < m:
+        print('w',cmpHash(hash1,aHash(w)))
+    if cmpHash(hash1,aHash(s))<m:
         pg.press("s")
-        print('s', cmpHash(hash1, aHash(s)))
-    if cmpHash(hash1, aHash(a)) < m:
+        print('s',cmpHash(hash1,aHash(s)))
+    if cmpHash(hash1,aHash(a))<m:
         pg.press("a")
-        print('a', cmpHash(hash1, aHash(a)))
-    if cmpHash(hash1, aHash(d)) < m:
+        print('a',cmpHash(hash1,aHash(a)))
+    if cmpHash(hash1,aHash(d))<m:
         pg.press("d")
-        print('d', cmpHash(hash1, aHash(d)))
-    if cmpHash(hash1, aHash(i)) < m:
+        print('d',cmpHash(hash1,aHash(d)))
+    if cmpHash(hash1,aHash(i))<m:
         pg.press("i")
-        print('i', cmpHash(hash1, aHash(i)))
-    if cmpHash(hash1, aHash(j)) < m:
+        print('i',cmpHash(hash1,aHash(i)))
+    if cmpHash(hash1,aHash(j))<m:
         pg.press("j")
-        print('j', cmpHash(hash1, aHash(j)))
-    if cmpHash(hash1, aHash(k)) < m:
+        print('j',cmpHash(hash1,aHash(j)))
+    if cmpHash(hash1,aHash(k))<m:
         pg.press("k")
-        print('k', cmpHash(hash1, aHash(k)))
-    if cmpHash(hash1, aHash(l)) < m:
+        print('k',cmpHash(hash1,aHash(k)))
+    if cmpHash(hash1,aHash(l))<m:
         pg.press("l")
-        print('l', cmpHash(hash1, aHash(l)))
+        print('l',cmpHash(hash1,aHash(l)))
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
     time.sleep(0.05)
 cv2.destroyAllWindows()
-input('请重启程序')
