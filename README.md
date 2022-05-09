@@ -9,29 +9,35 @@
 解锁原神60帧帧率上限  
 Unlock Genshin Impact 60 FPS Limit
 
+### Usage
 
-### Simple Usage
+Flexible way
 
-flexible way
 ```c#
-//create a genshin impact process
+// create a genshin impact process
 Process p = new(){...};
-//pass the process and target fps to unlocker
+
+// pass the process and target fps to unlocker
 Unlocker unlocker = new(p,144);
-//start the process
+
+// start the process
 p.Start();
-//immediately call the UnlockAsync method
-//this method will not return until an error occurred or the process has exited
+
+// immediately call the UnlockAsync method
+// this method will not return until an error occurred or the process has exited
 var result = await unlocker.UnlockAsync();
 ```
 
-Or straightforward way
+Straightforward way
+
 ```c#
-//create a genshin impact process
+// create a genshin impact process
 Process p = new(){...};
-//pass the process and target fps to unlocker
+
+// pass the process and target fps to unlocker
 Unlocker unlocker = new(p,144);
-//start the process and immediately call the UnlockAsync method
-//this method will also not return until an error occurred or the process has exited
+
+// start the process and immediately call the UnlockAsync method
+// this method will also not return until an error occurred or the process has exited
 var result = await unlocker.StartProcessAndUnlockAsync();
 ```
