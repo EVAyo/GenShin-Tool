@@ -18,7 +18,7 @@ namespace DGP.Genshin.MiHoYoAPI.UserInfo
         /// 头像
         /// </summary>
         [JsonProperty("avatar_url")] public string? AvatarUrl { get; set; }
-        [JsonProperty("certifications")] public List<string>? Certifications { get; set; }
+        [JsonProperty("certifications")] public List<Certification2>? Certifications { get; set; }
         [JsonProperty("level_exp")] public LevelExp? LevelExp { get; set; }
         /// <summary>
         /// 头像框
