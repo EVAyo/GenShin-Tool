@@ -449,20 +449,30 @@ async function createWidget() {
   
   // 生成派遣状态
   var i = 0
-    var char = genshinData["expeditions"][i]
-
+  let minCdTime = 100000
+  
+    for (var i=0; i<genshinData["expeditions"].length;i++) {
+  var char = genshinData["expeditions"][i]
     if (char["status"] == "Finished") {
-      // 添加 派遣状态
-      var textItem = stackText.addText("已完成")
+      minCdTime = 0
+      break
+    } else {
+      if (minCdTime > parseInt(char["remained_time"])) {
+        minCdTime = parseInt(char["remained_time"])
+      }
+    }
+  }
+  if (minCdTime == 0 ) {
+    var textItem = stackText.addText("已完成")
       textItem.font = getFont('regular', 9)
       textItem.textColor = Color.red()
-    } else {
-      // 添加 派遣状态
-      var remainTime = formatExpRemainTime(parseInt(char["remained_time"]))
-      var textItem = stackText.addText(`剩余 ${remainTime[0]}:${remainTime[1]}`)
+  } else {
+    var remainTime = formatExpRemainTime(minCdTime)
+  
+    var textItem = stackText.addText(`剩余 ${remainTime[0]}:${remainTime[1]}`)
       textItem.font = getFont('regular', 9)
       textItem.textColor = textColor
-    }
+  }
   
   // 添加 质量参变仪
   var stackText = widget.addStack()
