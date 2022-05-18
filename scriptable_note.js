@@ -308,8 +308,8 @@ async function createWidget() {
   let gradient = new LinearGradient()
   gradient.locations = [0, 1]
   gradient.colors = [
-    new Color("683632"),
-    new Color("DA9233")
+    new Color("c0ad5e"),
+    new Color("aa9649")
   ]
   widget.backgroundGradient = gradient
   
@@ -362,14 +362,14 @@ async function createWidget() {
   if (genshinData["current_resin"] >= genshinData["max_resin"]*0.9) {
     textItem.textColor = Color.red()
   } else {
-    textItem.textColor = Color.green()
+    textItem.textColor = textColor
   }
 
   if (genshinData["current_resin"] != genshinData["max_resin"]) {
     var remainTime = formatExpRemainTime(parseInt(genshinData["resin_recovery_time"]))
     var textItem = widget.addText(`(剩余 ${remainTime[0]}:${remainTime[1]})`)
     textItem.font = getFont('regular', 9)
-    textItem.textColor = Color.green()
+    textItem.textColor = textColor
     textItem.rightAlignText()
   } else {
     var textItem = widget.addText(`已达上限！`)
@@ -389,14 +389,14 @@ async function createWidget() {
   if (genshinData["current_home_coin"] >= genshinData["max_home_coin"]*0.9) {
     textItem.textColor = Color.red()
   } else {
-    textItem.textColor = Color.green()
+    textItem.textColor = textColor
   }
 
   if (genshinData["current_home_coin"] != genshinData["max_home_coin"]) {
     var remainTime = formatExpRemainTime(parseInt(genshinData["home_coin_recovery_time"]))
     var textItem = widget.addText(`(剩余 ${remainTime[0]}:${remainTime[1]})`)
     textItem.font = getFont('regular', 9)
-    textItem.textColor = Color.green()
+    textItem.textColor = textColor
     textItem.rightAlignText()
   } else {
     var textItem = widget.addText(`已达上限！`)
@@ -416,7 +416,7 @@ async function createWidget() {
   if (genshinData["finished_task_num"] != genshinData["total_task_num"]) {
     textItem.textColor = Color.red()
   } else {
-    textItem.textColor = Color.green()
+    textItem.textColor = textColor
   }
 
   // 添加 周本信息
@@ -430,7 +430,7 @@ async function createWidget() {
   if (genshinData["remain_resin_discount_num"] != 0) {
     textItem.textColor = Color.red()
   } else {
-    textItem.textColor = Color.green()
+    textItem.textColor = textColor
   }
 
   // 添加 派遣信息
@@ -444,7 +444,7 @@ async function createWidget() {
   if (genshinData["current_expedition_num"] != genshinData["max_expedition_num"]) {
     textItem.textColor = Color.red()
   } else {
-    textItem.textColor = Color.green()
+    textItem.textColor = textColor
   }
   
   // 生成派遣状态
@@ -461,7 +461,7 @@ async function createWidget() {
       var remainTime = formatExpRemainTime(parseInt(char["remained_time"]))
       var textItem = stackText.addText(`剩余 ${remainTime[0]}:${remainTime[1]}`)
       textItem.font = getFont('regular', 9)
-      textItem.textColor = Color.green()
+      textItem.textColor = textColor
     }
   
   // 添加 质量参变仪
