@@ -31,7 +31,7 @@
 
 ##### 导入运行
 
-1. 去 app store 下载 scriptable , 把 [scriptable_note.js] (https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note.js)里面的内容放到 scriptable 应用里, 然后将上一步获取的 Cookie 粘贴到第5行, 
+1. 去 app store 下载 scriptable , 把 [scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note.js)里面的内容放到 scriptable 应用里, 然后将上一步获取的 Cookie 粘贴到第5行, 
 
 `` const mihoyoCookie = "xxxxx" ``
 
