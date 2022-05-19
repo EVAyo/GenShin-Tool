@@ -53,7 +53,7 @@
 
 2. 将得到的base64编码粘贴到 第540行 
 
-`` const url = "data:imagexxxxxxx"
+`` const url = "data:imagexxxxxxx" ``
 
 3. 记得改完后要点击左上角的 'Done'
 
