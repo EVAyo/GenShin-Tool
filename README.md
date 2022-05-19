@@ -52,3 +52,9 @@
 `` const url = "data:imagexxxxxxx"
 
 3. 记得改完后要点击左上角的 'Done'
+
+##### 能不能点击这个小组件, 直接打开原神?
+
+1. 长摁小组件, 点击'编辑小组件' , When Interacting => 选择 Open URL
+
+2. URL => 输入 `` yuanshengame:// `` 就OK啦
