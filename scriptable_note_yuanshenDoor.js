@@ -353,11 +353,11 @@ widget.backgroundImage = background
 
   // 添加 树脂信息
   var stackText = widget.addStack()
-  var textItem = stackText.addText("·原粹树脂: ")
+  var textItem = stackText.addText("·当前树脂: ")
   textItem.font = getFont('regular', 9)
   textItem.textColor = textColor
 
-  var textItem = stackText.addText(`已累计 ${genshinData["current_resin"]} 个`)
+  var textItem = stackText.addText(` ${genshinData["current_resin"]}/${genshinData["max_resin"]}`)
   textItem.font = getFont('regular', 9)
   if (genshinData["current_resin"] >= genshinData["max_resin"]*0.9) {
     textItem.textColor = Color.red()
