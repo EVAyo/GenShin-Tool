@@ -35,6 +35,8 @@
 
 默认是蓝色渐变背景~ 更多壁纸背景样式:
 
+![preview](https://gitee.com/muuuj1an/GenshinTools/raw/main/preview.jpg)
+
 [芭芭拉背景版](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_barbara.js)  
 
 [原神大门背景版](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_yuanshenDoor.js)
