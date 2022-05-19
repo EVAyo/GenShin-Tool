@@ -308,8 +308,8 @@ async function createWidget() {
   let gradient = new LinearGradient()
   gradient.locations = [0, 1]
   gradient.colors = [
-    new Color("c0ad5e"),
-    new Color("aa9649")
+    new Color("141414"),
+    new Color("2a5398")
   ]
   widget.backgroundGradient = gradient
   
@@ -328,20 +328,20 @@ async function createWidget() {
   // 添加原神标题
   var textItem = stackHeader.addText("原神便笺")
   textItem.font = getFont('semibold', 10)
-  textItem.textColor = textColor
+  textItem.textColor = widgetColor
 
   // 添加更新时间
   stackHeader.addSpacer()
   var myDate = new Date();
   var textItem = stackHeader.addText(`${myDate.getHours().toString().padStart(2,'0')}:${myDate.getMinutes().toString().padStart(2,'0')}更新`)
   textItem.font = getFont('semibold', 10)
-  textItem.textColor = textColor
+  textItem.textColor = widgetColor
   textItem.rightAlignText()
 
   // 添加旅行者信息
   var textItem = widget.addText(`${userRole["level"]}级 - ${userRole["nickname"]}`)
   textItem.font = getFont('regular', 11)
-  textItem.textColor = textColor
+  textItem.textColor = widgetColor
   textItem.centerAlignText()
 
   widget.addSpacer(5)
@@ -355,21 +355,21 @@ async function createWidget() {
   var stackText = widget.addStack()
   var textItem = stackText.addText("·原粹树脂: ")
   textItem.font = getFont('regular', 9)
-  textItem.textColor = textColor
+  textItem.textColor = widgetColor
 
   var textItem = stackText.addText(`已累计 ${genshinData["current_resin"]} 个`)
   textItem.font = getFont('regular', 9)
   if (genshinData["current_resin"] >= genshinData["max_resin"]*0.9) {
     textItem.textColor = Color.red()
   } else {
-    textItem.textColor = textColor
+    textItem.textColor = widgetColor
   }
 
   if (genshinData["current_resin"] != genshinData["max_resin"]) {
     var remainTime = formatExpRemainTime(parseInt(genshinData["resin_recovery_time"]))
     var textItem = widget.addText(`(剩余 ${remainTime[0]}:${remainTime[1]})`)
     textItem.font = getFont('regular', 9)
-    textItem.textColor = textColor
+    textItem.textColor = widgetColor
     textItem.rightAlignText()
   } else {
     var textItem = widget.addText(`已达上限！`)
@@ -382,21 +382,21 @@ async function createWidget() {
   var stackText = widget.addStack()
   var textItem = stackText.addText("·洞天宝钱: ")
   textItem.font = getFont('regular', 9)
-  textItem.textColor = textColor
+  textItem.textColor = widgetColor
 
   var textItem = stackText.addText(`已累计 ${genshinData["current_home_coin"]} 枚`)
   textItem.font = getFont('regular', 9)
   if (genshinData["current_home_coin"] >= genshinData["max_home_coin"]*0.9) {
     textItem.textColor = Color.red()
   } else {
-    textItem.textColor = textColor
+    textItem.textColor = widgetColor
   }
 
   if (genshinData["current_home_coin"] != genshinData["max_home_coin"]) {
     var remainTime = formatExpRemainTime(parseInt(genshinData["home_coin_recovery_time"]))
     var textItem = widget.addText(`(剩余 ${remainTime[0]}:${remainTime[1]})`)
     textItem.font = getFont('regular', 9)
-    textItem.textColor = textColor
+    textItem.textColor = widgetColor
     textItem.rightAlignText()
   } else {
     var textItem = widget.addText(`已达上限！`)
@@ -409,42 +409,42 @@ async function createWidget() {
   var stackText = widget.addStack()
   var textItem = stackText.addText("·每日委托: ")
   textItem.font = getFont('regular', 9)
-  textItem.textColor = textColor
+  textItem.textColor = widgetColor
 
   var textItem = stackText.addText(`已完成 ${genshinData["finished_task_num"]} 个`)
   textItem.font = getFont('regular', 9)
   if (genshinData["finished_task_num"] != genshinData["total_task_num"]) {
     textItem.textColor = Color.red()
   } else {
-    textItem.textColor = textColor
+    textItem.textColor = widgetColor
   }
 
   // 添加 周本信息
   var stackText = widget.addStack()
   var textItem = stackText.addText("·周本减半: ")
   textItem.font = getFont('regular', 9)
-  textItem.textColor = textColor
+  textItem.textColor = widgetColor
 
   var textItem = stackText.addText(`还剩余 ${genshinData["remain_resin_discount_num"]} 次`)
   textItem.font = getFont('regular', 9)
   if (genshinData["remain_resin_discount_num"] != 0) {
     textItem.textColor = Color.red()
   } else {
-    textItem.textColor = textColor
+    textItem.textColor = widgetColor
   }
 
   // 添加 派遣信息
   var stackText = widget.addStack()
   var textItem = stackText.addText("·探索派遣: ")
   textItem.font = getFont('regular', 9)
-  textItem.textColor = textColor
+  textItem.textColor = widgetColor
 
   var textItem = stackText.addText(` ${genshinData["current_expedition_num"]} 人, `)
   textItem.font = getFont('regular', 9)
   if (genshinData["current_expedition_num"] != genshinData["max_expedition_num"]) {
     textItem.textColor = Color.red()
   } else {
-    textItem.textColor = textColor
+    textItem.textColor = widgetColor
   }
   
   // 生成派遣状态
@@ -471,33 +471,38 @@ async function createWidget() {
   
     var textItem = stackText.addText(`剩余 ${remainTime[0]}:${remainTime[1]}`)
       textItem.font = getFont('regular', 9)
-      textItem.textColor = textColor
+      textItem.textColor = widgetColor
   }
   
   // 添加 质量参变仪
   var stackText = widget.addStack()
   var textItem = stackText.addText("·质量参变仪: ")
   textItem.font = getFont('regular', 9)
-  textItem.textColor = textColor
+  textItem.textColor = widgetColor
   if (genshinData['transformer']['recovery_time']['reached']) {
     var textItem = stackText.addText(`可使用`)
     textItem.font = getFont('regular', 9)
+    textItem.textColor = widgetColor
   } else {
     if (genshinData['transformer']['recovery_time']['Day'] != 0) {
       var textItem = stackText.addText(`${genshinData['transformer']['recovery_time']['Day']}天`)
       textItem.font = getFont('regular', 9)
+      textItem.textColor = widgetColor
     }
     if (genshinData['transformer']['recovery_time']['Hour'] != 0) {
       var textItem = stackText.addText(`${genshinData['transformer']['recovery_time']['Hour']}小时`)
       textItem.font = getFont('regular', 9)
+      textItem.textColor = widgetColor
     }
     if (genshinData['transformer']['recovery_time']['Minute'] != 0) {
       var textItem = stackText.addText(`${genshinData['transformer']['recovery_time']['Minute']}分钟`)
       textItem.font = getFont('regular', 9)
+      textItem.textColor = widgetColor
     }
     if (genshinData['transformer']['recovery_time']['Second'] != 0) {
       var textItem = stackText.addText(`${genshinData['transformer']['recovery_time']['Second']}秒`)
       textItem.font = getFont('regular', 9)
+      textItem.textColor = widgetColor
     }
   }
 

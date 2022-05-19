@@ -33,13 +33,11 @@
 
 1. 去 app store 下载 scriptable , 把 [scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note.js)里面的内容放到 scriptable 应用里, 然后将上一步获取的 Cookie 粘贴到第5行,  `` const mihoyoCookie = "xxxxx" ``
 
-更多壁纸背景样式:
+默认是蓝色渐变背景~ 更多壁纸背景样式:
 
 [芭芭拉背景scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_barbara.js)  
 
 [原神大门背景scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_yuanshenDoor.js)
-
-[蓝色渐变背景scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_blue.js)
 
 2. 先运行一下, 看看好使不, 好使的话, 点击左上角的 'Done', 再给这个重新起个名儿, 比如 yuanshen small+
 
@@ -47,7 +45,7 @@
 
 #### Q&A
 
-##### 我觉得屎黄色不好看, 想改个色, 咋整?
+##### 我觉得蓝色不好看, 想改个色, 咋整?
 
 1. 请翻到第311行, 第322行 代码, 这两个颜色代表了背景渐变色, 你可以随便找网上好看的配色方案, 自己改一下, 记得改完后要点击左上角的 'Done'
 
