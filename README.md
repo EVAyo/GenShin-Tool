@@ -35,13 +35,15 @@
 
 默认是蓝色渐变背景~ 更多壁纸背景样式:
 
-[芭芭拉背景scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_barbara.js)  
+[芭芭拉背景版](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_barbara.js)  
 
-[原神大门背景scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_yuanshenDoor.js)
+[原神大门背景版](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_yuanshenDoor.js)
+
+[蓝色渐变背景 中号组件 临时版](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_medium.js)
 
 2. 先运行一下, 看看好使不, 好使的话, 点击左上角的 'Done', 再给这个重新起个名儿, 比如 yuanshen small+
 
-3. 好使的话, 在桌面添加 scriptable 小组件, 得最小号的, 然后长摁小组件, 点击'编辑小组件' , script => 选择刚才保存的
+3. 好使的话, 在桌面添加 scriptable 小组件, 得最小号的, 然后长摁小组件, 点击'编辑小组件' , script => 选择刚才保存的 (如果用的是中号组件版, 那就选择中号)
 
 #### Q&A
 
