@@ -31,15 +31,13 @@
 
 ##### 导入运行
 
-1. 去 app store 下载 scriptable , 把 [scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note.js)里面的内容放到 scriptable 应用里, 然后将上一步获取的 Cookie 粘贴到第5行,  
+1. 去 app store 下载 scriptable , 把 [scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note.js)里面的内容放到 scriptable 应用里, 然后将上一步获取的 Cookie 粘贴到第5行,  `` const mihoyoCookie = "xxxxx" ``
 
 更多壁纸背景样式:
 
 [芭芭拉背景scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_barbara.js)  
 
 [原神大门背景scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_yuanshenDoor.js) 
-
-`` const mihoyoCookie = "xxxxx" ``
 
 2. 先运行一下, 看看好使不, 好使的话, 点击左上角的 'Done', 再给这个重新起个名儿, 比如 yuanshen small+
 
