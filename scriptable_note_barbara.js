@@ -474,9 +474,9 @@ widget.backgroundImage = background
       textItem.textColor = textColor
   }
   
-  // 添加 质量参变仪
+  // 添加 参量质变仪
   var stackText = widget.addStack()
-  var textItem = stackText.addText("·质量参变仪: ")
+  var textItem = stackText.addText("·参量质变仪: ")
   textItem.font = getFont('regular', 9)
   textItem.textColor = textColor
   if (genshinData['transformer']['recovery_time']['reached']) {
