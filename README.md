@@ -35,9 +35,9 @@
 
 更多壁纸背景样式:
 
-[芭芭拉版](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_barbara.js)  
+[芭芭拉背景scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_barbara.js)  
 
-[原神大门版](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_yuanshenDoor.js) 
+[原神大门背景scriptable_note.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_yuanshenDoor.js) 
 
 `` const mihoyoCookie = "xxxxx" ``
 
