@@ -537,7 +537,7 @@ async function loadImageFromUrl(url) {
 }
 
 async function loadBackgroundImage() {
-  const url = "https://gitee.com/muuuj1an/GenshinTools/raw/main/barbara.png"
+  const url = "https://gitee.com/muuuj1an/GenshinTools/raw/main/yuanshen_Door.png"
   return await loadImageFromUrl(url)
 }
 
