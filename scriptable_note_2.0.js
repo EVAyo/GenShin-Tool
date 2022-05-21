@@ -1,9 +1,9 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: orange; icon-glyph: sticky-note;
-// 请设置When Interacting为Open URL，URL为yuanshengame://
 
 const mihoyoCookie = ""
+// 请设置When Interacting为Open URL，URL为yuanshengame://
 const userRoleNumber = 0 // 如果你有多个角色，请将0依次改为1,2,3...后运行查看
 const textColor = Color.dynamic(Color.white(), Color.black())
 const widgetColor = Color.dynamic(Color.white(), Color.black())
