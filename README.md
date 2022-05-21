@@ -35,9 +35,11 @@
 
 ![preview2.0](https://gitee.com/muuuj1an/GenshinTools/raw/main/img/preview2.0.jpg)
 
-[还没来得及改到2.0版,芭芭拉背景版](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_barbara.js)  
+![preview](https://gitee.com/muuuj1an/GenshinTools/raw/main/img/preview.jpg)
 
-[还没来得及改到2.0版,原神大门背景版](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_yuanshenDoor.js)
+[还没来得及改到2.0版,芭芭拉背景版]
+
+[还没来得及改到2.0版,原神大门背景版]
 
 [还没来得及改到2.0版,蓝色渐变背景 中号组件 临时版](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_medium.js)
 
