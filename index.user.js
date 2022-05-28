@@ -305,7 +305,7 @@
     eButton.style = "padding: .1rem;";
     eButton.style.position = 'absolute'
     eButton.style.top =0;
-    eButton.style.right = 0;
+    eButton.style.width="inherit"
     eButton.setAttribute("onclick", "window.gachaExport()");
 
 
