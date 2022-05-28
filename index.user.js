@@ -295,7 +295,7 @@
 
     window.gachaExport = gachaExport;
     try{
-        document.querySelector("#mihoyo_landscape").remove()
+        document.querySelector("#mihoyo_landscape").style.top="10000px"
     }catch{
         
     }
