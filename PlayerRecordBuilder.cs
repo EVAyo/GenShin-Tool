@@ -77,7 +77,8 @@ namespace DGP.Genshin.HutaoAPI
                     reliquarySetCounter.Increase(reliquary.ReliquarySet.Id);
                 }
             }
-            //含有2件套以上的套装
+
+            // 含有2件套以上的套装
             return reliquarySetCounter.Keys.Any(k => k >= 2)
                 ? reliquarySetCounter.Select(kvp => new AvatarReliquarySet(kvp)).ToList()
                 : new();
