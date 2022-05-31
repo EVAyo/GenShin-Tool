@@ -16,6 +16,7 @@ namespace DGP.Genshin.FPSUnlocking
     public class Unlocker
     {
         private const string UnityPlayerDllName = "UnityPlayer.dll";
+        private const byte Any = 0x2A;
 
         /// <summary>
         /// 设置fps位的偏移量
@@ -61,8 +62,9 @@ namespace DGP.Genshin.FPSUnlocking
         /// <param name="targetFPS">目标fps</param>
         public Unlocker(Process gameProcess, int targetFPS)
         {
-            Verify.Operation(Environment.Is64BitProcess, "无法在32位进程中使用 Unlocker");
-            Requires.Range(targetFPS >= 30 || targetFPS <= 2000, nameof(targetFPS));
+            Verify.Operation(Environment.Is64BitProcess, $"无法在32位进程中使用 {nameof(Unlocker)}");
+            Requires.Range(targetFPS >= 30 && targetFPS <= 2000, nameof(targetFPS));
+
             TargetFPS = targetFPS;
             this.gameProcess = gameProcess;
         }
@@ -118,7 +120,7 @@ namespace DGP.Genshin.FPSUnlocking
                 return UnlockResult.ProcessHasExited;
             }
 
-            MODULEENTRY32? module;
+            ModuleEntry32? module;
             module = await FindModuleContinuouslyAsync(findModuleMillisecondsDelay, findModuleTimeMillisecondsLimit)
                 .ConfigureAwait(false);
 
@@ -131,7 +133,7 @@ namespace DGP.Genshin.FPSUnlocking
                 return UnlockResult.ProcessHasExited;
             }
 
-            MODULEENTRY32 unityPlayer = module.Value;
+            ModuleEntry32 unityPlayer = module.Value;
             byte[] image = new byte[unityPlayer.modBaseSize];
             // Read UnityPlayer.dll
             bool readOk = ReadProcessMemory(gameProcess.Handle, unityPlayer.modBaseAddr, image, unityPlayer.modBaseSize, out _);
@@ -144,7 +146,7 @@ namespace DGP.Genshin.FPSUnlocking
             // Find FPS offset
             // 7F 0F              jg   0x11
             // 8B 05 ? ? ? ?      mov eax, dword ptr[rip+?]
-            uint? adr = SearchPattern(image, new byte[] { 0x7F, 0x0F, 0x8B, 0x05, 0x2A, 0x2A, 0x2A, 0x2A });
+            uint? adr = SearchPattern(image, new byte[] { 0x7F, 0x0F, 0x8B, 0x05, Any, Any, Any, Any });
 
             if (adr is null)
             {
@@ -153,6 +155,7 @@ namespace DGP.Genshin.FPSUnlocking
 
             CalculateFPSOffset(unityPlayer, image, adr.Value);
 
+            // if player switch between scenes, we have to re adjust the fps
             while (true)
             {
                 if (!gameProcess.HasExited && fpsOffset != UIntPtr.Zero)
@@ -176,7 +179,7 @@ namespace DGP.Genshin.FPSUnlocking
         /// <param name="unityPlayer">UnityPlayer的模块信息</param>
         /// <param name="image">游戏进程镜像</param>
         /// <param name="adr">adr 指令偏移</param>
-        private void CalculateFPSOffset(MODULEENTRY32 unityPlayer, byte[] image, uint adr)
+        private void CalculateFPSOffset(ModuleEntry32 unityPlayer, byte[] image, uint adr)
         {
             uint rip = adr + 2;
             uint rel = BitConverter.ToUInt32(image, Convert.ToInt32(rip + 2));
@@ -191,13 +194,12 @@ namespace DGP.Genshin.FPSUnlocking
         /// <param name="findModuleMillisecondsDelay">延迟</param>
         /// <param name="findModuleTimeMillisecondsLimit">上限</param>
         /// <returns>模块</returns>
-        private async Task<MODULEENTRY32?> FindModuleContinuouslyAsync(int findModuleMillisecondsDelay, int findModuleTimeMillisecondsLimit)
+        private async Task<ModuleEntry32?> FindModuleContinuouslyAsync(int findModuleMillisecondsDelay, int findModuleTimeMillisecondsLimit)
         {
-            MODULEENTRY32? module;
+            ModuleEntry32? module;
             Stopwatch watch = Stopwatch.StartNew();
             TimeSpan timeLimit = TimeSpan.FromMilliseconds(findModuleTimeMillisecondsLimit);
 
-            //gameProcess 实际上可能为 null
             while ((module = FindModule(gameProcess.Id, UnityPlayerDllName)) is null)
             {
                 if (watch.Elapsed > timeLimit)
@@ -253,30 +255,30 @@ namespace DGP.Genshin.FPSUnlocking
         /// <param name="processId">进程id</param>
         /// <param name="moduleName">模块名称</param>
         /// <returns>模块</returns>
-        private MODULEENTRY32? FindModule(int processId, string moduleName)
+        private ModuleEntry32? FindModule(int processId, string moduleName)
         {
             IntPtr snapshot = CreateToolhelp32Snapshot(SnapshotFlags.Module, (uint)processId);
-            //Snapshot cannot be created.
+            
             if (Marshal.GetLastWin32Error() != 0)
             {
+                //Snapshot cannot be created.
                 return null;
             }
 
-            MODULEENTRY32 entry = new()
-            {
-                dwSize = Marshal.SizeOf(typeof(MODULEENTRY32))
-            };
+            ModuleEntry32 entry = ModuleEntry32.Create();
+            bool found = false;
+
             //First module must be exe. Ignoring it.
             for (Module32First(snapshot, ref entry); Module32Next(snapshot, ref entry);)
             {
                 if (entry.th32ProcessID == processId && entry.szModule == moduleName)
                 {
-                    CloseHandle(snapshot);
-                    return entry;
+                    found = true;
+                    break;
                 }
             }
             CloseHandle(snapshot);
-            return null;
+            return found ? entry : null;
         }
     }
 }

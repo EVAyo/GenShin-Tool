@@ -23,7 +23,7 @@ namespace DGP.Genshin.FPSUnlocking
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        internal struct MODULEENTRY32
+        internal struct ModuleEntry32
         {
             internal int dwSize;
             internal uint th32ModuleID;
@@ -37,16 +37,24 @@ namespace DGP.Genshin.FPSUnlocking
             internal string szModule;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
             internal string szExePath;
+
+            public static ModuleEntry32 Create()
+            {
+                return new()
+                {
+                    dwSize = Marshal.SizeOf(typeof(ModuleEntry32))
+                };
+            }
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern IntPtr CreateToolhelp32Snapshot(SnapshotFlags dwFlags, uint th32ProcessID);
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        internal static extern bool Module32First(IntPtr hSnapshot, ref MODULEENTRY32 lpme);
+        internal static extern bool Module32First(IntPtr hSnapshot, ref ModuleEntry32 lpme);
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        internal static extern bool Module32Next(IntPtr hSnapshot, ref MODULEENTRY32 lpme);
+        internal static extern bool Module32Next(IntPtr hSnapshot, ref ModuleEntry32 lpme);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool CloseHandle(IntPtr hObject);
