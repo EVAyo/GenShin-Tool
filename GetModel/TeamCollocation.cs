@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DGP.Genshin.HutaoAPI.GetModel
 {
@@ -11,7 +10,6 @@ namespace DGP.Genshin.HutaoAPI.GetModel
         /// <summary>
         /// 角色Id
         /// </summary>
-        [JsonProperty("Avater")]
         public int Avatar { get; set; }
 
         /// <summary>

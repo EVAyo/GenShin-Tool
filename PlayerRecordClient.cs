@@ -155,10 +155,10 @@ namespace DGP.Genshin.HutaoAPI
         /// </summary>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>角色武器搭配数据</returns>
-        public async Task<IEnumerable<WeaponUsage>> GetWeaponUsagesAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<WeaponUsage>> GetAvatarWeaponUsagesAsync(CancellationToken cancellationToken = default)
         {
             Response<IEnumerable<WeaponUsage>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<WeaponUsage>>($"{HutaoAPIHost}/Statistics/WeaponUsage", cancellationToken)
+                .GetAsync<IEnumerable<WeaponUsage>>($"{HutaoAPIHost}/Statistics/AvatarWeaponUsage", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data ?? Enumerable.Empty<WeaponUsage>();
         }
@@ -171,7 +171,7 @@ namespace DGP.Genshin.HutaoAPI
         public async Task<IEnumerable<HutaoItem>> GetAvatarMapAsync(CancellationToken cancellationToken = default)
         {
             Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Avatars", cancellationToken)
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItem/Avatars", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
         }
@@ -184,7 +184,7 @@ namespace DGP.Genshin.HutaoAPI
         public async Task<IEnumerable<HutaoItem>> GetWeaponMapAsync(CancellationToken cancellationToken = default)
         {
             Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Weapons", cancellationToken)
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItem/Weapons", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
         }
@@ -197,7 +197,7 @@ namespace DGP.Genshin.HutaoAPI
         public async Task<IEnumerable<HutaoItem>> GetReliquaryMapAsync(CancellationToken cancellationToken = default)
         {
             Response<IEnumerable<HutaoItem>>? resp = await AuthRequester
-                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItems/Reliquaries", cancellationToken)
+                .GetAsync<IEnumerable<HutaoItem>>($"{HutaoAPIHost}/GenshinItem/Reliquaries", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data?.DistinctBy(x => x.Id) ?? Enumerable.Empty<HutaoItem>();
         }
