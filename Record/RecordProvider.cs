@@ -119,7 +119,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
             {
                 character_ids = avatars.Select(x => x.Id),
                 role_id = uid,
-                server = server
+                server = server,
             };
             return await requester.PostWhileUpdateDynamicSecret2Async<DetailedAvatarWrapper>(
                 $@"{ApiTakumiRecord}/character", data, cancellationToken)
