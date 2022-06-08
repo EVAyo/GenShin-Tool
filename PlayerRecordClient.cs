@@ -62,6 +62,7 @@ namespace DGP.Genshin.HutaoAPI
             List<UserGameRole> userGameRoles =
                 await new UserGameRoleProvider(cookie).GetUserGameRolesAsync(cancellationToken)
                 .ConfigureAwait(true);
+
             foreach (UserGameRole role in userGameRoles)
             {
                 Requires.NotNull(role.GameUid!, nameof(role.GameUid));
@@ -229,6 +230,19 @@ namespace DGP.Genshin.HutaoAPI
         }
 
         /// <summary>
+        /// 异步获取队伍出场次数2
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>队伍出场列表</returns>
+        public async Task<IEnumerable<TeamCombination2>> GetTeamCombinations2Async(CancellationToken cancellationToken = default)
+        {
+            Response<IEnumerable<TeamCombination2>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<TeamCombination2>>($"{HutaoAPIHost}/Statistics2/TeamCombination", cancellationToken)
+                .ConfigureAwait(false);
+            return resp?.Data ?? Enumerable.Empty<TeamCombination2>();
+        }
+
+        /// <summary>
         /// 检查对应的uid当前是否上传了数据
         /// </summary>
         /// <param name="uid">uid</param>
@@ -268,7 +282,7 @@ namespace DGP.Genshin.HutaoAPI
             GenshinItemWrapper? data = new() { Avatars = avatars, Weapons = weapons, Reliquaries = reliquaries };
 
             return await AuthRequester
-                        .PostAsync<string>($"{HutaoAPIHost}​/GenshinItems/Upload", data, ContentType, cancellationToken)
+                        .PostAsync<string>($"{HutaoAPIHost}​/GenshinItem/Upload", data, ContentType, cancellationToken)
                         .ConfigureAwait(false);
         }
 

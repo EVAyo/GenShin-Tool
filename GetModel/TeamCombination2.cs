@@ -5,12 +5,12 @@ namespace DGP.Genshin.HutaoAPI.GetModel
     /// <summary>
     /// 队伍上场率
     /// </summary>
-    public record TeamCombination
+    public record TeamCombination2
     {
         /// <summary>
-        /// 间
+        /// 层
         /// </summary>
-        public Level Level { get; set; } = null!;
+        public int Floor { get; set; }
 
         /// <summary>
         /// 队伍
