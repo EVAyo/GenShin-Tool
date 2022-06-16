@@ -24,13 +24,13 @@ namespace DGP.Genshin.MiHoYoAPI.Record.DailyNote
         {
             requester = new(new RequestOptions
             {
-                { "Accept", RequestOptions.Json },
+                //{ "Accept", RequestOptions.Json },
                 { "x-rpc-app_version", DynamicSecretProvider2.AppVersion },
-                { "User-Agent", RequestOptions.CommonUA2161 },
+                //{ "User-Agent", RequestOptions.CommonUA2161 },
                 { "x-rpc-client_type", "5" },
-                { "Referer", Referer },
+                //{ "Referer", Referer },
                 { "Cookie", cookie },
-                { "X-Requested-With", RequestOptions.Hyperion },
+                //{ "X-Requested-With", RequestOptions.Hyperion },
             });
         }
 

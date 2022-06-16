@@ -24,9 +24,9 @@ namespace DGP.Genshin.MiHoYoAPI.UserInfo
                 {"DS", DynamicSecretProvider.Create() },
                 {"x-rpc-app_version", DynamicSecretProvider.AppVersion },
                 {"User-Agent", RequestOptions.CommonUA2101 },
-                {"x-rpc-device_id", RequestOptions.DeviceId },
+                //{"x-rpc-device_id", RequestOptions.DeviceId },
                 {"Accept", RequestOptions.Json },
-                {"x-rpc-client_type", "4" },
+                {"x-rpc-client_type", "5" },
                 {"Referer",Referer },
                 {"Cookie", cookie }
             });
