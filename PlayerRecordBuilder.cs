@@ -46,7 +46,26 @@ namespace DGP.Genshin.HutaoAPI
                     .ToList()))
                 .ToList();
 
-            PlayerRecord playerRecord = new(uid, playerAvatars, playerSpiralAbyssLevels);
+            RankInfo? damage = null;
+            if (spiralAbyss.DamageRank!.Count >= 1)
+            {
+                Rank? rank = spiralAbyss.DamageRank[0];
+                damage = new RankInfo { AvatarId = rank.AvatarId, Value = rank.Value };
+            }
+
+            RankInfo? takeDamage = null;
+            if (spiralAbyss.TakeDamageRank!.Count >= 1)
+            {
+                Rank? rank = spiralAbyss.TakeDamageRank[0];
+                takeDamage = new RankInfo { AvatarId = rank.AvatarId, Value = rank.Value };
+            }
+
+            PlayerRecord playerRecord = new(uid, playerAvatars, playerSpiralAbyssLevels)
+            {
+                DamageMost = damage,
+                TakeDamageMost = takeDamage,
+            };
+
             return playerRecord;
         }
 

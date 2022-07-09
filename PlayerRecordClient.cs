@@ -126,6 +126,19 @@ namespace DGP.Genshin.HutaoAPI
         }
 
         /// <summary>
+        /// 异步获取角色使用率
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>角色使用率</returns>
+        public async Task<IEnumerable<AvatarParticipation>> GetAvatarParticipation2sAsync(CancellationToken cancellationToken = default)
+        {
+            Response<IEnumerable<AvatarParticipation>>? resp = await AuthRequester
+                .GetAsync<IEnumerable<AvatarParticipation>>($"{HutaoAPIHost}/Statistics2/AvatarParticipation", cancellationToken)
+                .ConfigureAwait(false);
+            return resp?.Data ?? Enumerable.Empty<AvatarParticipation>();
+        }
+
+        /// <summary>
         /// 异步获取角色圣遗物搭配
         /// </summary>
         /// <param name="cancellationToken">取消令牌</param>
@@ -254,6 +267,20 @@ namespace DGP.Genshin.HutaoAPI
                 .GetAsync<UploadInfo>($"{HutaoAPIHost}/Record/CheckRecord/{uid}", cancellationToken)
                 .ConfigureAwait(false);
             return resp?.Data is not null && resp.Data.PeriodUploaded;
+        }
+
+        /// <summary>
+        /// 异步获取排行信息
+        /// </summary>
+        /// <param name="uid">uid</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>排行信息</returns>
+        public async Task<RankWrapper?> GetRankAsync(string uid, CancellationToken cancellationToken = default)
+        {
+            Response<RankWrapper>? resp = await AuthRequester
+               .GetAsync<RankWrapper>($"{HutaoAPIHost}/Record/Rank/{uid}", cancellationToken)
+               .ConfigureAwait(false);
+            return resp?.Data;
         }
 
         /// <summary>
