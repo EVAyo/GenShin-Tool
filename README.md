@@ -29,7 +29,7 @@
 
 ##### 导入运行
 
-1. 去 app store 下载 scriptable , 把 [scriptable_note_2.0.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_2.0.js)里面的内容放到 scriptable 应用里, 然后将上一步获取的 Cookie 粘贴到第5行,  `` const mihoyoCookie = "xxxxx" ``
+1. 去 app store 下载 scriptable , 把 [scriptable_note_2.1.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_2.1.js) 里面的内容放到 scriptable 应用里, 然后将上一步获取的 Cookie 粘贴到第5行,  `` const mihoyoCookie = "xxxxx" ``
 
 默认是蓝色渐变背景~ 更多壁纸背景样式:
 
@@ -48,6 +48,7 @@
 3. 好使的话, 在桌面添加 scriptable 小组件, 得最小号的, 然后长摁小组件, 点击'编辑小组件' , script => 选择刚才保存的 (如果用的是中号组件版, 那就选择中号)
 
 #### Q&A
+- 该QA针对的是 [scriptable_note_2.0.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_2.0.js) , 对2.1版,行数可能有变化, 请在代码里找找关键词或者注释, 再修改~
 
 ##### 我觉得蓝色不好看, 想改个色, 咋整?
 
