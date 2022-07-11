@@ -54,9 +54,36 @@
 
 1. 请翻到第273行, 第274行 代码, 这两个颜色代表了背景渐变色, 你可以随便找网上好看的配色方案, 自己改一下, 记得改完后要点击左上角的 'Done'
 
+```
+// 第273行, 第274行
+gradient.colors = [
+    new Color("141414e6"),
+    new Color("2a5398b3")
+]
+ ```
+
 ##### 纯纯背景色已经不能满足我了, 我要背景图!
 
 1. 把 第270~第276行 代码注释掉, 放开 第266行, 267行, 然后把你找到的图片进行base64编码 可以到[这个网址](http://www.jsons.cn/img2base64/)
+
+```
+// 第270~第276行
+// Add background color
+  let gradient = new LinearGradient()
+  gradient.locations = [0, 1]
+  gradient.colors = [
+    new Color("141414e6"),
+    new Color("2a5398b3")
+  ]
+  widget.backgroundGradient = gradient
+```
+
+```
+// 第266行, 267行
+// Add background image
+  // let background = await loadImageFromUrl("https://gitee.com/muuuj1an/GenshinTools/raw/main/img/background/yuanshen_Door.png")
+  // widget.backgroundImage = background
+```
 
 2. 将得到的base64编码粘贴到 第266行 
 
