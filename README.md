@@ -29,7 +29,7 @@
 
 ##### 导入运行
 
-1. 去 app store 下载 scriptable , 把 [scriptable_note_2.1.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/scriptable_note_2.1.js) 里面的内容放到 scriptable 应用里, 然后将上一步获取的 Cookie 粘贴到第5行,  `` const mihoyoCookie = "xxxxx" ``
+1. 去 app store 下载 scriptable , 把 [scriptable_note_2.1.js](https://gitee.com/muuuj1an/GenshinTools/raw/main/genshin2.1.js) 里面的内容放到 scriptable 应用里, 然后将上一步获取的 Cookie 粘贴到第5行,  `` const mihoyoCookie = "xxxxx" ``
 
 默认是蓝色渐变背景~ 更多壁纸背景样式:
 
