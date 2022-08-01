@@ -2,7 +2,7 @@
 name: YuehaiTeam_cocogoat-control #action名字，随便起 
 env:
   ID: YuehaiTeam_cocogoat-control
-  URL: https://github.com/YuehaiTeam/cocogoat-control.git
+  URL: https://github.com/YuehaiTeam/frostflake.git
   REPO: main
 on:
   schedule:
