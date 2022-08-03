@@ -17,6 +17,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
         {
             this.cookie = cookie;
         }
+
         /// <summary>
         /// 获取推荐的帖子列表
         /// </summary>
@@ -39,6 +40,7 @@ namespace DGP.Genshin.MiHoYoAPI.Post
                 .ConfigureAwait(false);
             return resp?.Data?.List ?? new();
         }
+
         /// <summary>
         /// 获取单个帖子的详细信息
         /// </summary>
