@@ -18,13 +18,18 @@ namespace DGP.Genshin.MiHoYoAPI.Request.DynamicSecret
         /// <summary>
         /// 似乎已经与版本号无关，自2.11.1以来未曾改变salt
         /// </summary>
-        public const string AppVersion = "2.16.1";
+        // public const string AppVersion = "2.16.1";
+        public const string AppVersion = "2.34.1";
 
         /// <summary>
         /// 米游社的盐
         /// 计算过程：https://gist.github.com/Lightczx/373c5940b36e24b25362728b52dec4fd
         /// </summary>
-        private static readonly string APISalt = "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs";
+        private static readonly string Salt = "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs";
+
+        // private static readonly string Salt = "t0qEgfub6cvueAPgR5m9aQWWVciEer7v";
+        // private static readonly string Salt = "9nQiU3AV0rJSIBWgdynfoGMGKaklfbM7";
+        // private static readonly string Salt = "dWCcD2FsOUXEstC5f9xubswZxEeoBOTc";
 
         public static string Create(string queryUrl, object? postBody = null)
         {
@@ -43,7 +48,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request.DynamicSecret
                 q = string.Join("&", queryParams);
             }
             //check
-            string check = GetComputedMd5($"salt={APISalt}&t={t}&r={r}&b={b}&q={q}");
+            string check = GetComputedMd5($"salt={Salt}&t={t}&r={r}&b={b}&q={q}");
 
             return $"{t},{r},{check}";
         }

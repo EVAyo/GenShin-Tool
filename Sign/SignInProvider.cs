@@ -38,7 +38,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                 {
                     {"DS", DynamicSecretProvider.Create() },
                     {"x-rpc-app_version", DynamicSecretProvider.AppVersion },
-                    {"User-Agent", RequestOptions.CommonUA2101 },
+                    {"User-Agent", RequestOptions.CommonUA2281 },
                     {"x-rpc-device_id", RequestOptions.DeviceId },
                     {"Accept", RequestOptions.Json },
                     {"x-rpc-client_type", "5" },

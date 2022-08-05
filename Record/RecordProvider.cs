@@ -27,7 +27,7 @@ namespace DGP.Genshin.MiHoYoAPI.Record
             {
                 { "Accept", RequestOptions.Json },
                 { "x-rpc-app_version", DynamicSecretProvider2.AppVersion },
-                { "User-Agent", RequestOptions.CommonUA2161 },
+                { "User-Agent", RequestOptions.CommonUA2331 },
                 { "x-rpc-client_type", "5" },
                 { "Referer", Referer },
                 { "Cookie", cookie },
