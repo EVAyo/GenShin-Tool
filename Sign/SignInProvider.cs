@@ -99,14 +99,41 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        public async Task<string> SignInAsync(UserGameRole role, CancellationToken cancellationToken = default)
+        public async Task<(bool IsOk, string Result)> SignInAsync(UserGameRole role, CancellationToken cancellationToken = default)
         {
             var data = new { act_id = ActivityId, region = role.Region, uid = role.GameUid };
             Requester requester = SignInRequester;
             Response<SignInResult>? resp = await requester
                 .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data, cancellationToken)
                 .ConfigureAwait(false);
-            return resp is null ? "签到失败" : resp.Message ?? "签到成功";
+
+            if (resp == null)
+            {
+                return (false, "请求失败");
+            }
+            else
+            {
+                if (resp.Data == null)
+                {
+                    return resp.ReturnCode switch
+                    {
+                        0 => (true, "签到成功"),
+                        -5003 => (true, resp.Message!),
+                        _ => (false, resp.Message!),
+                    };
+                }
+                else
+                {
+                    if (resp.Data.RiskCode == 0 && resp.Data.Success == 0)
+                    {
+                        return (true, "签到成功");
+                    }
+                    else
+                    {
+                        return (false, $"[RiskCode: {resp.Data.RiskCode} | Success: {resp.Data.Success}] 账号受到风控!");
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -119,7 +146,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
             var data = new { act_id = ActivityId, region = role.Region, uid = role.GameUid };
             Requester requester = SignInRequester;
             Response<SignInResult>? resp = await requester
-                .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/sign", data, cancellationToken)
+                .PostAsync<SignInResult>($"{ApiTakumi}/event/bbs_sign_reward/resign", data, cancellationToken)
                 .ConfigureAwait(false);
             return resp is null ? "签到失败" : resp.Message ?? "签到成功";
         }
