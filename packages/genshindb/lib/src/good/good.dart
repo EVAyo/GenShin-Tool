@@ -410,6 +410,7 @@ enum StatKey {
   hydro_dmg_,
   pyro_dmg_,
   cryo_dmg_,
+  dendro_dmg_,
 }
 
 extension StatKeyAsFightProp on StatKey {
@@ -436,6 +437,7 @@ Map<StatKey, FightProp> _statKeyToFightProp = {
   StatKey.physical_dmg_: FightProp.PHYSICAL_ADD_HURT,
   StatKey.anemo_dmg_: FightProp.WIND_ADD_HURT,
   StatKey.geo_dmg_: FightProp.ROCK_ADD_HURT,
+  StatKey.dendro_dmg_: FightProp.GRASS_ADD_HURT,
   StatKey.electro_dmg_: FightProp.ELEC_ADD_HURT,
   StatKey.hydro_dmg_: FightProp.WATER_ADD_HURT,
   StatKey.pyro_dmg_: FightProp.FIRE_ADD_HURT,

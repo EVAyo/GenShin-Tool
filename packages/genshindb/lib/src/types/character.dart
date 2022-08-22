@@ -10,6 +10,7 @@ import 'prop_grow_curve.dart';
 import 'skill.dart';
 
 part '__generated__/character.freezed.dart';
+
 part '__generated__/character.g.dart';
 
 @freezed
@@ -53,6 +54,7 @@ class GSCharacter with _$GSCharacter {
     if (role != null && (characterBuilds?.keys.contains(role) ?? false)) {
       return role;
     }
+    // print(name);
     return characterBuilds?.keys.last;
   }
 
@@ -121,21 +123,27 @@ class GSCharacterBuild with _$GSCharacterBuild {
   }) {
     var em = emBuild();
 
-    var affixPropTypes = (artifactAffixPropTypes ?? []).where((fp) => ![
-          FightProp.ATTACK_PERCENT,
-          FightProp.HP_PERCENT,
-          FightProp.DEFENSE_PERCENT,
-          ...?em.ifTrueOrNull(() => [
-                FightProp.CRITICAL_HURT,
-                FightProp.CRITICAL,
-              ],)
-        ].contains(fp),);
+    var affixPropTypes = (artifactAffixPropTypes ?? []).where(
+      (fp) => ![
+        FightProp.ATTACK_PERCENT,
+        FightProp.HP_PERCENT,
+        FightProp.DEFENSE_PERCENT,
+        ...?em.ifTrueOrNull(
+          () => [
+            FightProp.CRITICAL_HURT,
+            FightProp.CRITICAL,
+          ],
+        )
+      ].contains(fp),
+    );
 
-    var nonCritValueProps = affixPropTypes.where((fp) => ![
-          FightProp.CRITICAL_HURT,
-          FightProp.CRITICAL,
-          ...chargeEfficiencyAsDPS ? [] : [FightProp.CHARGE_EFFICIENCY]
-        ].contains(fp),);
+    var nonCritValueProps = affixPropTypes.where(
+      (fp) => ![
+        FightProp.CRITICAL_HURT,
+        FightProp.CRITICAL,
+        ...chargeEfficiencyAsDPS ? [] : [FightProp.CHARGE_EFFICIENCY]
+      ].contains(fp),
+    );
 
     Map<FightProp, double> rankRadios = {};
 
@@ -143,22 +151,24 @@ class GSCharacterBuild with _$GSCharacterBuild {
       rankRadios[FightProp.CRITICAL] = 9;
       rankRadios[FightProp.CRITICAL_HURT] = 9;
 
-      var firstMainProp = nonCritValueProps.firstWhereOrNull((fp) => [
-            FightProp.ATTACK,
-            FightProp.HP,
-            FightProp.DEFENSE,
-          ].contains(fp),);
+      var firstMainProp = nonCritValueProps.firstWhereOrNull(
+        (fp) => [
+          FightProp.ATTACK,
+          FightProp.HP,
+          FightProp.DEFENSE,
+        ].contains(fp),
+      );
 
       if (firstMainProp != null) {
         rankRadios[firstMainProp] = 6;
       }
 
-      var others = nonCritValueProps
-          .where((fp) => fp != firstMainProp)
-          .map((fp) => MapEntry(
-                fp,
-                location == 'HuTao' && fp == FightProp.ATTACK ? 0.4 : 1.0,
-              ),);
+      var others = nonCritValueProps.where((fp) => fp != firstMainProp).map(
+            (fp) => MapEntry(
+              fp,
+              location == 'HuTao' && fp == FightProp.ATTACK ? 0.4 : 1.0,
+            ),
+          );
 
       var total = others.fold<double>(0, (v, fp) => v + fp.value);
 

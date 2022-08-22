@@ -45,11 +45,10 @@ bootstrap.npm:
 	pnpm i
 
 convert:
-	$(TS_NODE) ./scripts/genshindb.convert.ts
+	pnpm exec tsx ./scripts/genshindb.convert.ts
 
 convert.debug:
-	$(TS_NODE) ./scripts/debug.ts
-
+	pnpm exec tsx ./scripts/debug.ts
 
 define git_fetch
     if [[ -d $(2) ]]; then \

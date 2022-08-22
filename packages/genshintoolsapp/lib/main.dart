@@ -15,24 +15,21 @@ void main() async {
   try {
     var syncer = WebDAVSyncer();
 
-    HydratedBlocOverrides.runZoned(
-      () => runApp(
-        AppRoot(
-          syncer: syncer,
-        ),
+    WidgetsFlutterBinding.ensureInitialized();
+
+    var d = kIsWeb
+        ? HydratedStorage.webStorageDirectory
+        : await getTemporaryDirectory();
+
+    Bloc.observer = syncer;
+    HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: d,
+    );
+
+    runApp(
+      AppRoot(
+        syncer: syncer,
       ),
-      blocObserver: syncer,
-      createStorage: () async {
-        WidgetsFlutterBinding.ensureInitialized();
-
-        var d = kIsWeb
-            ? HydratedStorage.webStorageDirectory
-            : await getTemporaryDirectory();
-
-        return HydratedStorage.build(
-          storageDirectory: d,
-        );
-      },
     );
   } catch (e) {
     log('$e');
@@ -77,14 +74,17 @@ class AppRoot extends HookWidget {
               create: (_) => BlocDailyNote(),
             ),
             BlocProvider<BlocGameData>(
-                lazy: false,
-                create: (_) => BlocGameData(blocGameData.requireData),),
+              lazy: false,
+              create: (_) => BlocGameData(blocGameData.requireData),
+            ),
           ],
-          child: syncer.provide(MaterialApp(
-            title: '原神工具箱',
-            theme: theme,
-            home: AppMain(),
-          ),),
+          child: syncer.provide(
+            MaterialApp(
+              title: '原神工具箱',
+              theme: theme,
+              home: AppMain(),
+            ),
+          ),
         );
       },
     );

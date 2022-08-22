@@ -1,4 +1,4 @@
-import {omitBy, reduce, some, trim, uniq, uniqBy} from "lodash-es";
+import {keys, omitBy, reduce, some, trim, uniq, uniqBy} from "lodash-es";
 import fetch from "node-fetch";
 import {parseString} from "@fast-csv/parse";
 import {writeFile, readFile} from "fs/promises";
@@ -317,31 +317,63 @@ const fromCSV = async (csv: string, grid: Grid) => {
     });
 };
 
+const defaultRole = (role: string, weapon: string, artifact: string[], fps: [FightProp, FightProp, FightProp], skills: string[]) => ({
+    Recommended: false,
+    Role: role,
+    Weapons: [
+        [weapon]
+    ],
+    ArtifactMainPropTypes: {
+        EQUIP_SHOES: [FightProp[fps[0]]],
+        EQUIP_RING: [FightProp[fps[1]]],
+        EQUIP_DRESS: [FightProp[fps[2]]],
+    },
+    ArtifactAffixPropTypes: [
+        FightProp[fps[0]],
+        FightProp[fps[2]],
+    ].filter((v) => v !== FightProp[FightProp.FIGHT_PROP_HEAL_ADD]),
+    ArtifactSetPairs: [artifact],
+    SkillPriority: skills.map((s) => [s]),
+})
+
 export let Builds: { [key: string]: Array<ReturnType<typeof characterBuild>> } = {
     ShikanoinHeizou: [
-        {
-            Recommended: false,
-            Role: "DPS",
-            Weapons: [
-                ["天空之卷"]
-            ],
-            ArtifactMainPropTypes: {
-                EQUIP_SHOES: [FightProp[FightProp.FIGHT_PROP_ATTACK_PERCENT]],
-                EQUIP_RING: [FightProp[FightProp.FIGHT_PROP_WIND_ADD_HURT]],
-                EQUIP_DRESS: [
-                    FightProp[FightProp.FIGHT_PROP_CRITICAL],
-                    FightProp[FightProp.FIGHT_PROP_CRITICAL_HURT]
-                ],
-            },
-            ArtifactAffixPropTypes: [
-                FightProp[FightProp.FIGHT_PROP_CHARGE_EFFICIENCY],
-                FightProp[FightProp.FIGHT_PROP_ATTACK_PERCENT],
-            ],
-            ArtifactSetPairs: [["翠绿之影"]],
-            SkillPriority: [["E"], ["Q"]],
-        },
+        defaultRole("DPS", "天空之卷", ["翠绿之影"], [
+            FightProp.FIGHT_PROP_ATTACK_PERCENT,
+            FightProp.FIGHT_PROP_WIND_ADD_HURT,
+            FightProp.FIGHT_PROP_CRITICAL,
+        ], ["E", "Q"])
     ],
+    TravelerDendro: [
+        defaultRole("DPS", "西风剑", ["深林的记忆"], [
+            FightProp.FIGHT_PROP_ATTACK_PERCENT,
+            FightProp.FIGHT_PROP_GRASS_ADD_HURT,
+            FightProp.FIGHT_PROP_CRITICAL,
+        ], ["Q", "E"])
+    ],
+    Collei: [
+        defaultRole("DPS", "西风猎弓", ["深林的记忆"], [
+            FightProp.FIGHT_PROP_ATTACK_PERCENT,
+            FightProp.FIGHT_PROP_GRASS_ADD_HURT,
+            FightProp.FIGHT_PROP_CRITICAL,
+        ], ["Q", "E"])
+    ],
+    Tighnari: [
+        defaultRole("DPS", "西风猎弓", ["深林的记忆"], [
+            FightProp.FIGHT_PROP_ATTACK_PERCENT,
+            FightProp.FIGHT_PROP_GRASS_ADD_HURT,
+            FightProp.FIGHT_PROP_CRITICAL,
+        ], ["A", "Q", "E"])
+    ],
+    Dori: [
+        defaultRole("SUPPORT", "西风大剑", ["深林的记忆"], [
+            FightProp.FIGHT_PROP_HP_PERCENT,
+            FightProp.FIGHT_PROP_HP_PERCENT,
+            FightProp.FIGHT_PROP_HP_PERCENT,
+        ], ["Q", "E"]),
+    ]
 };
+
 
 for (const p of [Grid.Pyro, Grid.Anemo, Grid.Electro, Grid.Cryo, Grid.Hydro, Grid.Geo]) {
     Builds = {
