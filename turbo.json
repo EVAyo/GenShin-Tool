@@ -1,0 +1,39 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "bootstrap": {
+      "inputs": [
+        "lib/*",
+        "pubspec.yaml"
+      ]
+    },
+    "gen": {
+      "dependsOn": [
+        "^gen",
+        "bootstrap"
+      ],
+      "inputs": [
+        "lib/*",
+        "pubspec.yaml"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "gen"
+      ],
+      "inputs": [
+        "lib/*",
+        "pubspec.yaml"
+      ]
+    },
+    "build:android": {
+      "dependsOn": [
+        "gen"
+      ],
+      "inputs": [
+        "lib/*",
+        "pubspec.yaml"
+      ]
+    }
+  }
+}

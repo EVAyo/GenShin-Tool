@@ -39,3 +39,4 @@ app.*.map.json
 __generated__/
 .tmp/
 pubspec.lock
+.turbo/

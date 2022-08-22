@@ -4,14 +4,9 @@
   "type": "module",
   "devDependencies": {
     "@types/node": "^18.7.9",
-    "prettier": "^2.7.1",
     "tsx": "^3.8.2",
+    "turbo": "^1.4.3",
     "typescript": "^4.7.4"
-  },
-  "prettier": {
-    "trailingComma": "all",
-    "arrowParens": "always",
-    "printWidth": 120
   },
   "dependencies": {
     "@fast-csv/parse": "^4.3.6",

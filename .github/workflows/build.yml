@@ -24,8 +24,8 @@ jobs:
         with:
           channel: 'stable'
 
-      - run: make bootstrap.all
-      - run: make convert gen lint
+      - run: make bootstrap
+      - run: make convert
       - run: make build.android
 
       - uses: JamesIves/github-pages-deploy-action@v4.3.4

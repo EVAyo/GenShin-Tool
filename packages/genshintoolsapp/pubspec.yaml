@@ -27,7 +27,7 @@ dependencies:
   rxdart: ^0.27.3
   json_annotation: "^4.5.0"
   genshingameinfo: ^1.0.0
-  genshindb: ^2.7.0
+  genshindb: ^3.0.0
   freearch: ^1.0.0
   webdav: ^1.0.0
 

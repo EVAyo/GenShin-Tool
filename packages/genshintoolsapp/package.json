@@ -1,0 +1,10 @@
+{
+  "name": "genshintoolsapp",
+  "private": true,
+  "scripts": {
+    "bootstrap": "flutter pub get",
+    "lint": "dart fix --apply dart format -o write .",
+    "gen": "flutter pub run build_runner build --delete-conflicting-outputs",
+    "build:android": "flutter build apk --release --build-number=${BUILD_NUMBER} --target-platform android-arm64 --split-per-abi"
+  }
+}

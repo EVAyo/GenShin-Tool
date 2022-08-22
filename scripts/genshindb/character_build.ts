@@ -366,8 +366,8 @@ export let Builds: { [key: string]: Array<ReturnType<typeof characterBuild>> } =
         ], ["A", "Q", "E"])
     ],
     Dori: [
-        defaultRole("SUPPORT", "西风大剑", ["深林的记忆"], [
-            FightProp.FIGHT_PROP_HP_PERCENT,
+        defaultRole("SUPPORT", "西风大剑", ["绝缘之旗印"], [
+            FightProp.FIGHT_PROP_CHARGE_EFFICIENCY,
             FightProp.FIGHT_PROP_HP_PERCENT,
             FightProp.FIGHT_PROP_HP_PERCENT,
         ], ["Q", "E"]),

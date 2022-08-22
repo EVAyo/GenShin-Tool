@@ -1,26 +1,3 @@
-bootstrap.all: bootstrap.npm bootstrap
-
-bootstrap:
-	dart pub global activate melos
-	dart pub global activate pubtidy
-	melos bootstrap
-
-lint:
-	melos analyze --no-select
-
-gen:
-	melos generate
-
-dep:
-	melos dep
-
-clean:
-	melos clean
-
-fmt:
-	melos exec -c 1 -- pubtidy
-	melos format
-
 #  max build number 2147483647
 #                    220217115
 # time build number  22011218n
@@ -29,35 +6,26 @@ fmt:
 BUILD_NUMBER=$(shell TZ=UTC-8 date +%y%m%d%H)$(shell TZ=UTC-8 echo `expr $$(date +%M) / 6`)
 
 build.android:
-	BUILD_NUMBER=$(BUILD_NUMBER) melos build:android
+	BUILD_NUMBER=$(BUILD_NUMBER) pnpm exec turbo run build:android --force
 
-build.ios:
-	BUILD_NUMBER=$(BUILD_NUMBER) melos build:ios
+dev.ios:
+	cd packages/genshintoolsapp && flutter run -d "iPhone 13"
 
-## Node
+bootstrap:
+	dart pub global activate pubtidy
+	pnpm i -d
 
-TS_NODE=node --experimental-specifier-resolution=node --loader=ts-node/esm
+gen:
+	pnpm exec turbo run gen
 
-dep.npm:
-	pnpm up --latest
-
-bootstrap.npm:
-	pnpm i
+test:
+	pnpm exec turbo run test
 
 convert:
 	pnpm exec tsx ./scripts/genshindb.convert.ts
 
 convert.debug:
 	pnpm exec tsx ./scripts/debug.ts
-
-define git_fetch
-    if [[ -d $(2) ]]; then \
-		echo "pulling...";  \
-		cd $(2) && git pull --rebase; \
-	else \
-		git clone --depth=1 $(1) $(2); \
-	fi
-endef
 
 ensure.vendor:
 	git submodule update --init --remote --force

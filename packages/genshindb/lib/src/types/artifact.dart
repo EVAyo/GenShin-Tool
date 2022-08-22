@@ -7,6 +7,7 @@ import 'i18n.dart';
 import 'package:collection/collection.dart';
 
 part '__generated__/artifact.freezed.dart';
+
 part '__generated__/artifact.g.dart';
 
 @freezed
@@ -63,8 +64,7 @@ class GSArtifactAppendDepot with _$GSArtifactAppendDepot {
 
   @FightPropStringConverter()
   factory GSArtifactAppendDepot(
-    Map<FightProp, List<double>> values,
-  ) = _GSArtifactAppendDepot;
+      Map<FightProp, List<double>> values,) = _GSArtifactAppendDepot;
 
   factory GSArtifactAppendDepot.fromJson(Map<String, dynamic> json) =>
       _GSArtifactAppendDepot.fromJson({'values': json});
@@ -77,11 +77,17 @@ class GSArtifactAppendDepot with _$GSArtifactAppendDepot {
 
   double calc(FightProp fp, List<int>? ns) {
     var values = get(fp);
-    return sum((ns ?? []).map((i) => values[abs(i) - 1]));
+
+    return sum((ns ?? []).map((i) {
+      var idx = abs(i) - 1;
+      if (idx > values.length - 1) {
+        return 0;
+      }
+      return values[abs(i) - 1];
+    }));
   }
 
-  static String format(
-    double t, {
+  static String format(double t, {
     bool percent = false,
     String percentSymbol = '%',
   }) {
@@ -97,12 +103,10 @@ class GSArtifactAppendDepot with _$GSArtifactAppendDepot {
     return t.toStringAsFixed(0);
   }
 
-  double rank(
-    FightProp fp,
-    List<int> indexes,
-    FightProps fightProps,
-    String? location,
-  ) {
+  double rank(FightProp fp,
+      List<int> indexes,
+      FightProps fightProps,
+      String? location,) {
     return sum(
       indexes.map((i) {
         double base = 1;
@@ -223,7 +227,7 @@ class GSArtifactAppendDepot with _$GSArtifactAppendDepot {
 
     _fpCanValues[fpKey] = sortedKeys.fold<Map<String, List<int>>>(
       {},
-      (previousValue, v) => {...previousValue, v: set[v]!},
+          (previousValue, v) => {...previousValue, v: set[v]!},
     );
 
     return _fpCanValues[fpKey]!;
