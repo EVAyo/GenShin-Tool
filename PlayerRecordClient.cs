@@ -117,6 +117,7 @@ namespace DGP.Genshin.HutaoAPI
         /// </summary>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>角色出场率</returns>
+        [Obsolete]
         public async Task<IEnumerable<AvatarParticipation>> GetAvatarParticipationsAsync(CancellationToken cancellationToken = default)
         {
             Response<IEnumerable<AvatarParticipation>>? resp = await AuthRequester
