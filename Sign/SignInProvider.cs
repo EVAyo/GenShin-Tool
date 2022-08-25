@@ -38,13 +38,13 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                 {
                     {"DS", DynamicSecretProvider.Create() },
                     {"x-rpc-app_version", DynamicSecretProvider.AppVersion },
-                    {"User-Agent", RequestOptions.CommonUA2281 },
+                    {"User-Agent", RequestOptions.CommonUA2352 },
                     {"x-rpc-device_id", RequestOptions.DeviceId },
                     {"Accept", RequestOptions.Json },
                     {"x-rpc-client_type", "5" },
                     {"Referer", Referer },
                     {"Cookie", cookie },
-                    {"X-Requested-With", RequestOptions.Hyperion }
+                    {"X-Requested-With", RequestOptions.Hyperion },
                 });
             }
         }
@@ -82,7 +82,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
             Requester requester = new(new RequestOptions
             {
                 {"Accept", RequestOptions.Json },
-                {"User-Agent",RequestOptions.CommonUA2101 },
+                {"User-Agent",RequestOptions.CommonUA2352 },
                 {"Referer", Referer },
                 {"Cookie", cookie },
                 {"X-Requested-With", RequestOptions.Hyperion }
@@ -118,7 +118,7 @@ namespace DGP.Genshin.MiHoYoAPI.Sign
                     return resp.ReturnCode switch
                     {
                         0 => (true, "签到成功"),
-                        -5003 => (true, resp.Message!),
+                        -100 or -5003 => (true, resp.Message!),
                         _ => (false, resp.Message!),
                     };
                 }

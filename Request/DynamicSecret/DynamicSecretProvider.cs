@@ -9,10 +9,9 @@ namespace DGP.Genshin.MiHoYoAPI.Request.DynamicSecret
     /// </summary>
     public class DynamicSecretProvider : Md5Converter
     {
-        public const string AppVersion = "2.34.1";
+        public const string AppVersion = "2.35.2";
 
-        // @Azure99 respect original author
-        private static readonly string APISalt = "9nQiU3AV0rJSIBWgdynfoGMGKaklfbM7";
+        private static readonly string APISalt = "N50pqm7FSy2AkFz2B3TqtuZMJ5TOl3Ep";
 
         /// <summary>
         /// 防止从外部创建 <see cref="DynamicSecretProvider"/> 的实例

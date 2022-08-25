@@ -11,7 +11,7 @@ namespace DGP.Genshin.MiHoYoAPI.Request
         /// <summary>
         /// 支持更新的DS2算法
         /// </summary>
-        public const string CommonUA2331 = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) miHoYoBBS/2.34.1";
+        public const string CommonUA2352 = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) miHoYoBBS/2.35.2";
 
         /// <summary>
         /// 支持签到DS
