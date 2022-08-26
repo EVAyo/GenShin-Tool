@@ -1,0 +1,1 @@
+body{box-sizing:border-box}*{box-sizing:inherit;padding:0;margin:0}.info{font-size:smaller;color:gray;text-align:center}.info.left{text-align:left}.tooltip-row{display:flex;align-items:center}.tooltip-row>:first-child{flex:1;margin-right:10px;text-align:left}.tooltip-row font{font-size:smaller}
