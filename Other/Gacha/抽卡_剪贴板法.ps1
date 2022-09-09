@@ -1,0 +1,1 @@
+﻿Read-Host -Prompt "Press Enter to continue";$m=(((Get-Clipboard -TextFormatType Html) | Select-String "(https:/.+log)").Matches[0].Value);$m;Set-Clipboard -Value $m
