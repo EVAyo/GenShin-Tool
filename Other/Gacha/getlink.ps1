@@ -52,9 +52,9 @@ Copy-Item $cachefile -Destination $tmpfile
 
 $content = Get-Content -Encoding UTF8 -Raw $tmpfile
 $splitted = $content -split "1/0/"
-$found = $splitted -match "https.+?game_biz=hk4e_global"
+$found = $splitted -match "e20190909gacha-v2"
 
-$found = $found[$found.Length - 1] -match "(https.+?game_biz=hk4e_global)"
+$found = $found[$found.Length - 1] -match "(https.+?game_biz=.+)"
 
 Remove-Item $tmpfile
 
