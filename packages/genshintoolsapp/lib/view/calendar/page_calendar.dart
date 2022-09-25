@@ -211,14 +211,10 @@ class ViewMaterialNeeds extends HookWidget {
     }
 
     if (material.materialType == GSMaterialType.AVATAR_MATERIAL) {
-      if (material.dropFromRarity == GSMonsterRarity.BIG_BOSS_MONSTER) {
-        return '周BOSS掉落';
+      if (material.dropFromRarity == GSMonsterRarity.BIG_BOSS_MONSTER ||
+          material.dropFromRarity == GSMonsterRarity.BOSS_MONSTER) {
+        return 'BOSS掉落';
       }
-
-      if (material.dropFromRarity == GSMonsterRarity.BOSS_MONSTER) {
-        return '野外BOSS掉落';
-      }
-
       return '怪物掉落';
     }
 

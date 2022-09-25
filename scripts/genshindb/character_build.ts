@@ -1,8 +1,8 @@
-import {keys, omitBy, reduce, some, trim, uniq, uniqBy} from "lodash-es";
-import fetch from "node-fetch";
+import {join, omitBy, reduce, some, trim, uniq, uniqBy} from "lodash-es";
 import {parseString} from "@fast-csv/parse";
 import {writeFile, readFile} from "fs/promises";
 import {existsSync, mkdirSync} from "fs";
+import {spawnSync} from "child_process"
 import {pascalCase} from "./common";
 import {findWeapon} from "./domain_weapon";
 import {findArtifactSet} from "./domain_artifact";
@@ -195,12 +195,10 @@ const characterBuild = (name: string, b: any) => {
     };
 };
 
-const sheet =
-    "https://now-proxy-3.vercel.app/https:/docs.google.com/spreadsheets/d/1gNxZ2xab1J6o1TuNVWMeLOZ7TPOqrsf3SshP5DLvKzI";
-const exportURL = `${sheet}/export?format=csv&id=1gNxZ2xab1J6o1TuNVWMeLOZ7TPOqrsf3SshP5DLvKzI`;
+const exportURL = `https://docs.google.com/spreadsheets/d/1gNxZ2xab1J6o1TuNVWMeLOZ7TPOqrsf3SshP5DLvKzI/export?format=csv`;
 
 enum Grid {
-    Dendro,
+    Dendro = 1468017260,
     Anemo = 653464458,
     Geo = 1780570478,
     Electro = 408609723,
@@ -211,13 +209,17 @@ enum Grid {
 
 const loadOrSync = async (g: Grid) => {
     const file = `./.tmp/${Grid[g]}-${g}.csv`;
-    if (existsSync(file)) {
-        return String(await readFile(file));
+    if (!existsSync(file)) {
+        console.log(`fetching ${Grid[g]} ${exportURL}&gid=${g}`)
+        await mkdirSync(dirname(file), {recursive: true});
+
+        spawnSync("curl", ["-qL", "-o", file, `${exportURL}&gid=${g}`], {
+            cwd: process.cwd(),
+            env: process.env,
+            stdio: 'inherit',
+        });
     }
-    const csv = await fetch(`${exportURL}&gid=${g}`).then((res) => res.text());
-    await mkdirSync(dirname(file), {recursive: true});
-    await writeFile(file, csv);
-    return csv;
+    return String(await readFile(file));
 };
 
 const fromCSV = async (csv: string, grid: Grid) => {
@@ -371,11 +373,32 @@ export let Builds: { [key: string]: Array<ReturnType<typeof characterBuild>> } =
             FightProp.FIGHT_PROP_HP_PERCENT,
             FightProp.FIGHT_PROP_HP_PERCENT,
         ], ["Q", "E"]),
+    ],
+    Nilou: [
+        defaultRole("DPS", "西风剑", ["千岩牢固"], [
+            FightProp.FIGHT_PROP_HP_PERCENT,
+            FightProp.FIGHT_PROP_HP_PERCENT,
+            FightProp.FIGHT_PROP_HP_PERCENT,
+        ], ["Q", "E"]),
+    ],
+    Candace: [
+        defaultRole("SUPPORT", "西风长枪", ["千岩牢固"], [
+            FightProp.FIGHT_PROP_HP_PERCENT,
+            FightProp.FIGHT_PROP_HP_PERCENT,
+            FightProp.FIGHT_PROP_HP_PERCENT,
+        ], ["Q", "E"]),
+    ],
+    Cyno: [
+        defaultRole("DPS", "西风长枪", ["绝缘之旗印"], [
+            FightProp.FIGHT_PROP_ATTACK_PERCENT,
+            FightProp.FIGHT_PROP_ELEC_ADD_HURT,
+            FightProp.FIGHT_PROP_CRITICAL,
+        ], ["Q", "E"]),
     ]
 };
 
 
-for (const p of [Grid.Pyro, Grid.Anemo, Grid.Electro, Grid.Cryo, Grid.Hydro, Grid.Geo]) {
+for (const p of [Grid.Pyro, Grid.Anemo, Grid.Electro, Grid.Cryo, Grid.Hydro, Grid.Geo, Grid.Dendro]) {
     Builds = {
         ...Builds,
         ...omitBy(await fromCSV(await loadOrSync(p), p), (roles) => some(roles, (r) => r.Role.indexOf("WIP") > -1)),

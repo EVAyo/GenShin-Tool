@@ -17,7 +17,7 @@ class EnumExtraGenerator extends GeneratorForAnnotation<JsonEnum> {
   ) {
     Map<String, EnumMeta> values = {};
 
-    for (final f in (element as ClassElement).fields) {
+    for (final f in (element as EnumElement).fields) {
       if (_fightPropMetaChecker.hasAnnotationOfExact(f)) {
         values[f.name] = EnumMeta(
           label: _fightPropMetaChecker
@@ -63,7 +63,7 @@ extension ${element.name}Meta on ${element.name} {
     return _genStringConverter(element);
   }
 
-  String _genStringConverter(ClassElement element) {
+  String _genStringConverter(EnumElement element) {
     return '''
 class _\$${element.name}StringConverter implements JsonConverter<${element.name}, String> {
   const _\$${element.name}StringConverter();

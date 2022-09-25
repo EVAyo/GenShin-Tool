@@ -9,7 +9,7 @@ build.android:
 	BUILD_NUMBER=$(BUILD_NUMBER) pnpm exec turbo run build:android --force
 
 dev.ios:
-	cd packages/genshintoolsapp && flutter run -d "iPhone 13"
+	cd packages/genshintoolsapp && flutter run --flavor Debug -d "iPhone 14"
 
 bootstrap:
 	dart pub global activate pubtidy

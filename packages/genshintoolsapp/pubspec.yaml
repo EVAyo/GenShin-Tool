@@ -1,7 +1,7 @@
 name: genshintoolsapp
 description: genshin tools app
 publish_to: 'none'
-version: 3.0.0
+version: 3.1.0
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -25,7 +25,7 @@ dependencies:
   webview_flutter: ^3.0.0
   flutter_hooks: ^0.18.1
   rxdart: ^0.27.3
-  json_annotation: "^4.5.0"
+  json_annotation: "^4.7.0"
   genshingameinfo: ^1.0.0
   genshindb: ^3.0.0
   freearch: ^1.0.0

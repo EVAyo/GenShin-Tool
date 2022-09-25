@@ -1,9 +1,11 @@
 {
   "name": "webdav",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "lint": "dart fix --apply dart format -o write .",
     "test": "dart pub run test --reporter expanded",
     "gen": "dart run build_runner build --delete-conflicting-outputs"
-  }
+  },
+  "type": "module"
 }

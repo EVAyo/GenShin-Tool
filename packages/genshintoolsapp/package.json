@@ -1,10 +1,14 @@
 {
   "name": "genshintoolsapp",
+  "license": "MIT",
   "private": true,
   "scripts": {
+    "dep": "flutter pub get && flutter pub upgrade --major-versions",
     "bootstrap": "flutter pub get",
+    "clean": "flutter clean",
     "lint": "dart fix --apply dart format -o write .",
     "gen": "flutter pub run build_runner build --delete-conflicting-outputs",
     "build:android": "flutter build apk --release --build-number=${BUILD_NUMBER} --target-platform android-arm64 --split-per-abi"
-  }
+  },
+  "type": "module"
 }

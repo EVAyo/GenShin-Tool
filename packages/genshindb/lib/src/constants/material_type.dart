@@ -125,5 +125,8 @@ enum GSMaterialType {
   ACTIVITY_JIGSAW,
   @EnumMeta(label: '阿拉纳拉')
   @JsonValue('MATERIAL_ARANARA')
-  ARANARA
+  ARANARA,
+  @EnumMeta(label: '记事本手册')
+  @JsonValue('MATERIAL_DESHRET_MANUAL')
+  DESHRET_MANUAL
 }
