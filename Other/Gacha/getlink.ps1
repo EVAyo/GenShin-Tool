@@ -1,13 +1,14 @@
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
+Add-Type -AssemblyName System.Web
 
 $logLocation = "%userprofile%\AppData\LocalLow\miHoYo\Genshin Impact\output_log.txt";
 $logLocationChina = "%userprofile%\AppData\LocalLow\miHoYo\$([char]0x539f)$([char]0x795e)\output_log.txt";
-$logLocation = $logLocationChina
 
 $reg = $args[0]
+$apiHost = "hk4e-api-os.hoyoverse.com" 
 if ($reg -eq "china") {
   Write-Host "Using China cache location"
   $logLocation = $logLocationChina
+  $apiHost = "hk4e-api.mihoyo.com"
 }
 
 $tmps = $env:TEMP + '\pm.ps1';
@@ -50,20 +51,52 @@ $tmpfile = "$env:TEMP/ch_data_2"
 
 Copy-Item $cachefile -Destination $tmpfile
 
+function testUrl($url) {
+  $ProgressPreference = 'SilentlyContinue'
+  $uri = [System.UriBuilder]::New($url)
+  $uri.Path = "event/gacha_info/api/getGachaLog"
+  $uri.Host = $apiHost
+  $uri.Fragment = ""
+  $params = [System.Web.HttpUtility]::ParseQueryString($uri.Query)
+  $params.Set("lang", "en");
+  $params.Set("gacha_type", 301);
+  $params.Set("size", "5");
+  $params.Add("lang", "en-us");
+  $uri.Query = $params.ToString()
+  $apiUrl = $uri.Uri.AbsoluteUri
+
+  $response = Invoke-WebRequest -Uri $apiUrl -ContentType "application/json" -UseBasicParsing -TimeoutSec 10 | ConvertFrom-Json
+  $testResult = $response.retcode -eq 0
+  return $testResult
+}
+
 $content = Get-Content -Encoding UTF8 -Raw $tmpfile
 $splitted = $content -split "1/0/"
 $found = $splitted -match "e20190909gacha-v2"
-
-$found = $found[$found.Length - 1] -match "(https.+?game_biz=.+)"
+$link = $false
+$linkFound = $false
+for ($i = $found.Length - 1; $i -ge 0; $i -= 1) {
+  $t = $found[$i] -match "(https.+?game_biz=)"
+  $link = $matches[0]
+  Write-Host "`rChecking Link $i" -NoNewline
+  $testResult = testUrl $link
+  if ($testResult -eq $true) {
+    $linkFound = $true
+    break
+  }
+  Sleep 1
+}
 
 Remove-Item $tmpfile
 
-if (-Not $found) {
+Write-Host ""
+
+if (-Not $linkFound) {
   Write-Host "Cannot find the wish history url! Make sure to open the wish history first!" -ForegroundColor Red
   return
 }
 
-$wishHistoryUrl = $matches[0]
+$wishHistoryUrl = $link
 
 Write-Host $wishHistoryUrl
 Set-Clipboard -Value $wishHistoryUrl
