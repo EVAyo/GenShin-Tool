@@ -1,3 +1,7 @@
+Set-ExecutionPolicy Bypass -Scope Process -Force;
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+
+#Ô­ÎÄ¼þ¡ý
 $code = @"
 using System;
 using System.Runtime.InteropServices;
@@ -101,3 +105,4 @@ $result = iex "[ClipboardGetter]::GetHTML()"
 $link = ($result | Select-String "(https:/.+log)").Matches[0].Value
 Write-Host $link
 $link | Clip.exe
+
