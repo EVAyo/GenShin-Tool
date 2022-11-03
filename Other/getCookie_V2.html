@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>米游社签到cookie及米游币任务cookie获取</title>
+    <style>
+        div {
+            position: absolute;
+            left: 50px;
+            top: 30px;
+        }
+
+        textarea {
+            width: 700px;
+            height: 50px;
+            margin-top: 10px;
+        }
+
+        #mysCookie {
+            height: 80px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <br><b>Step1:</b><br>
+        点击<button onclick="window.open('https://bbs.mihoyo.com/ys/')">米游社</button>按钮，在弹出页面登陆，然后关闭页面；<br>
+        点击<button onclick="window.open('https://user.mihoyo.com/')">米游社通行证</button>按钮，在弹出页面登陆；<br>
+
+        <br><b>Step2:</b><br>
+        完成登陆后，按下F12，在控制台（console），粘贴以下代码并回车，复制弹出对话框中的内容，获得cookie。<br>
+        <textarea
+            id="getCookie">javascript:(function(){let domain=document.domain;let cookie=document.cookie;prompt(`Cookies: ${domain}`, cookie)})();</textarea><br>
+        <button onclick="copy('getCookie');">复制</button><br>
+
+        <br><b>Step3:</b><br>
+        <textarea autocomplete="off" placeholder="在这里粘贴上一步获取的cookie" id="mysCookie"></textarea><br>
+        将获取的cookie粘贴在上面，点击<button onclick="exchange();">这里</button>，复制弹出页面的所有内容，并粘贴在下面；<br>
+
+        <br><b>Step4:</b><br>
+        <textarea autocomplete="off" placeholder="在这里粘贴弹出页面显示的内容" id="stoken"></textarea><br>
+        <button onclick="getMYB();">生成米游币cookie</button><br>
+
+        <br><b>Step5:</b><br>
+        <textarea autocomplete="off" id="mybCookie"></textarea><br>
+        <button onclick="copy('mybCookie');">复制</button><br>
+    </div>
+</body>
+<script>
+    var cookie = {};
+    function exchange() {
+        if (mysCookie.value == '') {
+            alert("请粘贴获取的cookie！");
+        } else {
+            var mys = mysCookie.value.split('; ');
+            mys.forEach(element => {
+                let param = element.split('=');
+                cookie[param[0]] = param[1];
+            });
+            if (cookie.login_ticket && cookie.account_id) {
+                let url = `https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket?login_ticket=${cookie.login_ticket}&token_types=3&uid=${cookie.account_id}`;
+                window.open(url);
+            } else {
+                alert("cookie中不包含login_ticket或account_id字段，请按照Step1，从米游社通行证获取cookie！");
+            }
+        }
+    }
+
+    function getMYB() {
+        if (stoken.value == '') {
+            alert("请粘贴弹出页面的内容！");
+        } else {
+            try {
+                var token = JSON.parse(stoken.value);
+                if (token.retcode != 0) {
+                    alert(token.message + "\n获取的cookie无效！")
+                } else {
+                    mybCookie.value = `stuid=${cookie.account_id}; stoken=${token.data.list[0].token}; login_ticket=${cookie.login_ticket}`;
+                }
+            } catch (error) {
+                alert('粘贴的内容不符合json格式，请重新获取');
+                console.log(error);
+            }
+        }
+    }
+
+    function copy(id) {
+        let dom = document.getElementById(id);
+        let content = dom.value;
+        dom.select();
+        let copy = (e) => {
+            e.preventDefault();
+            e.clipboardData.setData('text/plain', content);
+            document.removeEventListener('copy', copy);
+        }
+        document.addEventListener('copy', copy);
+        document.execCommand("Copy");
+    }
+</script>
+
+</html>
