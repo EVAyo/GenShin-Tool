@@ -105,4 +105,3 @@ $result = iex "[ClipboardGetter]::GetHTML()"
 $link = ($result | Select-String "(https:/.+log)").Matches[0].Value
 Write-Host $link
 $link | Clip.exe
-
